@@ -668,6 +668,102 @@
                 ],
                 minLotSize: 'N/A',
                 landscaping: '20% minimum'
+            },
+            
+            'A1-Agriculture zone': {
+                description: 'Strives to protect the viability of agriculture and prevent farmland conversion to non-farm uses',
+                permitted: [
+                    'Crop farming', 'Agro-forestry', 'Livestock farming', 'Green houses',
+                    'Bee Keeping', 'Fish farming'
+                ],
+                prohibited: [
+                    'All types of industrial uses not linked to Agro-Processing',
+                    'All types of residential uses not linked to Farming activities',
+                    'All types of commercial uses not linked to temporary farm store',
+                    'All types of public facilities'
+                ],
+                conditional: [
+                    'Supporting Agricultural uses', 'Temporary Farm store', 'Infrastructure',
+                    'Rural Villages for agricultural plots larger than 5 ha after land assembly',
+                    'Single family Houses on agricultural plots larger than 1 ha (linked to farming)',
+                    'Small scale Agro-processing facilities on agricultural land not less than 0.5 ha'
+                ],
+                minLotSize: 'N/A',
+                maxHeight: 'G (Ground floor only)',
+                maxFAR: 'Single Family Houses: 0.01 up to 150 m² (plots above 1 ha), Agro-processing: 0.02 up to 200 m² (plots above 0.5 Ha)',
+                coverage: 'N/A',
+                landscaping: 'N/A'
+            },
+            
+            'P1-Parks and open spaces zone': {
+                description: 'Established to provide recreational and leisure facilities in areas with unique features',
+                permitted: [
+                    'Botanical gardens, arboretums, and conservatories',
+                    'Outdoor recreational facilities such as hiking and bicycle trails',
+                    'Greens and commons, sitting areas and picnic areas',
+                    'Park related public facilities such as public toilet/changing room'
+                ],
+                prohibited: [
+                    'All types of industrial uses', 'All types of residential uses',
+                    'Commercial uses exceeding prescribed limits', 'All types of major public facilities',
+                    'Major infrastructure installations'
+                ],
+                conditional: [
+                    'Restaurants, kiosks, art and souvenirs shops and other commercial structures not exceeding 0.05 FAR up to 150 m²'
+                ],
+                minLotSize: 'N/A',
+                maxHeight: 'G+1 maximum',
+                maxFAR: '0.05 up to 150 m²',
+                coverage: 'N/A',
+                landscaping: 'N/A'
+            },
+            
+            'T-Transportation zone': {
+                description: 'Identify and locate major transport related areas including public transport services',
+                permitted: [
+                    'All transport infrastructure', 'BRT stations and Terminals',
+                    'Parking area', 'Holding depots'
+                ],
+                prohibited: [
+                    'Major industrial uses', 'Major residential uses'
+                ],
+                conditional: [
+                    'Motor repair garage', 'Commercial Uses if developed with Transport Terminals',
+                    'Service station', 'Commercial and office spaces',
+                    'Hotels and Restaurants', 'Workers accommodation'
+                ],
+                minLotSize: 'N/A',
+                maxHeight: 'N/A',
+                coverage: 'N/A',
+                landscaping: 'N/A'
+            },
+            
+            'P3C-Steep slopes (> 30%) zone': {
+                description: 'Hillsides and steep slopes prone to natural hazards that need protection from unsustainable encroachment',
+                permitted: [
+                    'Forests', 'Agro-Forestry', 'Bee Keeping', 'Silviculture'
+                ],
+                prohibited: [
+                    'All types of developments except those conditionally allowed by Slope Overlay between 30-50% slope'
+                ],
+                conditional: [
+                    'Limited development on slopes 30-50% with detailed geotechnical assessment',
+                    'Strategic tourism developments with substantial community benefits',
+                    'Developments designed following highest environmental standards with EIA clearance',
+                    'Nature restoration projects'
+                ],
+                minLotSize: 'N/A',
+                maxHeight: 'N/A - Subject to slope analysis and geotechnical assessment',
+                coverage: 'N/A - Determined by slope stability requirements',
+                landscaping: 'Maximum preservation of existing vegetation required',
+                specialRequirements: [
+                    'Geotechnical evaluation mandatory',
+                    'Environmental Impact Assessment required',
+                    'Grading plan showing feasibility required',
+                    'Drainage management plan required',
+                    'Erosion control plan required',
+                    'Buffer distance of 300m from nearest residential areas for certain activities'
+                ]
             }
         };
         
@@ -903,7 +999,11 @@ Zone: ${zoneName}
                 'nightclub': ['C1-Mixed use zone', 'C3-City commercial zone'],
                 'supermarket': ['C3-City commercial zone'],
                 'garage': ['I1-Light industrial zone'],
-                'petrol station': ['I1-Light industrial zone', 'C1-Mixed use zone']
+                'petrol station': ['I1-Light industrial zone', 'C1-Mixed use zone'],
+                'farm': ['A1-Agriculture zone'],
+                'greenhouse': ['A1-Agriculture zone'],
+                'parking': ['T-Transportation zone', 'C1-Mixed use zone'],
+                'transport': ['T-Transportation zone']
             };
             
             return suggestions[buildingType] || ['C1-Mixed use zone', 'C3-City commercial zone'];
