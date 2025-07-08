@@ -1,0 +1,1290 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <title>🏗️ Kigali Building AI</title>
+    
+    <!-- ArcGIS CSS -->
+    <link rel="stylesheet" href="https://js.arcgis.com/4.28/esri/themes/light/main.css">
+    
+    <style>
+        /* City of Kigali Color Palette */
+        :root {
+            --kigali-blue: #1E3A8A;
+            --kigali-green: #059669;
+            --kigali-yellow: #F59E0B;
+            --kigali-red: #DC2626;
+            --kigali-light-blue: #3B82F6;
+            --kigali-light-green: #10B981;
+            --kigali-dark: #1F2937;
+            --kigali-gray: #6B7280;
+            --kigali-light-gray: #F3F4F6;
+        }
+        
+        * {
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+        
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--kigali-light-gray);
+            overflow: hidden;
+        }
+        
+        #viewDiv {
+            height: 100vh;
+            width: 100%;
+            position: relative;
+        }
+        
+        /* Mobile-First Header */
+        #mobileHeader {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(135deg, var(--kigali-blue) 0%, var(--kigali-light-blue) 100%);
+            color: white;
+            padding: 12px 16px;
+            z-index: 100;
+            box-shadow: 0 4px 20px rgba(30, 58, 138, 0.3);
+        }
+        
+        .header-content {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .app-title {
+            font-size: 18px;
+            font-weight: 700;
+            margin: 0;
+        }
+        
+        .app-subtitle {
+            font-size: 12px;
+            opacity: 0.9;
+            margin: 2px 0 0 0;
+        }
+        
+        .status-indicator {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 12px;
+        }
+        
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--kigali-yellow);
+            animation: pulse 2s infinite;
+        }
+        
+        .status-dot.ready {
+            background: var(--kigali-light-green);
+            animation: none;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+        
+        /* Hidden file upload */
+        #fileUpload {
+            display: none;
+        }
+        
+        /* Bottom Panel - Mobile Optimized */
+        #bottomPanel {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: white;
+            border-radius: 20px 20px 0 0;
+            box-shadow: 0 -8px 32px rgba(0, 0, 0, 0.15);
+            z-index: 100;
+            max-height: 45vh;
+            transition: transform 0.3s ease;
+            transform: translateY(100%);
+        }
+        
+        #bottomPanel.show {
+            transform: translateY(0);
+        }
+        
+        .panel-handle {
+            width: 40px;
+            height: 4px;
+            background: var(--kigali-gray);
+            border-radius: 2px;
+            margin: 12px auto 8px;
+            opacity: 0.5;
+        }
+        
+        .panel-content {
+            padding: 0 20px 20px;
+            overflow-y: auto;
+            max-height: 35vh;
+        }
+        
+        .location-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 16px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #E5E7EB;
+        }
+        
+        .zone-info {
+            flex: 1;
+        }
+        
+        .zone-name {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--kigali-dark);
+            margin: 0 0 4px 0;
+        }
+        
+        .zone-description {
+            font-size: 13px;
+            color: var(--kigali-gray);
+            margin: 0;
+        }
+        
+        .zone-color-indicator {
+            width: 24px;
+            height: 24px;
+            border-radius: 8px;
+            border: 2px solid white;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+        }
+        
+        /* Quick Actions */
+        .quick-actions {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+        
+        .action-btn {
+            background: linear-gradient(135deg, var(--kigali-green) 0%, var(--kigali-light-green) 100%);
+            color: white;
+            border: none;
+            padding: 16px 12px;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(5, 150, 105, 0.3);
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        
+        .action-btn:active {
+            transform: translateY(1px);
+            box-shadow: 0 2px 8px rgba(5, 150, 105, 0.3);
+        }
+        
+        .action-btn.secondary {
+            background: linear-gradient(135deg, var(--kigali-light-blue) 0%, var(--kigali-blue) 100%);
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+        }
+        
+        /* AI Chat Interface */
+        .chat-container {
+            background: var(--kigali-light-gray);
+            border-radius: 12px;
+            padding: 16px;
+            margin-top: 16px;
+            display: none;
+        }
+        
+        .chat-container.show {
+            display: block;
+        }
+        
+        .ai-response {
+            background: white;
+            padding: 16px;
+            border-radius: 12px;
+            border-left: 4px solid var(--kigali-green);
+            font-size: 14px;
+            line-height: 1.5;
+            white-space: pre-wrap;
+            margin-bottom: 12px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        }
+        
+        .chat-input-container {
+            display: flex;
+            gap: 8px;
+            align-items: flex-end;
+        }
+        
+        .chat-input {
+            flex: 1;
+            padding: 12px 16px;
+            border: 2px solid #E5E7EB;
+            border-radius: 20px;
+            font-size: 14px;
+            resize: none;
+            min-height: 44px;
+            max-height: 80px;
+            outline: none;
+            transition: border-color 0.2s ease;
+        }
+        
+        .chat-input:focus {
+            border-color: var(--kigali-green);
+        }
+        
+        .send-btn {
+            background: var(--kigali-green);
+            color: white;
+            border: none;
+            width: 44px;
+            height: 44px;
+            border-radius: 22px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+            box-shadow: 0 2px 8px rgba(5, 150, 105, 0.3);
+        }
+        
+        .send-btn:active {
+            transform: scale(0.95);
+        }
+        
+        .send-btn:disabled {
+            background: var(--kigali-gray);
+            box-shadow: none;
+        }
+        
+        /* Data Status Banner */
+        .data-banner {
+            position: absolute;
+            top: 70px;
+            left: 16px;
+            right: 16px;
+            background: linear-gradient(135deg, var(--kigali-yellow) 0%, #F97316 100%);
+            color: white;
+            padding: 12px 16px;
+            border-radius: 12px;
+            font-size: 13px;
+            font-weight: 600;
+            z-index: 99;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            transform: translateY(-100px);
+        }
+        
+        .data-banner.show {
+            transform: translateY(0);
+        }
+        
+        .data-banner.loaded {
+            background: linear-gradient(135deg, var(--kigali-green) 0%, var(--kigali-light-green) 100%);
+        }
+        
+        /* Loading Overlay */
+        .loading-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(255, 255, 255, 0.95);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 200;
+            flex-direction: column;
+            gap: 20px;
+        }
+        
+        .loading-overlay.show {
+            display: flex;
+        }
+        
+        .loading-spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid #E5E7EB;
+            border-top: 3px solid var(--kigali-blue);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .loading-text {
+            color: var(--kigali-dark);
+            font-weight: 600;
+            text-align: center;
+        }
+        
+        /* Map Pin */
+        .location-pin {
+            position: absolute;
+            width: 30px;
+            height: 30px;
+            background: var(--kigali-red);
+            border: 3px solid white;
+            border-radius: 50% 50% 50% 0;
+            transform: rotate(-45deg);
+            box-shadow: 0 4px 12px rgba(220, 38, 38, 0.4);
+            z-index: 50;
+            animation: bounce 2s infinite;
+        }
+        
+        @keyframes bounce {
+            0%, 100% { transform: rotate(-45deg) translateY(0); }
+            50% { transform: rotate(-45deg) translateY(-5px); }
+        }
+        
+        /* Success/Error States */
+        .response-success {
+            border-left-color: var(--kigali-green);
+            background: linear-gradient(135deg, #ECFDF5 0%, #F0FDF4 100%);
+        }
+        
+        .response-warning {
+            border-left-color: var(--kigali-yellow);
+            background: linear-gradient(135deg, #FFFBEB 0%, #FEF3C7 100%);
+        }
+        
+        .response-error {
+            border-left-color: var(--kigali-red);
+            background: linear-gradient(135deg, #FEF2F2 0%, #FECACA 100%);
+        }
+        
+        /* Responsive Adjustments */
+        @media (max-width: 480px) {
+            .quick-actions {
+                grid-template-columns: 1fr;
+                gap: 8px;
+            }
+            
+            .action-btn {
+                padding: 14px 12px;
+                font-size: 13px;
+            }
+            
+            .panel-content {
+                padding: 0 16px 16px;
+            }
+        }
+        
+        /* Dark mode support */
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --kigali-light-gray: #111827;
+                --kigali-dark: #F9FAFB;
+            }
+            
+            #bottomPanel {
+                background: #1F2937;
+                color: white;
+            }
+            
+            .chat-container {
+                background: #374151;
+            }
+            
+            .ai-response {
+                background: #4B5563;
+                color: white;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Hidden file upload -->
+    <input type="file" id="fileUpload" accept=".json,.geojson" />
+    
+    <!-- Mobile Header -->
+    <div id="mobileHeader">
+        <div class="header-content">
+            <div>
+                <h1 class="app-title">🏗️ Kigali Building AI</h1>
+                <p class="app-subtitle">Smart Construction Assistant</p>
+            </div>
+            <div class="status-indicator">
+                <div class="status-dot" id="statusDot"></div>
+                <span id="statusText">Loading...</span>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Data Status Banner -->
+    <div class="data-banner" id="dataBanner" onclick="loadDataFile()">
+        📥 Tap to load official zoning data
+    </div>
+    
+    <!-- Loading Overlay -->
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="loading-spinner"></div>
+        <div class="loading-text" id="loadingText">Loading zoning data...</div>
+    </div>
+    
+    <!-- Map Container -->
+    <div id="viewDiv"></div>
+    
+    <!-- Bottom Panel -->
+    <div id="bottomPanel">
+        <div class="panel-handle"></div>
+        <div class="panel-content">
+            <div class="location-header" id="locationHeader" style="display: none;">
+                <div class="zone-color-indicator" id="zoneColorIndicator"></div>
+                <div class="zone-info">
+                    <h3 class="zone-name" id="zoneName">Select a location</h3>
+                    <p class="zone-description" id="zoneDescription">Tap anywhere on the map</p>
+                </div>
+            </div>
+            
+            <div class="quick-actions" id="quickActions" style="display: none;">
+                <button class="action-btn" onclick="askQuestion('Can I build a house here?')">
+                    🏠 Build House?
+                </button>
+                <button class="action-btn" onclick="askQuestion('Can I build a shop here?')">
+                    🏪 Build Shop?
+                </button>
+                <button class="action-btn secondary" onclick="askQuestion('How tall can I build?')">
+                    📏 Height Limit?
+                </button>
+                <button class="action-btn secondary" onclick="askQuestion('Can I build apartments here?')">
+                    🏢 Apartments?
+                </button>
+            </div>
+            
+            <div class="chat-container" id="chatContainer">
+                <div class="ai-response" id="aiResponse"></div>
+                <div class="chat-input-container">
+                    <textarea class="chat-input" id="chatInput" 
+                              placeholder="Ask about building here..." 
+                              rows="1"></textarea>
+                    <button class="send-btn" id="sendBtn" onclick="sendMessage()">
+                        ➤
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ArcGIS JavaScript API -->
+    <script src="https://js.arcgis.com/4.28/"></script>
+    
+    <script>
+        let currentLocation = null;
+        let currentZoning = null;
+        let view = null;
+        let zoningFeatures = [];
+        let spatialIndex = null;
+        
+        // Check for cached data on startup
+        const CACHE_KEY = 'kigali_zoning_data';
+        const CACHE_VERSION = '1.0';
+        
+        // Zone color mapping
+        const ZONE_COLORS = {
+            'A1-Agriculture zone': '#90EE90',
+            'C1-Mixed use zone': '#FFB6C1',
+            'C3-City commercial zone': '#CD5626',
+            'I1-Light industrial zone': '#DDA0DD',
+            'I2-General industrial zone': '#9370DB',
+            'I3-Mining/ Extraction/Quarry': '#8B4513',
+            'P1-Parks and open spaces zone': '#32CD32',
+            'P2-Sport and Eco tourism zone': '#00FA9A',
+            'P3B-Forest zone': '#006400',
+            'P3C-Steep slopes (> 30%) zone': '#2E8B57',
+            'PA-Public Administration zone': '#87CEEB',
+            'PF1-Education and research facilities': '#4169E1',
+            'PF2-Health facilities': '#0000FF',
+            'PF3-Religious facilities': '#191970',
+            'PF4-Cultural/ memorial sites': '#6495ED',
+            'PF5-Cemetery/ crematoria': '#B0C4DE',
+            'R1-Low density residential zone': '#FFFFE0',
+            'R1A-Low density residential densification zone': '#FFFACD',
+            'R1B-Rural residential zone': '#F0E68C',
+            'R2-Medium density residential - Improvement zone': '#F59E0B',
+            'R3-Medium density residential - Expansion zone': '#FF7F50',
+            'R4-High density residential zone': '#FF6347',
+            'T-Transportation zone': '#A9A9A9',
+            'U-Utility zone': '#D3D3D3',
+            'W2 - Rehabilitation': '#98FB98',
+            'W3 - Sustainable Exploitation': '#90EE90',
+            'W4 - Conservation': '#8FBC8F',
+            'W5 - Recreational': '#87CEEB',
+            'WR-Waterbody zone': '#87CEEB'
+        };
+        
+        // Zone details mapping
+        const ZONE_DETAILS = {
+            'C1-Mixed use zone': {
+                description: 'Commercial and residential mixed development',
+                maxHeight: '4-6 stories (18 meters)',
+                allowedUses: 'Shops, restaurants, offices, apartments, markets',
+                coverage: '70%'
+            },
+            'C3-City commercial zone': {
+                description: 'High density commercial development',
+                maxHeight: '8-12 stories (40 meters)',
+                allowedUses: 'Office buildings, hotels, shopping centers, banks, entertainment',
+                coverage: '80%'
+            },
+            'R1-Low density residential zone': {
+                description: 'Single family residential development',
+                maxHeight: '2 stories (6 meters)',
+                allowedUses: 'Single family houses, home gardens, small home businesses',
+                coverage: '50%'
+            },
+            'R2-Medium density residential - Improvement zone': {
+                description: 'Medium density housing improvement area',
+                maxHeight: '3-4 stories (12 meters)',
+                allowedUses: 'Houses, small apartments, home businesses, local shops',
+                coverage: '60%'
+            },
+            'R3-Medium density residential - Expansion zone': {
+                description: 'Medium density new residential development',
+                maxHeight: '4 stories (12 meters)',
+                allowedUses: 'Apartments, townhouses, mixed residential, small commercial',
+                coverage: '65%'
+            },
+            'R4-High density residential zone': {
+                description: 'High density residential development',
+                maxHeight: '6-8 stories (24 meters)',
+                allowedUses: 'Apartment buildings, condominiums, mixed residential',
+                coverage: '70%'
+            },
+            'I1-Light industrial zone': {
+                description: 'Light industrial and manufacturing',
+                maxHeight: '4 stories (15 meters)',
+                allowedUses: 'Light manufacturing, warehouses, workshops, offices',
+                coverage: '60%'
+            },
+            'I2-General industrial zone': {
+                description: 'General industrial development',
+                maxHeight: '6 stories (20 meters)',
+                allowedUses: 'Manufacturing, heavy industry, logistics, processing',
+                coverage: '70%'
+            },
+            'PF1-Education and research facilities': {
+                description: 'Educational institutions and research centers',
+                maxHeight: '5 stories (18 meters)',
+                allowedUses: 'Schools, universities, research centers, libraries',
+                coverage: '50%'
+            },
+            'PF2-Health facilities': {
+                description: 'Healthcare and medical facilities',
+                maxHeight: '8 stories (30 meters)',
+                allowedUses: 'Hospitals, clinics, medical centers, pharmacies',
+                coverage: '60%'
+            }
+        };
+        
+        // Initialize app
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeApp();
+            checkCachedData();
+        });
+        
+        function initializeApp() {
+            updateStatus('loading', 'Initializing map...');
+            
+            // Initialize map
+            require([
+                "esri/Map",
+                "esri/views/MapView",
+                "esri/Graphic",
+                "esri/geometry/Point"
+            ], function(Map, MapView, Graphic, Point) {
+                
+                const map = new Map({
+                    basemap: "hybrid"
+                });
+                
+                view = new MapView({
+                    container: "viewDiv",
+                    map: map,
+                    center: [30.0619, -1.9441],
+                    zoom: 13,
+                    ui: {
+                        components: ["attribution"] // Minimal UI for mobile
+                    }
+                });
+                
+                view.on("click", handleMapClick);
+                view.popup.autoOpenEnabled = false;
+                
+                view.when(() => {
+                    updateStatus('ready', 'Map ready');
+                });
+            });
+            
+            // Setup file upload
+            document.getElementById('fileUpload').addEventListener('change', handleFileUpload);
+            
+            // Setup chat input
+            const chatInput = document.getElementById('chatInput');
+            chatInput.addEventListener('input', autoResizeTextarea);
+            chatInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter' && !e.shiftKey) {
+                    e.preventDefault();
+                    sendMessage();
+                }
+            });
+        }
+        
+        function checkCachedData() {
+            try {
+                const cached = localStorage.getItem(CACHE_KEY);
+                if (cached) {
+                    const data = JSON.parse(cached);
+                    if (data.version === CACHE_VERSION && data.features) {
+                        console.log('📦 Found cached zoning data');
+                        loadCachedData(data);
+                        return;
+                    }
+                }
+            } catch (error) {
+                console.warn('Cache check failed:', error);
+            }
+            
+            // No valid cache, show data banner
+            showDataBanner();
+        }
+        
+        function loadCachedData(data) {
+            updateStatus('loading', 'Loading cached data...');
+            
+            setTimeout(() => {
+                zoningFeatures = data.features;
+                spatialIndex = new Map(data.index);
+                
+                updateStatus('ready', `${zoningFeatures.length} zones loaded`);
+                showDataBanner(true);
+                
+                console.log('✅ Cached data loaded successfully');
+            }, 500);
+        }
+        
+        function showDataBanner(loaded = false) {
+            const banner = document.getElementById('dataBanner');
+            const dataBanner = document.getElementById('dataBanner');
+            
+            if (loaded) {
+                banner.innerHTML = '✅ Official zoning data loaded';
+                banner.classList.add('loaded');
+                banner.onclick = null;
+                
+                setTimeout(() => {
+                    banner.classList.remove('show');
+                }, 3000);
+            } else {
+                banner.innerHTML = '📥 Tap to load official zoning data';
+                banner.classList.remove('loaded');
+                banner.onclick = loadDataFile;
+            }
+            
+            banner.classList.add('show');
+        }
+        
+        function updateStatus(status, text) {
+            const dot = document.getElementById('statusDot');
+            const statusText = document.getElementById('statusText');
+            
+            dot.className = `status-dot ${status}`;
+            statusText.textContent = text;
+        }
+        
+        function loadDataFile() {
+            document.getElementById('fileUpload').click();
+        }
+        
+        async function handleFileUpload(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            
+            showLoading(true, 'Loading zoning data...');
+            
+            try {
+                const text = await file.text();
+                const data = JSON.parse(text);
+                
+                await processZoningData(data);
+                cacheZoningData();
+                
+                showLoading(false);
+                showDataBanner(true);
+                updateStatus('ready', `${zoningFeatures.length} zones loaded`);
+                
+            } catch (error) {
+                showLoading(false);
+                alert('❌ Error loading file: ' + error.message);
+            }
+        }
+        
+        async function processZoningData(data) {
+            // Extract features from various JSON structures
+            let features = [];
+            
+            if (data.type === 'FeatureCollection') {
+                features = data.features;
+            } else if (Array.isArray(data)) {
+                features = data;
+            } else if (data.features) {
+                features = data.features;
+            }
+            
+            if (!features || features.length === 0) {
+                throw new Error('No features found in JSON file');
+            }
+            
+            // Process features and build spatial index
+            zoningFeatures = [];
+            spatialIndex = new Map();
+            
+            for (let i = 0; i < features.length; i++) {
+                const feature = features[i];
+                const props = feature.properties || feature.attributes || feature;
+                const zoneName = extractZoneName(props);
+                
+                if (zoneName) {
+                    const processedFeature = {
+                        id: i,
+                        zoneName: zoneName,
+                        properties: props,
+                        bounds: calculateBounds(feature.geometry)
+                    };
+                    
+                    zoningFeatures.push(processedFeature);
+                    
+                    // Add to spatial index
+                    if (processedFeature.bounds) {
+                        const gridKey = Math.floor(processedFeature.bounds.centerLat * 1000) + ',' + 
+                                       Math.floor(processedFeature.bounds.centerLng * 1000);
+                        if (!spatialIndex.has(gridKey)) {
+                            spatialIndex.set(gridKey, []);
+                        }
+                        spatialIndex.get(gridKey).push(processedFeature);
+                    }
+                }
+            }
+        }
+        
+        function cacheZoningData() {
+            try {
+                const cacheData = {
+                    version: CACHE_VERSION,
+                    timestamp: Date.now(),
+                    features: zoningFeatures,
+                    index: Array.from(spatialIndex.entries())
+                };
+                
+                localStorage.setItem(CACHE_KEY, JSON.stringify(cacheData));
+                console.log('💾 Zoning data cached successfully');
+            } catch (error) {
+                console.warn('Failed to cache data:', error);
+            }
+        }
+        
+        function extractZoneName(properties) {
+            const possibleFields = [
+                'New_Zoning', 'new_zoning', 'Zone_Code', 'zone_code',
+                'zoning', 'ZONING', 'zone_name', 'type'
+            ];
+            
+            for (const field of possibleFields) {
+                if (properties[field] && typeof properties[field] === 'string') {
+                    return properties[field].trim();
+                }
+            }
+            return null;
+        }
+        
+        function calculateBounds(geometry) {
+            if (!geometry || !geometry.coordinates) return null;
+            
+            try {
+                let minLng = Infinity, maxLng = -Infinity;
+                let minLat = Infinity, maxLat = -Infinity;
+                
+                const processCoordinates = (coords) => {
+                    if (typeof coords[0] === 'number') {
+                        minLng = Math.min(minLng, coords[0]);
+                        maxLng = Math.max(maxLng, coords[0]);
+                        minLat = Math.min(minLat, coords[1]);
+                        maxLat = Math.max(maxLat, coords[1]);
+                    } else {
+                        coords.forEach(processCoordinates);
+                    }
+                };
+                
+                processCoordinates(geometry.coordinates);
+                
+                return {
+                    minLng, maxLng, minLat, maxLat,
+                    centerLng: (minLng + maxLng) / 2,
+                    centerLat: (minLat + maxLat) / 2
+                };
+            } catch (error) {
+                return null;
+            }
+        }
+        
+        function showLoading(show, text = 'Loading...') {
+            const overlay = document.getElementById('loadingOverlay');
+            const loadingText = document.getElementById('loadingText');
+            
+            if (show) {
+                loadingText.textContent = text;
+                overlay.classList.add('show');
+            } else {
+                overlay.classList.remove('show');
+            }
+        }
+        
+        async function handleMapClick(event) {
+            if (zoningFeatures.length === 0) {
+                showDataBanner();
+                return;
+            }
+            
+            currentLocation = event.mapPoint;
+            
+            // Query zoning data
+            const zoningResult = queryZoningData(event.mapPoint);
+            
+            if (zoningResult) {
+                currentZoning = zoningResult;
+                displayLocationInfo(zoningResult);
+                showBottomPanel();
+                addLocationPin(event.mapPoint);
+            } else {
+                showNoDataMessage();
+            }
+        }
+        
+        function queryZoningData(point) {
+            const lat = point.latitude;
+            const lng = point.longitude;
+            
+            // Fast spatial index lookup
+            const gridKey = Math.floor(lat * 1000) + ',' + Math.floor(lng * 1000);
+            const nearbyFeatures = spatialIndex.get(gridKey) || [];
+            
+            // Check nearby grid cells
+            for (let i = -1; i <= 1; i++) {
+                for (let j = -1; j <= 1; j++) {
+                    if (i === 0 && j === 0) continue;
+                    const nearbyKey = (Math.floor(lat * 1000) + i) + ',' + (Math.floor(lng * 1000) + j);
+                    const features = spatialIndex.get(nearbyKey) || [];
+                    nearbyFeatures.push(...features);
+                }
+            }
+            
+            // Check if point is within any feature bounds
+            for (const feature of nearbyFeatures) {
+                if (feature.bounds && 
+                    lat >= feature.bounds.minLat && lat <= feature.bounds.maxLat &&
+                    lng >= feature.bounds.minLng && lng <= feature.bounds.maxLng) {
+                    
+                    return {
+                        zoneName: feature.zoneName,
+                        properties: feature.properties,
+                        source: 'official',
+                        featureId: feature.id
+                    };
+                }
+            }
+            
+            // Find nearest zone if no exact match
+            let nearest = null;
+            let minDistance = Infinity;
+            
+            for (const feature of zoningFeatures.slice(0, 500)) {
+                if (!feature.bounds) continue;
+                
+                const distance = Math.sqrt(
+                    Math.pow(lat - feature.bounds.centerLat, 2) + 
+                    Math.pow(lng - feature.bounds.centerLng, 2)
+                );
+                
+                if (distance < minDistance && distance < 0.005) {
+                    minDistance = distance;
+                    nearest = {
+                        zoneName: feature.zoneName,
+                        properties: feature.properties,
+                        source: 'approximate',
+                        distance: (distance * 111).toFixed(1),
+                        featureId: feature.id
+                    };
+                }
+            }
+            
+            return nearest;
+        }
+        
+        function displayLocationInfo(zoning) {
+            const zoneName = zoning.zoneName;
+            const zoneDetails = ZONE_DETAILS[zoneName] || {
+                description: 'Development zone per master plan',
+                maxHeight: 'Check regulations',
+                allowedUses: 'As per master plan designation',
+                coverage: 'Per regulations'
+            };
+            
+            // Update zone info
+            document.getElementById('zoneName').textContent = zoneName;
+            document.getElementById('zoneDescription').textContent = zoneDetails.description;
+            
+            // Update zone color indicator
+            const colorIndicator = document.getElementById('zoneColorIndicator');
+            const zoneColor = ZONE_COLORS[zoneName] || '#999999';
+            colorIndicator.style.background = zoneColor;
+            
+            // Show location header and actions
+            document.getElementById('locationHeader').style.display = 'flex';
+            document.getElementById('quickActions').style.display = 'grid';
+        }
+        
+        function showBottomPanel() {
+            const panel = document.getElementById('bottomPanel');
+            panel.classList.add('show');
+        }
+        
+        function hideBottomPanel() {
+            const panel = document.getElementById('bottomPanel');
+            panel.classList.remove('show');
+            
+            // Clear map graphics
+            if (view) {
+                view.graphics.removeAll();
+            }
+        }
+        
+        function showNoDataMessage() {
+            const panel = document.getElementById('bottomPanel');
+            document.getElementById('locationHeader').style.display = 'none';
+            document.getElementById('quickActions').style.display = 'none';
+            
+            const chatContainer = document.getElementById('chatContainer');
+            const aiResponse = document.getElementById('aiResponse');
+            
+            aiResponse.innerHTML = "❌ No zoning data found for this location.\n\nTry clicking in developed areas of Kigali or load the official zoning data.";
+            aiResponse.className = 'ai-response response-error';
+            chatContainer.classList.add('show');
+            
+            panel.classList.add('show');
+        }
+        
+        function addLocationPin(point) {
+            if (!view) return;
+            
+            view.graphics.removeAll();
+            
+            require(["esri/Graphic"], function(Graphic) {
+                const pointGraphic = new Graphic({
+                    geometry: point,
+                    symbol: {
+                        type: "simple-marker",
+                        color: [220, 38, 38],
+                        size: 14,
+                        outline: { 
+                            color: [255, 255, 255], 
+                            width: 3 
+                        }
+                    }
+                });
+                view.graphics.add(pointGraphic);
+            });
+        }
+        
+        function askQuestion(question) {
+            if (!currentZoning) {
+                alert('Please select a location on the map first!');
+                return;
+            }
+            
+            document.getElementById('chatInput').value = question;
+            sendMessage();
+        }
+        
+        function sendMessage() {
+            const input = document.getElementById('chatInput');
+            const question = input.value.trim();
+            
+            if (!question || !currentZoning) return;
+            
+            const sendBtn = document.getElementById('sendBtn');
+            const aiResponse = document.getElementById('aiResponse');
+            const chatContainer = document.getElementById('chatContainer');
+            
+            // Show loading state
+            sendBtn.disabled = true;
+            sendBtn.innerHTML = '⏳';
+            
+            aiResponse.innerHTML = 'Thinking...';
+            aiResponse.className = 'ai-response';
+            chatContainer.classList.add('show');
+            
+            // Clear input
+            input.value = '';
+            input.style.height = 'auto';
+            
+            // Generate response
+            setTimeout(() => {
+                const response = generateSmartResponse(question, currentZoning);
+                
+                // Determine response type for styling
+                let responseClass = 'ai-response';
+                if (response.includes('✅ YES')) {
+                    responseClass += ' response-success';
+                } else if (response.includes('❌ NO')) {
+                    responseClass += ' response-error';
+                } else if (response.includes('⚠️ MAYBE')) {
+                    responseClass += ' response-warning';
+                }
+                
+                aiResponse.innerHTML = response;
+                aiResponse.className = responseClass;
+                
+                sendBtn.disabled = false;
+                sendBtn.innerHTML = '➤';
+            }, 1000);
+        }
+        
+        function generateSmartResponse(question, zoning) {
+            const zoneName = zoning.zoneName;
+            const zoneDetails = ZONE_DETAILS[zoneName] || ZONE_DETAILS['R2-Medium density residential - Improvement zone'];
+            const lowerQuestion = question.toLowerCase();
+            
+            // Check for prohibited activities
+            const isProhibited = (activity) => {
+                if (zoning.properties && zoning.properties.Prohibited) {
+                    return zoning.properties.Prohibited.toLowerCase().includes(activity.toLowerCase());
+                }
+                return false;
+            };
+            
+            // House/Residential questions
+            if (lowerQuestion.includes('house') || lowerQuestion.includes('home') || lowerQuestion.includes('residential')) {
+                if (zoneName.includes('I1') || zoneName.includes('I2') || zoneName.includes('I3')) {
+                    return `❌ NO - Houses are not safe here.
+
+This is an industrial zone (${zoneName}).
+Industrial areas have:
+• Heavy machinery and noise
+• Pollution and chemical risks
+• No residential infrastructure
+
+🏠 Look for R1, R2, R3, or R4 zones for safe housing.`;
+                }
+                
+                if (zoneName.includes('R') || zoneDetails.allowedUses.includes('residential')) {
+                    return `✅ YES - Perfect for building a house!
+
+Zone: ${zoneName}
+Max height: ${zoneDetails.maxHeight}
+Building coverage: ${zoneDetails.coverage}
+
+🏡 This zone is designed for homes. You're safe to build!`;
+                }
+                
+                return `⚠️ MAYBE - Check specific rules.
+
+Zone: ${zoneName}
+This isn't primarily for houses but might allow some residential use.
+
+💡 Best zones for houses: R1, R2, R3, R4`;
+            }
+            
+            // Shop/Business questions
+            if (lowerQuestion.includes('shop') || lowerQuestion.includes('business') || lowerQuestion.includes('store')) {
+                if (isProhibited('commercial')) {
+                    return `❌ NO - Shops are banned here.
+
+Zone: ${zoneName}
+Commercial activities are specifically prohibited.
+
+🏪 What you CAN do: ${zoneDetails.allowedUses}`;
+                }
+                
+                if (zoneName.includes('C1') || zoneName.includes('C3') || zoneDetails.allowedUses.includes('shop')) {
+                    return `✅ YES - Great for shops!
+
+Zone: ${zoneName}
+Commercial activities welcome
+Max height: ${zoneDetails.maxHeight}
+
+🚀 Perfect for your business!`;
+                }
+                
+                if (zoneName.includes('R') && zoneDetails.allowedUses.includes('home business')) {
+                    return `⚠️ MAYBE - Small shops only.
+
+Zone: ${zoneName}
+Home businesses might be OK
+Full commercial shops may need approval
+
+💡 Consider: Small neighborhood store or home office`;
+                }
+                
+                return `❌ NO - Wrong zone for shops.
+
+Zone: ${zoneName} is for ${zoneDetails.description.toLowerCase()}
+Commercial activities not allowed
+
+🏪 Look for C1 or C3 commercial zones`;
+            }
+            
+            // Height questions
+            if (lowerQuestion.includes('tall') || lowerQuestion.includes('height') || lowerQuestion.includes('floor')) {
+                const height = zoneDetails.maxHeight;
+                
+                return `📏 HEIGHT LIMIT: ${height}
+
+Zone: ${zoneName}
+${height.includes('2 stories') ? '🏠 Good for: Family homes' :
+  height.includes('4 stories') ? '🏢 Good for: Small apartments' :
+  '🏗️ Good for: Large buildings'}
+
+Stay within this limit to avoid problems with authorities.`;
+            }
+            
+            // Apartment questions
+            if (lowerQuestion.includes('apartment') || lowerQuestion.includes('rental')) {
+                if (zoneName.includes('R4') || zoneName.includes('R3') || zoneName.includes('C1')) {
+                    return `✅ YES - Excellent for apartments!
+
+Zone: ${zoneName}
+Multi-family housing encouraged
+Max height: ${zoneDetails.maxHeight}
+
+🏢 Great investment opportunity!`;
+                }
+                
+                if (zoneName.includes('R1')) {
+                    return `⚠️ LIMITED - Small apartments only.
+
+Zone: ${zoneName}
+Mainly for single families
+Small duplex might be OK
+
+🏠 Better for single houses than big apartments`;
+                }
+                
+                return `❌ NO - Not for apartments.
+
+Zone: ${zoneName}
+Apartment buildings not suitable here
+
+🏢 Try R3, R4, or C1 zones for rentals`;
+            }
+            
+            // Factory/Industrial questions  
+            if (lowerQuestion.includes('factory') || lowerQuestion.includes('industry') || lowerQuestion.includes('manufacturing')) {
+                if (zoneName.includes('I1') || zoneName.includes('I2')) {
+                    return `✅ YES - Perfect for factories!
+
+Zone: ${zoneName}
+Industrial activities welcome
+Max height: ${zoneDetails.maxHeight}
+
+🏭 Go ahead with your industrial project!`;
+                }
+                
+                return `❌ NO - Factories banned here.
+
+Zone: ${zoneName}
+Industrial activities would disturb the area
+
+🏭 Look for I1 or I2 industrial zones`;
+            }
+            
+            // Default response
+            return `📍 Zone: ${zoneName}
+
+This area is for: ${zoneDetails.description.toLowerCase()}
+
+What you can build: ${zoneDetails.allowedUses}
+Max height: ${zoneDetails.maxHeight}
+Max coverage: ${zoneDetails.coverage}
+
+💬 Ask me:
+"Can I build a house here?"
+"Can I build a shop here?"
+"How tall can I build?"`;
+        }
+        
+        function autoResizeTextarea() {
+            const textarea = document.getElementById('chatInput');
+            textarea.style.height = 'auto';
+            textarea.style.height = Math.min(textarea.scrollHeight, 80) + 'px';
+        }
+        
+        // Handle panel gestures for mobile
+        let startY = 0;
+        let currentY = 0;
+        let isDragging = false;
+        
+        document.getElementById('bottomPanel').addEventListener('touchstart', function(e) {
+            startY = e.touches[0].clientY;
+            isDragging = true;
+        });
+        
+        document.getElementById('bottomPanel').addEventListener('touchmove', function(e) {
+            if (!isDragging) return;
+            
+            currentY = e.touches[0].clientY;
+            const deltaY = currentY - startY;
+            
+            if (deltaY > 50) {
+                hideBottomPanel();
+                isDragging = false;
+            }
+        });
+        
+        document.getElementById('bottomPanel').addEventListener('touchend', function() {
+            isDragging = false;
+        });
+        
+        // Prevent zoom on double tap
+        document.addEventListener('touchend', function(e) {
+            if (e.touches.length > 1) {
+                e.preventDefault();
+            }
+        });
+        
+        // Auto-hide data banner after loading
+        window.addEventListener('load', function() {
+            setTimeout(() => {
+                const banner = document.getElementById('dataBanner');
+                if (banner.classList.contains('loaded')) {
+                    banner.style.transform = 'translateY(-100px)';
+                }
+            }, 5000);
+        });
+    </script>
+</body>
+</html>
