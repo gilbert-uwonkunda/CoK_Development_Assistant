@@ -673,24 +673,26 @@
             'A1-Agriculture zone': {
                 description: 'Strives to protect the viability of agriculture and prevent farmland conversion to non-farm uses',
                 permitted: [
-                    'Crop farming', 'Agro-forestry', 'Livestock farming', 'Green houses',
-                    'Bee Keeping', 'Fish farming'
+                    'Crop farming', 'Agro-forestry', 'Livestock farming', 'Green houses', 'Bee Keeping', 'Fish farming'
                 ],
                 prohibited: [
-                    'All types of industrial uses not linked to Agro-Processing',
-                    'All types of residential uses not linked to Farming activities',
+                    'All types of industrial uses not linked to Agro-Processing uses',
+                    'All types of residential uses not linked to farming activities',
                     'All types of commercial uses not linked to temporary farm store',
                     'All types of public facilities'
                 ],
                 conditional: [
                     'Supporting Agricultural uses', 'Temporary Farm store', 'Infrastructure',
-                    'Rural Villages for agricultural plots larger than 5 ha after land assembly',
-                    'Single family Houses on agricultural plots larger than 1 ha (linked to farming)',
+                    'Rural Villages for agricultural plots larger than 5 ha after land assembly has been conducted',
+                    'Single family Houses on agricultural plots larger than 1 ha provided they are linked to farming activities',
                     'Small scale Agro-processing facilities on agricultural land not less than 0.5 ha'
+                ],
+                ancillary: [
+                    'Storage barns', 'Parking', 'Store for agricultural equipment, cattle sheds'
                 ],
                 minLotSize: 'N/A',
                 maxHeight: 'G (Ground floor only)',
-                maxFAR: 'Single Family Houses: 0.01 up to 150 m² (plots above 1 ha), Agro-processing: 0.02 up to 200 m² (plots above 0.5 Ha)',
+                maxFAR: 'Single Family Houses: 0.01 up to 150 m² for plots above 1 ha, Agro-processing facilities: 0.02 up to 200 m² for plots above 0.5 Ha',
                 coverage: 'N/A',
                 landscaping: 'N/A'
             },
