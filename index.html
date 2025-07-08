@@ -60,6 +60,43 @@
             justify-content: space-between;
         }
         
+        .header-controls {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            gap: 8px;
+        }
+        
+        .location-btn {
+            background: linear-gradient(135deg, #ffc300 0%, #F97316 100%);
+            color: white;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 600;
+            cursor: pointer;
+            box-shadow: 0 2px 8px rgba(255, 195, 0, 0.3);
+            transition: all 0.2s ease;
+            white-space: nowrap;
+        }
+        
+        .location-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(255, 195, 0, 0.4);
+        }
+        
+        .location-btn:active {
+            transform: translateY(0);
+        }
+        
+        .location-btn:disabled {
+            background: var(--kigali-gray);
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+        
         .app-title {
             font-size: 18px;
             font-weight: 700;
@@ -388,9 +425,14 @@
                 <h1 class="app-title">🏗️ Kigali Building AI</h1>
                 <p class="app-subtitle">Smart Construction Assistant</p>
             </div>
-            <div class="status-indicator">
-                <div class="status-dot" id="statusDot"></div>
-                <span id="statusText">Loading...</span>
+            <div class="header-controls">
+                <button class="location-btn" id="useLocationBtn" onclick="useCurrentLocation()">
+                    📍 Use My Location
+                </button>
+                <div class="status-indicator">
+                    <div class="status-dot" id="statusDot"></div>
+                    <span id="statusText">Loading...</span>
+                </div>
             </div>
         </div>
     </div>
@@ -525,6 +567,56 @@
                 landscaping: '20% minimum'
             },
             
+            'R1A-Low density residential densification zone': {
+                description: 'Residential zone for semidetached houses, single family townhouses, multifamily Houses, and low-rise developments',
+                permitted: [
+                    'Single family houses (all types)', 'Semi-detached houses', 'Multifamily Houses',
+                    'Townhouses', 'Row houses', 'Home Occupation', 'Accessory Residential Units'
+                ],
+                prohibited: [
+                    'Residential exceeding G + 2', 'Industrial uses', 'Major infrastructure'
+                ],
+                conditional: [
+                    'Restaurants, Hotels, Guest houses, B&B',
+                    'Public facilities as per Public Facilities overlay (Section 7.1)',
+                    'Commercial retail, office facilities when allowed by O-C2 Overlay (Section 6.2.2)'
+                ],
+                ancillary: [
+                    'Car parking garage', 'Store and Service rooms', 'Guard House'
+                ],
+                minLotSize: 'Max. 300 m²',
+                maxHeight: 'G+2',
+                maxFAR: '1.0 maximum',
+                coverage: '50% maximum',
+                landscaping: '20% minimum'
+            },
+            
+            'R1B-Rural residential zone': {
+                description: 'Residential zone offering compact developments in rural areas as part of the farming community',
+                permitted: [
+                    'Single family Houses', 'Row housing',
+                    'Multifamily residential (4 in 1, 8 in 1, etc) as per IDP model Villages',
+                    'Low-rise apartments', 'Home Occupation', 'Accessory Residential Units'
+                ],
+                prohibited: [
+                    'Industrial uses', 'Major infrastructure'
+                ],
+                conditional: [
+                    'Restaurants', 'Guest house',
+                    'Public facilities, when allowed by public facilities overlay (Section 7.1)',
+                    'Commercial retail, office facilities when allowed by O-C2 Overlay (Section 6.2.2)',
+                    'Micro - Enterprise'
+                ],
+                ancillary: [
+                    'Car parking garage', 'Outdoor kitchen', 'Store rooms'
+                ],
+                minLotSize: 'Max 100 m² for Row Housing or Single-Family Units',
+                maxHeight: 'G + 1 for single family houses, G+2 for all other typologies',
+                maxFAR: '1.2 maximum',
+                coverage: '60% maximum',
+                landscaping: 'N/A'
+            },
+            
             'R2-Medium density residential - Improvement zone': {
                 description: 'Planned for upgradation of unplanned settlements or redevelopment of urban renewal areas',
                 permitted: [
@@ -534,14 +626,20 @@
                     'Major Industrial uses', 'Major infrastructure', 'Single Family Residential Developments'
                 ],
                 conditional: [
-                    'Restaurants', 'Hotels, Guest house, B&B', 'Public facilities when allowed by overlay',
-                    'Commercial retail, office when allowed by O-C2 Overlay', 'Micro Enterprise'
+                    'Restaurants', 'Hotels (incl. its ancillary uses), Guest house, B&B',
+                    'Public facilities, when allowed by public facilities overlay (Section 7.1)',
+                    'Commercial retail, office when allowed by O-C2 Overlay (Section 6.2.2)',
+                    'Micro Enterprise'
+                ],
+                ancillary: [
+                    'Store and Services rooms'
                 ],
                 minLotSize: 'Rowhouses: Max 200 m²',
                 maxHeight: 'G+3',
                 maxFAR: '1.4 maximum',
                 coverage: '60% maximum',
-                landscaping: '20% minimum'
+                landscaping: '20% minimum',
+                specialNote: 'CoK at its discretion may accept affordable level of building and infrastructure provision standards for upgrading'
             },
             
             'R3-Medium density residential - Expansion zone': {
@@ -802,7 +900,96 @@
             'WR-Waterbody zone': '#87CEEB'
         };
         
-        // Initialize app (same as before)
+        // Use current location functionality
+        function useCurrentLocation() {
+            const btn = document.getElementById('useLocationBtn');
+            
+            if (!navigator.geolocation) {
+                alert('❌ Geolocation is not supported by your browser');
+                return;
+            }
+            
+            // Show loading state
+            btn.disabled = true;
+            btn.innerHTML = '⏳ Getting Location...';
+            updateStatus('loading', 'Getting your location...');
+            
+            navigator.geolocation.getCurrentPosition(
+                // Success callback
+                function(position) {
+                    const lat = position.coords.latitude;
+                    const lng = position.coords.longitude;
+                    
+                    // Check if location is in Kigali area (rough bounds)
+                    if (lat < -2.2 || lat > -1.7 || lng < 29.8 || lng > 30.3) {
+                        btn.disabled = false;
+                        btn.innerHTML = '📍 Use My Location';
+                        updateStatus('ready', 'Location outside Kigali area');
+                        alert('⚠️ Your location appears to be outside Kigali city limits.\n\nThis app is designed for Kigali zoning regulations only.');
+                        return;
+                    }
+                    
+                    // Center map on user location
+                    if (view) {
+                        view.center = [lng, lat];
+                        view.zoom = 16;
+                        
+                        // Create a point and simulate click
+                        require(["esri/geometry/Point"], function(Point) {
+                            const userPoint = new Point({
+                                longitude: lng,
+                                latitude: lat,
+                                spatialReference: view.spatialReference
+                            });
+                            
+                            // Simulate map click at user location
+                            handleMapClick({ mapPoint: userPoint });
+                        });
+                    }
+                    
+                    btn.disabled = false;
+                    btn.innerHTML = '✅ Location Found';
+                    updateStatus('ready', 'Analyzing your location...');
+                    
+                    // Reset button text after 3 seconds
+                    setTimeout(() => {
+                        btn.innerHTML = '📍 Use My Location';
+                    }, 3000);
+                },
+                // Error callback
+                function(error) {
+                    btn.disabled = false;
+                    btn.innerHTML = '📍 Use My Location';
+                    
+                    let errorMessage = '';
+                    switch(error.code) {
+                        case error.PERMISSION_DENIED:
+                            errorMessage = '❌ Location access denied.\n\nPlease allow location access and try again.';
+                            updateStatus('ready', 'Location permission denied');
+                            break;
+                        case error.POSITION_UNAVAILABLE:
+                            errorMessage = '❌ Location information unavailable.\n\nPlease check your GPS/internet connection.';
+                            updateStatus('ready', 'Location unavailable');
+                            break;
+                        case error.TIMEOUT:
+                            errorMessage = '❌ Location request timed out.\n\nPlease try again.';
+                            updateStatus('ready', 'Location timeout');
+                            break;
+                        default:
+                            errorMessage = '❌ Unknown location error.\n\nPlease try clicking on the map instead.';
+                            updateStatus('ready', 'Location error');
+                            break;
+                    }
+                    alert(errorMessage);
+                },
+                // Options
+                {
+                    enableHighAccuracy: true,
+                    timeout: 10000,
+                    maximumAge: 60000
+                }
+            );
+        }
         document.addEventListener('DOMContentLoaded', function() {
             initializeApp();
             checkCachedData();
