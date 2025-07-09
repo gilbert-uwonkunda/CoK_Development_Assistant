@@ -801,13 +801,13 @@
             const btn = document.getElementById('useLocationBtn');
             
             if (!navigator.geolocation) {
-                alert('🛸 Your device cannot detect cosmic coordinates');
+                alert('❌ Geolocation is not supported by your browser');
                 return;
             }
             
             // Show loading state
             btn.disabled = true;
-            btn.innerHTML = '🛰️ Scanning...';
+            btn.innerHTML = '⏳ Getting Location...';
             updateStatus('loading', 'Getting your location...');
             
             navigator.geolocation.getCurrentPosition(
@@ -821,7 +821,7 @@
                         btn.disabled = false;
                         btn.innerHTML = '📍 Use My Location';
                         updateStatus('ready', 'Location outside Kigali area');
-                        alert('🚀 Your cosmic coordinates are outside the Kigali development galaxy.\n\nTerraNebular is currently optimized for Kigali\'s zoning universe.');
+                        alert('⚠️ Your location appears to be outside Kigali city limits.\n\nThis app is designed for Kigali zoning regulations only.');
                         return;
                     }
                     
@@ -844,7 +844,7 @@
                     }
                     
                     btn.disabled = false;
-                    btn.innerHTML = '✨ Location Found';
+                    btn.innerHTML = '✅ Location Found';
                     updateStatus('ready', 'Analyzing your location...');
                     
                     // Reset button text after 3 seconds
@@ -860,19 +860,19 @@
                     let errorMessage = '';
                     switch(error.code) {
                         case error.PERMISSION_DENIED:
-                            errorMessage = '📡 TerraNebular needs access to your cosmic coordinates.\n\nPlease allow location access and try again.';
+                            errorMessage = '❌ Location access denied.\n\nPlease allow location access and try again.';
                             updateStatus('ready', 'Location permission denied');
                             break;
                         case error.POSITION_UNAVAILABLE:
-                            errorMessage = '🛸 Unable to detect your cosmic position.\n\nPlease check your GPS/internet connection.';
+                            errorMessage = '❌ Location information unavailable.\n\nPlease check your GPS/internet connection.';
                             updateStatus('ready', 'Location unavailable');
                             break;
                         case error.TIMEOUT:
-                            errorMessage = '⏰ Cosmic location scan timed out.\n\nPlease try again.';
+                            errorMessage = '❌ Location request timed out.\n\nPlease try again.';
                             updateStatus('ready', 'Location timeout');
                             break;
                         default:
-                            errorMessage = '❌ Unknown cosmic navigation error.\n\nPlease try tapping on the map instead.';
+                            errorMessage = '❌ Unknown location error.\n\nPlease try clicking on the map instead.';
                             updateStatus('ready', 'Location error');
                             break;
                     }
@@ -903,7 +903,7 @@
             ], function(Map, MapView, Graphic, Point) {
                 
                 const map = new Map({
-                    basemap: "dark-gray-vector"  // Changed to dark theme for cosmic feel
+                    basemap: "hybrid"
                 });
                 
                 view = new MapView({
@@ -1456,10 +1456,10 @@ Zone: ${zoneName}
                     geometry: point,
                     symbol: {
                         type: "simple-marker",
-                        color: [236, 72, 153], // Cosmic pink
-                        size: 16,
+                        color: [220, 38, 38],
+                        size: 14,
                         outline: { 
-                            color: [248, 250, 252], // Nebular white
+                            color: [255, 255, 255], 
                             width: 3 
                         }
                     }
