@@ -3,23 +3,24 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
-    <title>🧞‍♂️ TerraGenie</title>
+    <title>🌌 TerraNebular</title>
     
     <!-- ArcGIS CSS -->
     <link rel="stylesheet" href="https://js.arcgis.com/4.28/esri/themes/light/main.css">
     
     <style>
-        /* City of Kigali Color Palette */
+        /* TerraNebular Cosmic Color Palette */
         :root {
-            --kigali-blue: #1E3A8A;
-            --kigali-green: #059669;
-            --kigali-yellow: #F59E0B;
-            --kigali-red: #DC2626;
-            --kigali-light-blue: #3B82F6;
-            --kigali-light-green: #10B981;
-            --kigali-dark: #1F2937;
-            --kigali-gray: #6B7280;
-            --kigali-light-gray: #F3F4F6;
+            --nebular-deep-blue: #0F172A;
+            --nebular-space-blue: #1E3A8A;
+            --nebular-cosmic-purple: #6366F1;
+            --nebular-stellar-gold: #F59E0B;
+            --nebular-plasma-pink: #EC4899;
+            --nebular-void-black: #000000;
+            --nebular-stardust: #E2E8F0;
+            --nebular-aurora-green: #10B981;
+            --nebular-comet-white: #F8FAFC;
+            --nebular-meteor-orange: #F97316;
         }
         
         * {
@@ -31,7 +32,7 @@
             margin: 0;
             padding: 0;
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: var(--kigali-light-gray);
+            background: linear-gradient(135deg, var(--nebular-deep-blue) 0%, var(--nebular-space-blue) 50%, var(--nebular-cosmic-purple) 100%);
             overflow: hidden;
         }
         
@@ -41,17 +42,18 @@
             position: relative;
         }
         
-        /* Mobile-First Header */
+        /* Cosmic Header */
         #mobileHeader {
             position: absolute;
             top: 0;
             left: 0;
             right: 0;
-            background: linear-gradient(135deg, var(--kigali-blue) 0%, var(--kigali-light-blue) 100%);
-            color: white;
+            background: linear-gradient(135deg, var(--nebular-deep-blue) 0%, var(--nebular-space-blue) 50%, var(--nebular-cosmic-purple) 100%);
+            color: var(--nebular-comet-white);
             padding: 12px 16px;
             z-index: 100;
-            box-shadow: 0 4px 20px rgba(30, 58, 138, 0.3);
+            box-shadow: 0 4px 20px rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(10px);
         }
         
         .header-content {
@@ -68,22 +70,23 @@
         }
         
         .location-btn {
-            background: linear-gradient(135deg, #ffc300 0%, #F97316 100%);
-            color: white;
+            background: linear-gradient(135deg, var(--nebular-stellar-gold) 0%, var(--nebular-meteor-orange) 100%);
+            color: var(--nebular-comet-white);
             border: none;
             padding: 8px 12px;
             border-radius: 20px;
             font-size: 11px;
             font-weight: 600;
             cursor: pointer;
-            box-shadow: 0 2px 8px rgba(255, 195, 0, 0.3);
-            transition: all 0.2s ease;
+            box-shadow: 0 2px 12px rgba(245, 158, 11, 0.4);
+            transition: all 0.3s ease;
             white-space: nowrap;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
         }
         
         .location-btn:hover {
-            transform: translateY(-1px);
-            box-shadow: 0 4px 12px rgba(255, 195, 0, 0.4);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(245, 158, 11, 0.6);
         }
         
         .location-btn:active {
@@ -91,7 +94,8 @@
         }
         
         .location-btn:disabled {
-            background: var(--kigali-gray);
+            background: var(--nebular-stardust);
+            color: var(--nebular-deep-blue);
             cursor: not-allowed;
             transform: none;
             box-shadow: none;
@@ -120,18 +124,28 @@
             width: 8px;
             height: 8px;
             border-radius: 50%;
-            background: var(--kigali-yellow);
-            animation: pulse 2s infinite;
+            background: var(--nebular-stellar-gold);
+            animation: cosmicPulse 2s infinite;
+            box-shadow: 0 0 6px rgba(245, 158, 11, 0.6);
         }
         
         .status-dot.ready {
-            background: var(--kigali-light-green);
+            background: var(--nebular-aurora-green);
             animation: none;
+            box-shadow: 0 0 6px rgba(16, 185, 129, 0.6);
         }
         
-        @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.5; }
+        @keyframes cosmicPulse {
+            0%, 100% { 
+                opacity: 1; 
+                transform: scale(1);
+                box-shadow: 0 0 6px rgba(245, 158, 11, 0.6);
+            }
+            50% { 
+                opacity: 0.6; 
+                transform: scale(1.1);
+                box-shadow: 0 0 12px rgba(245, 158, 11, 0.8);
+            }
         }
         
         /* Hidden file upload */
@@ -139,19 +153,20 @@
             display: none;
         }
         
-        /* Bottom Panel - Mobile Optimized */
+        /* Cosmic Bottom Panel */
         #bottomPanel {
             position: absolute;
             bottom: 0;
             left: 0;
             right: 0;
-            background: white;
+            background: linear-gradient(135deg, var(--nebular-comet-white) 0%, var(--nebular-stardust) 100%);
             border-radius: 20px 20px 0 0;
-            box-shadow: 0 -8px 32px rgba(0, 0, 0, 0.15);
+            box-shadow: 0 -8px 32px rgba(15, 23, 42, 0.3);
             z-index: 100;
             max-height: 50vh;
             transition: transform 0.3s ease;
             transform: translateY(100%);
+            backdrop-filter: blur(10px);
         }
         
         #bottomPanel.show {
@@ -161,10 +176,10 @@
         .panel-handle {
             width: 40px;
             height: 4px;
-            background: var(--kigali-gray);
+            background: linear-gradient(135deg, var(--nebular-cosmic-purple) 0%, var(--nebular-plasma-pink) 100%);
             border-radius: 2px;
             margin: 12px auto 8px;
-            opacity: 0.5;
+            opacity: 0.7;
         }
         
         .panel-content {
@@ -189,13 +204,13 @@
         .zone-name {
             font-size: 16px;
             font-weight: 600;
-            color: var(--kigali-dark);
+            color: var(--nebular-deep-blue);
             margin: 0 0 4px 0;
         }
         
         .zone-description {
             font-size: 13px;
-            color: var(--kigali-gray);
+            color: var(--nebular-space-blue);
             margin: 0;
         }
         
@@ -207,13 +222,14 @@
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
         }
         
-        /* AI Chat Interface */
+        /* Cosmic AI Chat Interface */
         .chat-container {
-            background: var(--kigali-light-gray);
+            background: linear-gradient(135deg, var(--nebular-stardust) 0%, var(--nebular-comet-white) 100%);
             border-radius: 12px;
             padding: 16px;
             margin-top: 8px;
             display: none;
+            box-shadow: inset 0 1px 3px rgba(15, 23, 42, 0.1);
         }
         
         .chat-container.show {
@@ -221,15 +237,16 @@
         }
         
         .ai-response {
-            background: white;
+            background: linear-gradient(135deg, var(--nebular-comet-white) 0%, var(--nebular-stardust) 100%);
             padding: 16px;
             border-radius: 12px;
-            border-left: 4px solid var(--kigali-green);
+            border-left: 4px solid var(--nebular-cosmic-purple);
             font-size: 14px;
             line-height: 1.5;
             white-space: pre-wrap;
             margin-bottom: 12px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            box-shadow: 0 2px 8px rgba(15, 23, 42, 0.1);
+            color: var(--nebular-deep-blue);
         }
         
         .chat-input-container {
@@ -241,28 +258,31 @@
         .chat-input {
             flex: 1;
             padding: 12px 16px;
-            border: 2px solid #E5E7EB;
+            border: 2px solid var(--nebular-stardust);
             border-radius: 20px;
             font-size: 14px;
             resize: none;
             min-height: 44px;
             max-height: 80px;
             outline: none;
-            transition: border-color 0.2s ease;
+            transition: all 0.3s ease;
+            background: var(--nebular-comet-white);
+            color: var(--nebular-deep-blue);
         }
         
         .chat-input:focus {
-            border-color: var(--kigali-green);
+            border-color: var(--nebular-cosmic-purple);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
         }
         
         .chat-input::placeholder {
-            color: var(--kigali-gray);
+            color: var(--nebular-space-blue);
             font-style: italic;
         }
         
         .send-btn {
-            background: var(--kigali-green);
-            color: white;
+            background: linear-gradient(135deg, var(--nebular-cosmic-purple) 0%, var(--nebular-plasma-pink) 100%);
+            color: var(--nebular-comet-white);
             border: none;
             width: 44px;
             height: 44px;
@@ -271,8 +291,13 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            transition: all 0.2s ease;
-            box-shadow: 0 2px 8px rgba(5, 150, 105, 0.3);
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 12px rgba(99, 102, 241, 0.4);
+        }
+        
+        .send-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 16px rgba(99, 102, 241, 0.6);
         }
         
         .send-btn:active {
@@ -280,18 +305,20 @@
         }
         
         .send-btn:disabled {
-            background: var(--kigali-gray);
+            background: var(--nebular-stardust);
+            color: var(--nebular-space-blue);
             box-shadow: none;
+            transform: none;
         }
         
-        /* Data Status Banner */
+        /* Cosmic Data Banner */
         .data-banner {
             position: absolute;
             top: 70px;
             left: 16px;
             right: 16px;
-            background: linear-gradient(135deg, var(--kigali-yellow) 0%, #F97316 100%);
-            color: white;
+            background: linear-gradient(135deg, var(--nebular-cosmic-purple) 0%, var(--nebular-plasma-pink) 100%);
+            color: var(--nebular-comet-white);
             padding: 12px 16px;
             border-radius: 12px;
             font-size: 13px;
@@ -300,6 +327,8 @@
             cursor: pointer;
             transition: all 0.3s ease;
             transform: translateY(-100px);
+            box-shadow: 0 4px 20px rgba(99, 102, 241, 0.4);
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
         }
         
         .data-banner.show {
@@ -307,23 +336,25 @@
         }
         
         .data-banner.loaded {
-            background: linear-gradient(135deg, var(--kigali-green) 0%, var(--kigali-light-green) 100%);
+            background: linear-gradient(135deg, var(--nebular-aurora-green) 0%, var(--nebular-stellar-gold) 100%);
+            box-shadow: 0 4px 20px rgba(16, 185, 129, 0.4);
         }
         
-        /* Loading Overlay */
+        /* Cosmic Loading Overlay */
         .loading-overlay {
             position: absolute;
             top: 0;
             left: 0;
             right: 0;
             bottom: 0;
-            background: rgba(255, 255, 255, 0.95);
+            background: linear-gradient(135deg, rgba(15, 23, 42, 0.95) 0%, rgba(30, 58, 138, 0.95) 100%);
             display: none;
             align-items: center;
             justify-content: center;
             z-index: 200;
             flex-direction: column;
             gap: 20px;
+            backdrop-filter: blur(10px);
         }
         
         .loading-overlay.show {
@@ -333,37 +364,41 @@
         .loading-spinner {
             width: 40px;
             height: 40px;
-            border: 3px solid #E5E7EB;
-            border-top: 3px solid var(--kigali-blue);
+            border: 3px solid rgba(226, 232, 240, 0.3);
+            border-top: 3px solid var(--nebular-cosmic-purple);
             border-radius: 50%;
-            animation: spin 1s linear infinite;
+            animation: cosmicSpin 1s linear infinite;
         }
         
-        @keyframes spin {
+        @keyframes cosmicSpin {
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
         }
         
         .loading-text {
-            color: var(--kigali-dark);
+            color: var(--nebular-comet-white);
             font-weight: 600;
             text-align: center;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
         }
         
-        /* Response States */
+        /* Cosmic Response States */
         .response-success {
-            border-left-color: var(--kigali-green);
+            border-left-color: var(--nebular-aurora-green);
             background: linear-gradient(135deg, #ECFDF5 0%, #F0FDF4 100%);
+            box-shadow: 0 0 20px rgba(16, 185, 129, 0.1);
         }
         
         .response-warning {
-            border-left-color: var(--kigali-yellow);
+            border-left-color: var(--nebular-stellar-gold);
             background: linear-gradient(135deg, #FFFBEB 0%, #FEF3C7 100%);
+            box-shadow: 0 0 20px rgba(245, 158, 11, 0.1);
         }
         
         .response-error {
-            border-left-color: var(--kigali-red);
-            background: linear-gradient(135deg, #FEF2F2 0%, #FECACA 100%);
+            border-left-color: var(--nebular-plasma-pink);
+            background: linear-gradient(135deg, #FDF2F8 0%, #FCE7F3 100%);
+            box-shadow: 0 0 20px rgba(236, 72, 153, 0.1);
         }
         
         /* Responsive Adjustments */
@@ -382,8 +417,8 @@
     <div id="mobileHeader">
         <div class="header-content">
             <div>
-                <h1 class="app-title">🧞‍♂️ TerraGenie</h1>
-                <p class="app-subtitle">Your Intelligent Land Development Assistant</p>
+                <h1 class="app-title">🌌 TerraNebular</h1>
+                <p class="app-subtitle">Where Development Dreams Take Shape</p>
             </div>
             <div class="header-controls">
                 <button class="location-btn" id="useLocationBtn" onclick="useCurrentLocation()">
@@ -399,7 +434,7 @@
     
     <!-- Data Status Banner -->
     <div class="data-banner" id="dataBanner" onclick="loadDataFile()">
-        📥 Tap to load official zoning data
+        🌌 Tap to load cosmic zoning data
     </div>
     
     <!-- Loading Overlay -->
@@ -427,7 +462,7 @@
                 <div class="ai-response" id="aiResponse"></div>
                 <div class="chat-input-container">
                     <textarea class="chat-input" id="chatInput" 
-                              placeholder="Ask TerraGenie: 'Can I build a restaurant here?', 'What's the maximum height?', 'Investment potential?'" 
+                              placeholder="Ask TerraNebular: 'Can I build a restaurant here?', 'What's the maximum height?', 'Investment potential?'" 
                               rows="1"></textarea>
                     <button class="send-btn" id="sendBtn" onclick="sendMessage()">
                         ➤
@@ -766,13 +801,13 @@
             const btn = document.getElementById('useLocationBtn');
             
             if (!navigator.geolocation) {
-                alert('❌ Geolocation is not supported by your browser');
+                alert('🛸 Your device cannot detect cosmic coordinates');
                 return;
             }
             
             // Show loading state
             btn.disabled = true;
-            btn.innerHTML = '⏳ Getting Location...';
+            btn.innerHTML = '🛰️ Scanning...';
             updateStatus('loading', 'Getting your location...');
             
             navigator.geolocation.getCurrentPosition(
@@ -786,7 +821,7 @@
                         btn.disabled = false;
                         btn.innerHTML = '📍 Use My Location';
                         updateStatus('ready', 'Location outside Kigali area');
-                        alert('⚠️ Your location appears to be outside Kigali city limits.\n\nThis app is designed for Kigali zoning regulations only.');
+                        alert('🚀 Your cosmic coordinates are outside the Kigali development galaxy.\n\nTerraNebular is currently optimized for Kigali\'s zoning universe.');
                         return;
                     }
                     
@@ -809,7 +844,7 @@
                     }
                     
                     btn.disabled = false;
-                    btn.innerHTML = '✅ Location Found';
+                    btn.innerHTML = '✨ Location Found';
                     updateStatus('ready', 'Analyzing your location...');
                     
                     // Reset button text after 3 seconds
@@ -825,19 +860,19 @@
                     let errorMessage = '';
                     switch(error.code) {
                         case error.PERMISSION_DENIED:
-                            errorMessage = '❌ Location access denied.\n\nPlease allow location access and try again.';
+                            errorMessage = '📡 TerraNebular needs access to your cosmic coordinates.\n\nPlease allow location access and try again.';
                             updateStatus('ready', 'Location permission denied');
                             break;
                         case error.POSITION_UNAVAILABLE:
-                            errorMessage = '❌ Location information unavailable.\n\nPlease check your GPS/internet connection.';
+                            errorMessage = '🛸 Unable to detect your cosmic position.\n\nPlease check your GPS/internet connection.';
                             updateStatus('ready', 'Location unavailable');
                             break;
                         case error.TIMEOUT:
-                            errorMessage = '❌ Location request timed out.\n\nPlease try again.';
+                            errorMessage = '⏰ Cosmic location scan timed out.\n\nPlease try again.';
                             updateStatus('ready', 'Location timeout');
                             break;
                         default:
-                            errorMessage = '❌ Unknown location error.\n\nPlease try clicking on the map instead.';
+                            errorMessage = '❌ Unknown cosmic navigation error.\n\nPlease try tapping on the map instead.';
                             updateStatus('ready', 'Location error');
                             break;
                     }
@@ -868,7 +903,7 @@
             ], function(Map, MapView, Graphic, Point) {
                 
                 const map = new Map({
-                    basemap: "hybrid"
+                    basemap: "dark-gray-vector"  // Changed to dark theme for cosmic feel
                 });
                 
                 view = new MapView({
@@ -1100,7 +1135,7 @@ Zone: ${zoneName}
             const banner = document.getElementById('dataBanner');
             
             if (loaded) {
-                banner.innerHTML = '✅ Official zoning data loaded';
+                banner.innerHTML = '✨ Cosmic zoning data loaded successfully';
                 banner.classList.add('loaded');
                 banner.onclick = null;
                 
@@ -1108,7 +1143,7 @@ Zone: ${zoneName}
                     banner.classList.remove('show');
                 }, 3000);
             } else {
-                banner.innerHTML = '📥 Tap to load official zoning data';
+                banner.innerHTML = '🌌 Tap to load cosmic zoning data';
                 banner.classList.remove('loaded');
                 banner.onclick = loadDataFile;
             }
@@ -1121,7 +1156,21 @@ Zone: ${zoneName}
             const statusText = document.getElementById('statusText');
             
             dot.className = `status-dot ${status}`;
-            statusText.textContent = text;
+            
+            // Add cosmic flair to status messages
+            const cosmicMessages = {
+                'loading': '🌌 Initializing cosmic sensors...',
+                'ready': '✨ Ready to explore the development universe',
+                'Location outside Kigali area': '🚀 Signal detected outside Kigali galaxy',
+                'Location permission denied': '📡 Cosmic location access denied',
+                'Location unavailable': '🛸 Unable to detect cosmic coordinates',
+                'Location timeout': '⏰ Cosmic location scan timed out',
+                'Location error': '❌ Cosmic navigation error',
+                'Getting your location...': '🛰️ Scanning your cosmic coordinates...',
+                'Analyzing your location...': '🔍 Analyzing development potential...'
+            };
+            
+            statusText.textContent = cosmicMessages[text] || text;
         }
         
         function loadDataFile() {
@@ -1364,7 +1413,7 @@ Zone: ${zoneName}
             const chatContainer = document.getElementById('chatContainer');
             const aiResponse = document.getElementById('aiResponse');
             
-            aiResponse.innerHTML = `🧞‍♂️ Welcome! I'm TerraGenie, your intelligent land development assistant.\n\n📍 You've selected: ${zoneName}\n\n✨ I can help you understand zoning regulations, building requirements, development opportunities, and guide you through the planning process. What would you like to know?`;
+            aiResponse.innerHTML = `🌌 Welcome to TerraNebular - where development dreams take shape.\n\n📍 You've selected: ${zoneName}\n\n✨ I'm your intelligent assistant for navigating Kigali's zoning regulations, building requirements, and development opportunities. What would you like to explore?`;
             aiResponse.className = 'ai-response response-success';
             chatContainer.classList.add('show');
         }
@@ -1390,7 +1439,7 @@ Zone: ${zoneName}
             const chatContainer = document.getElementById('chatContainer');
             const aiResponse = document.getElementById('aiResponse');
             
-            aiResponse.innerHTML = "❌ No zoning data found for this location.\n\nTry clicking in developed areas of Kigali or load the official zoning data.";
+            aiResponse.innerHTML = "🌌 No cosmic signals detected at this location.\n\nTry exploring developed areas of Kigali or load the cosmic zoning data to enhance my sensors.";
             aiResponse.className = 'ai-response response-error';
             chatContainer.classList.add('show');
             
@@ -1407,10 +1456,10 @@ Zone: ${zoneName}
                     geometry: point,
                     symbol: {
                         type: "simple-marker",
-                        color: [220, 38, 38],
-                        size: 14,
+                        color: [236, 72, 153], // Cosmic pink
+                        size: 16,
                         outline: { 
-                            color: [255, 255, 255], 
+                            color: [248, 250, 252], // Nebular white
                             width: 3 
                         }
                     }
@@ -1442,7 +1491,7 @@ Zone: ${zoneName}
             sendBtn.disabled = true;
             sendBtn.innerHTML = '⏳';
             
-            aiResponse.innerHTML = 'Thinking...';
+            aiResponse.innerHTML = '🌌 Analyzing cosmic development patterns...';
             aiResponse.className = 'ai-response';
             chatContainer.classList.add('show');
             
