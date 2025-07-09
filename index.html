@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
-    <title>🏗️ Kigali Building AI</title>
+    <title>🧞‍♂️ TerraGenie</title>
     
     <!-- ArcGIS CSS -->
     <link rel="stylesheet" href="https://js.arcgis.com/4.28/esri/themes/light/main.css">
@@ -207,47 +207,12 @@
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
         }
         
-        /* Quick Actions */
-        .quick-actions {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 12px;
-            margin-bottom: 20px;
-        }
-        
-        .action-btn {
-            background: linear-gradient(135deg, var(--kigali-green) 0%, var(--kigali-light-green) 100%);
-            color: white;
-            border: none;
-            padding: 16px 12px;
-            border-radius: 12px;
-            font-size: 14px;
-            font-weight: 600;
-            cursor: pointer;
-            box-shadow: 0 4px 12px rgba(5, 150, 105, 0.3);
-            transition: all 0.2s ease;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-        }
-        
-        .action-btn:active {
-            transform: translateY(1px);
-            box-shadow: 0 2px 8px rgba(5, 150, 105, 0.3);
-        }
-        
-        .action-btn.secondary {
-            background: linear-gradient(135deg, var(--kigali-light-blue) 0%, var(--kigali-blue) 100%);
-            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
-        }
-        
         /* AI Chat Interface */
         .chat-container {
             background: var(--kigali-light-gray);
             border-radius: 12px;
             padding: 16px;
-            margin-top: 16px;
+            margin-top: 8px;
             display: none;
         }
         
@@ -288,6 +253,11 @@
         
         .chat-input:focus {
             border-color: var(--kigali-green);
+        }
+        
+        .chat-input::placeholder {
+            color: var(--kigali-gray);
+            font-style: italic;
         }
         
         .send-btn {
@@ -398,16 +368,6 @@
         
         /* Responsive Adjustments */
         @media (max-width: 480px) {
-            .quick-actions {
-                grid-template-columns: 1fr;
-                gap: 8px;
-            }
-            
-            .action-btn {
-                padding: 14px 12px;
-                font-size: 13px;
-            }
-            
             .panel-content {
                 padding: 0 16px 16px;
             }
@@ -422,8 +382,8 @@
     <div id="mobileHeader">
         <div class="header-content">
             <div>
-                <h1 class="app-title">🏗️ Kigali Building AI</h1>
-                <p class="app-subtitle">Smart Construction Assistant</p>
+                <h1 class="app-title">🧞‍♂️ TerraGenie</h1>
+                <p class="app-subtitle">Your Intelligent Land Development Assistant</p>
             </div>
             <div class="header-controls">
                 <button class="location-btn" id="useLocationBtn" onclick="useCurrentLocation()">
@@ -463,26 +423,11 @@
                 </div>
             </div>
             
-            <div class="quick-actions" id="quickActions" style="display: none;">
-                <button class="action-btn" onclick="askQuestion('Can I build a restaurant here?')">
-                    🍽️ Restaurant?
-                </button>
-                <button class="action-btn" onclick="askQuestion('Can I build a hotel here?')">
-                    🏨 Hotel?
-                </button>
-                <button class="action-btn secondary" onclick="askQuestion('Can I build a house here?')">
-                    🏠 House?
-                </button>
-                <button class="action-btn secondary" onclick="askQuestion('Can I build a shop here?')">
-                    🏪 Shop?
-                </button>
-            </div>
-            
             <div class="chat-container" id="chatContainer">
                 <div class="ai-response" id="aiResponse"></div>
                 <div class="chat-input-container">
                     <textarea class="chat-input" id="chatInput" 
-                              placeholder="Ask: Can I build a shopping center here?" 
+                              placeholder="Ask TerraGenie: 'Can I build a restaurant here?', 'What's the maximum height?', 'Investment potential?'" 
                               rows="1"></textarea>
                     <button class="send-btn" id="sendBtn" onclick="sendMessage()">
                         ➤
@@ -749,90 +694,6 @@
                     'Accommodations for teachers, workers', 'Hostels/Dormitories/Residences'
                 ],
                 minLotSize: 'N/A',
-                landscaping: '20% minimum'
-            },
-            
-            'PF2-Health facilities': {
-                description: 'Healthcare and medical facilities',
-                permitted: [
-                    'All types of health facilities', 'Pharmacy'
-                ],
-                prohibited: [
-                    'Industrial uses and warehouses', 'Major commercial uses',
-                    'Public utility maintenance facilities with outdoor storage', 'Cemeteries/crematoriums'
-                ],
-                conditional: [
-                    'Restaurants', 'Small commercial and retail use', 'Accommodations for health workers'
-                ],
-                minLotSize: 'N/A',
-                landscaping: '20% minimum'
-            },
-            
-            'A1-Agriculture zone': {
-                description: 'Strives to protect the viability of agriculture and prevent farmland conversion to non-farm uses',
-                permitted: [
-                    'Crop farming', 'Agro-forestry', 'Livestock farming', 'Green houses', 'Bee Keeping', 'Fish farming'
-                ],
-                prohibited: [
-                    'All types of industrial uses not linked to Agro-Processing uses',
-                    'All types of residential uses not linked to farming activities',
-                    'All types of commercial uses not linked to temporary farm store',
-                    'All types of public facilities'
-                ],
-                conditional: [
-                    'Supporting Agricultural uses', 'Temporary Farm store', 'Infrastructure',
-                    'Rural Villages for agricultural plots larger than 5 ha after land assembly has been conducted',
-                    'Single family Houses on agricultural plots larger than 1 ha provided they are linked to farming activities',
-                    'Small scale Agro-processing facilities on agricultural land not less than 0.5 ha'
-                ],
-                ancillary: [
-                    'Storage barns', 'Parking', 'Store for agricultural equipment, cattle sheds'
-                ],
-                minLotSize: 'N/A',
-                maxHeight: 'G (Ground floor only)',
-                maxFAR: 'Single Family Houses: 0.01 up to 150 m² for plots above 1 ha, Agro-processing facilities: 0.02 up to 200 m² for plots above 0.5 Ha',
-                coverage: 'N/A',
-                landscaping: 'N/A'
-            },
-            
-            'P1-Parks and open spaces zone': {
-                description: 'Established to provide recreational and leisure facilities in areas with unique features',
-                permitted: [
-                    'Botanical gardens, arboretums, and conservatories',
-                    'Outdoor recreational facilities such as hiking and bicycle trails',
-                    'Greens and commons, sitting areas and picnic areas',
-                    'Park related public facilities such as public toilet/changing room'
-                ],
-                prohibited: [
-                    'All types of industrial uses', 'All types of residential uses',
-                    'Commercial uses exceeding prescribed limits', 'All types of major public facilities',
-                    'Major infrastructure installations'
-                ],
-                conditional: [
-                    'Restaurants, kiosks, art and souvenirs shops and other commercial structures not exceeding 0.05 FAR up to 150 m²'
-                ],
-                minLotSize: 'N/A',
-                maxHeight: 'G+1 maximum',
-                maxFAR: '0.05 up to 150 m²',
-                coverage: 'N/A',
-                landscaping: 'N/A'
-            },
-            
-            'T-Transportation zone': {
-                description: 'Identify and locate major transport related areas including public transport services',
-                permitted: [
-                    'All transport infrastructure', 'BRT stations and Terminals',
-                    'Parking area', 'Holding depots'
-                ],
-                prohibited: [
-                    'Major industrial uses', 'Major residential uses'
-                ],
-                conditional: [
-                    'Motor repair garage', 'Commercial Uses if developed with Transport Terminals',
-                    'Service station', 'Commercial and office spaces',
-                    'Hotels and Restaurants', 'Workers accommodation'
-                ],
-                minLotSize: 'N/A',
                 maxHeight: 'N/A',
                 coverage: 'N/A',
                 landscaping: 'N/A'
@@ -867,7 +728,7 @@
             }
         };
         
-        // Zone color mapping (unchanged)
+        // Zone color mapping
         const ZONE_COLORS = {
             'A1-Agriculture zone': '#90EE90',
             'C1-Mixed use zone': '#FFB6C1',
@@ -990,6 +851,7 @@
                 }
             );
         }
+        
         document.addEventListener('DOMContentLoaded', function() {
             initializeApp();
             checkCachedData();
@@ -1198,7 +1060,7 @@ Zone: ${zoneName}
             return suggestions[buildingType] || ['C1-Mixed use zone', 'C3-City commercial zone'];
         }
         
-        // Cache management functions (same as before)
+        // Cache management functions
         const CACHE_KEY = 'kigali_zoning_data';
         const CACHE_VERSION = '1.0';
         
@@ -1497,7 +1359,14 @@ Zone: ${zoneName}
             colorIndicator.style.background = zoneColor;
             
             document.getElementById('locationHeader').style.display = 'flex';
-            document.getElementById('quickActions').style.display = 'grid';
+            
+            // Show chat interface immediately when location is selected
+            const chatContainer = document.getElementById('chatContainer');
+            const aiResponse = document.getElementById('aiResponse');
+            
+            aiResponse.innerHTML = `🧞‍♂️ Welcome! I'm TerraGenie, your intelligent land development assistant.\n\n📍 You've selected: ${zoneName}\n\n✨ I can help you understand zoning regulations, building requirements, development opportunities, and guide you through the planning process. What would you like to know?`;
+            aiResponse.className = 'ai-response response-success';
+            chatContainer.classList.add('show');
         }
         
         function showBottomPanel() {
@@ -1517,7 +1386,6 @@ Zone: ${zoneName}
         function showNoDataMessage() {
             const panel = document.getElementById('bottomPanel');
             document.getElementById('locationHeader').style.display = 'none';
-            document.getElementById('quickActions').style.display = 'none';
             
             const chatContainer = document.getElementById('chatContainer');
             const aiResponse = document.getElementById('aiResponse');
@@ -1649,4 +1517,88 @@ Zone: ${zoneName}
         });
     </script>
 </body>
-</html>
+</html>A',
+                landscaping: '20% minimum'
+            },
+            
+            'PF2-Health facilities': {
+                description: 'Healthcare and medical facilities',
+                permitted: [
+                    'All types of health facilities', 'Pharmacy'
+                ],
+                prohibited: [
+                    'Industrial uses and warehouses', 'Major commercial uses',
+                    'Public utility maintenance facilities with outdoor storage', 'Cemeteries/crematoriums'
+                ],
+                conditional: [
+                    'Restaurants', 'Small commercial and retail use', 'Accommodations for health workers'
+                ],
+                minLotSize: 'N/A',
+                landscaping: '20% minimum'
+            },
+            
+            'A1-Agriculture zone': {
+                description: 'Strives to protect the viability of agriculture and prevent farmland conversion to non-farm uses',
+                permitted: [
+                    'Crop farming', 'Agro-forestry', 'Livestock farming', 'Green houses', 'Bee Keeping', 'Fish farming'
+                ],
+                prohibited: [
+                    'All types of industrial uses not linked to Agro-Processing uses',
+                    'All types of residential uses not linked to farming activities',
+                    'All types of commercial uses not linked to temporary farm store',
+                    'All types of public facilities'
+                ],
+                conditional: [
+                    'Supporting Agricultural uses', 'Temporary Farm store', 'Infrastructure',
+                    'Rural Villages for agricultural plots larger than 5 ha after land assembly has been conducted',
+                    'Single family Houses on agricultural plots larger than 1 ha provided they are linked to farming activities',
+                    'Small scale Agro-processing facilities on agricultural land not less than 0.5 ha'
+                ],
+                ancillary: [
+                    'Storage barns', 'Parking', 'Store for agricultural equipment, cattle sheds'
+                ],
+                minLotSize: 'N/A',
+                maxHeight: 'G (Ground floor only)',
+                maxFAR: 'Single Family Houses: 0.01 up to 150 m² for plots above 1 ha, Agro-processing facilities: 0.02 up to 200 m² for plots above 0.5 Ha',
+                coverage: 'N/A',
+                landscaping: 'N/A'
+            },
+            
+            'P1-Parks and open spaces zone': {
+                description: 'Established to provide recreational and leisure facilities in areas with unique features',
+                permitted: [
+                    'Botanical gardens, arboretums, and conservatories',
+                    'Outdoor recreational facilities such as hiking and bicycle trails',
+                    'Greens and commons, sitting areas and picnic areas',
+                    'Park related public facilities such as public toilet/changing room'
+                ],
+                prohibited: [
+                    'All types of industrial uses', 'All types of residential uses',
+                    'Commercial uses exceeding prescribed limits', 'All types of major public facilities',
+                    'Major infrastructure installations'
+                ],
+                conditional: [
+                    'Restaurants, kiosks, art and souvenirs shops and other commercial structures not exceeding 0.05 FAR up to 150 m²'
+                ],
+                minLotSize: 'N/A',
+                maxHeight: 'G+1 maximum',
+                maxFAR: '0.05 up to 150 m²',
+                coverage: 'N/A',
+                landscaping: 'N/A'
+            },
+            
+            'T-Transportation zone': {
+                description: 'Identify and locate major transport related areas including public transport services',
+                permitted: [
+                    'All transport infrastructure', 'BRT stations and Terminals',
+                    'Parking area', 'Holding depots'
+                ],
+                prohibited: [
+                    'Major industrial uses', 'Major residential uses'
+                ],
+                conditional: [
+                    'Motor repair garage', 'Commercial Uses if developed with Transport Terminals',
+                    'Service station', 'Commercial and office spaces',
+                    'Hotels and Restaurants', 'Workers accommodation'
+                ],
+                minLotSize: 'N/
