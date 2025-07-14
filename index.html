@@ -150,10 +150,7 @@
             }
         }
         
-        /* Hidden file upload */
-        #fileUpload {
-            display: none;
-        }
+        /* No file upload needed - auto-loading only */
         
         /* Cosmic Bottom Panel */
         #bottomPanel {
@@ -485,9 +482,6 @@
     </style>
 </head>
 <body>
-    <!-- Hidden file upload -->
-    <input type="file" id="fileUpload" accept=".json,.geojson" />
-    
     <!-- Mobile Header -->
     <div id="mobileHeader">
         <div class="header-content">
@@ -507,9 +501,9 @@
         </div>
     </div>
     
-    <!-- Data Status Banner -->
-    <div class="data-banner" id="dataBanner" onclick="loadDataFile()">
-        🌌 Tap to load cosmic zoning data
+    <!-- Data Status Banner (updated to show auto-loading) -->
+    <div class="data-banner" id="dataBanner">
+        🌌 Loading cosmic zoning database...
     </div>
     
     <!-- Loading Overlay -->
@@ -964,7 +958,7 @@
         
         document.addEventListener('DOMContentLoaded', function() {
             initializeApp();
-            checkCachedData();
+            autoLoadZoningData(); // Auto-load data instead of checking cache
         });
         
         function initializeApp() {
@@ -999,7 +993,7 @@
                 });
             });
             
-            document.getElementById('fileUpload').addEventListener('change', handleFileUpload);
+            // No file upload event listener needed - auto-loading only
             
             const chatInput = document.getElementById('chatInput');
             chatInput.addEventListener('input', autoResizeTextarea);
@@ -1009,6 +1003,64 @@
                     sendMessage();
                 }
             });
+        }
+        
+        // NEW: Auto-load zoning data from GitHub LFS
+        async function autoLoadZoningData() {
+            updateStatus('loading', 'Loading cosmic zoning database...');
+            
+            // Show data banner with loading state
+            const banner = document.getElementById('dataBanner');
+            banner.innerHTML = '🌌 Loading cosmic zoning database...';
+            banner.classList.add('show');
+            
+            try {
+                // First try to load from cache
+                const cached = await checkCachedData();
+                if (cached) {
+                    return; // Cache loaded successfully
+                }
+                
+                // Load from GitHub LFS
+                console.log('📡 Fetching zoning data from GitHub LFS...');
+                const response = await fetch('./Zoning.json');
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                }
+                
+                // Show progress for large file
+                showLoading(true, 'Processing 142MB cosmic database...');
+                
+                const data = await response.json();
+                
+                await processZoningData(data);
+                cacheZoningData();
+                
+                showLoading(false);
+                updateStatus('ready', `${zoningFeatures.length} zones loaded`);
+                
+                // Show success banner
+                banner.innerHTML = '✨ Cosmic zoning database loaded successfully';
+                banner.classList.add('loaded');
+                
+                // Hide banner after 3 seconds
+                setTimeout(() => {
+                    banner.classList.remove('show');
+                }, 3000);
+                
+                console.log('✅ Zoning data loaded successfully from GitHub LFS');
+                
+            } catch (error) {
+                showLoading(false);
+                console.error('❌ Error loading zoning data:', error);
+                
+                // Show error message
+                banner.innerHTML = '❌ Failed to load cosmic database - please refresh';
+                banner.classList.remove('loaded');
+                
+                updateStatus('ready', 'Data load failed - please refresh page');
+            }
         }
         
         // Enhanced response generation with official regulations
@@ -1174,36 +1226,45 @@ Zone: ${zoneName}
         const CACHE_KEY = 'kigali_zoning_data';
         const CACHE_VERSION = '1.0';
         
-        function checkCachedData() {
+        async function checkCachedData() {
             try {
                 const cached = localStorage.getItem(CACHE_KEY);
                 if (cached) {
                     const data = JSON.parse(cached);
                     if (data.version === CACHE_VERSION && data.features) {
                         console.log('📦 Found cached zoning data');
-                        loadCachedData(data);
-                        return;
+                        await loadCachedData(data);
+                        return true;
                     }
                 }
             } catch (error) {
                 console.warn('Cache check failed:', error);
             }
-            
-            showDataBanner();
+            return false;
         }
         
-        function loadCachedData(data) {
+        async function loadCachedData(data) {
             updateStatus('loading', 'Loading cached data...');
             
+            // Simulate loading delay for UX
+            await new Promise(resolve => setTimeout(resolve, 500));
+            
+            zoningFeatures = data.features;
+            spatialIndex = new Map(data.index);
+            
+            updateStatus('ready', `${zoningFeatures.length} zones loaded`);
+            
+            // Show success banner
+            const banner = document.getElementById('dataBanner');
+            banner.innerHTML = '✨ Cosmic zoning data loaded from cache';
+            banner.classList.add('loaded');
+            banner.onclick = null;
+            
             setTimeout(() => {
-                zoningFeatures = data.features;
-                spatialIndex = new Map(data.index);
-                
-                updateStatus('ready', `${zoningFeatures.length} zones loaded`);
-                showDataBanner(true);
-                
-                console.log('✅ Cached data loaded successfully');
-            }, 500);
+                banner.classList.remove('show');
+            }, 3000);
+            
+            console.log('✅ Cached data loaded successfully');
         }
         
         function showDataBanner(loaded = false) {
@@ -1242,7 +1303,9 @@ Zone: ${zoneName}
                 'Location timeout': '⏰ Cosmic location scan timed out',
                 'Location error': '❌ Cosmic navigation error',
                 'Getting your location...': '🛰️ Scanning your cosmic coordinates...',
-                'Analyzing your location...': '🔍 Analyzing development potential...'
+                'Analyzing your location...': '🔍 Analyzing development potential...',
+                'Loading cosmic zoning database...': '🌌 Downloading cosmic intelligence...',
+                'Data load failed - manual upload available': '⚠️ Cosmic link disrupted - manual mode ready'
             };
             
             statusText.textContent = cosmicMessages[text] || text;
@@ -1514,7 +1577,7 @@ Zone: ${zoneName}
             const chatContainer = document.getElementById('chatContainer');
             const aiResponse = document.getElementById('aiResponse');
             
-            aiResponse.innerHTML = "🌌 No cosmic signals detected at this location.\n\nTry exploring developed areas of Kigali or load the cosmic zoning data to enhance my sensors.";
+            aiResponse.innerHTML = "🌌 No cosmic signals detected at this location.\n\nTry exploring developed areas of Kigali or refresh the page to reload data.";
             aiResponse.className = 'ai-response response-error';
             chatContainer.classList.add('show');
             
@@ -1641,88 +1704,4 @@ Zone: ${zoneName}
         });
     </script>
 </body>
-</html>A',
-                landscaping: '20% minimum'
-            },
-            
-            'PF2-Health facilities': {
-                description: 'Healthcare and medical facilities',
-                permitted: [
-                    'All types of health facilities', 'Pharmacy'
-                ],
-                prohibited: [
-                    'Industrial uses and warehouses', 'Major commercial uses',
-                    'Public utility maintenance facilities with outdoor storage', 'Cemeteries/crematoriums'
-                ],
-                conditional: [
-                    'Restaurants', 'Small commercial and retail use', 'Accommodations for health workers'
-                ],
-                minLotSize: 'N/A',
-                landscaping: '20% minimum'
-            },
-            
-            'A1-Agriculture zone': {
-                description: 'Strives to protect the viability of agriculture and prevent farmland conversion to non-farm uses',
-                permitted: [
-                    'Crop farming', 'Agro-forestry', 'Livestock farming', 'Green houses', 'Bee Keeping', 'Fish farming'
-                ],
-                prohibited: [
-                    'All types of industrial uses not linked to Agro-Processing uses',
-                    'All types of residential uses not linked to farming activities',
-                    'All types of commercial uses not linked to temporary farm store',
-                    'All types of public facilities'
-                ],
-                conditional: [
-                    'Supporting Agricultural uses', 'Temporary Farm store', 'Infrastructure',
-                    'Rural Villages for agricultural plots larger than 5 ha after land assembly has been conducted',
-                    'Single family Houses on agricultural plots larger than 1 ha provided they are linked to farming activities',
-                    'Small scale Agro-processing facilities on agricultural land not less than 0.5 ha'
-                ],
-                ancillary: [
-                    'Storage barns', 'Parking', 'Store for agricultural equipment, cattle sheds'
-                ],
-                minLotSize: 'N/A',
-                maxHeight: 'G (Ground floor only)',
-                maxFAR: 'Single Family Houses: 0.01 up to 150 m² for plots above 1 ha, Agro-processing facilities: 0.02 up to 200 m² for plots above 0.5 Ha',
-                coverage: 'N/A',
-                landscaping: 'N/A'
-            },
-            
-            'P1-Parks and open spaces zone': {
-                description: 'Established to provide recreational and leisure facilities in areas with unique features',
-                permitted: [
-                    'Botanical gardens, arboretums, and conservatories',
-                    'Outdoor recreational facilities such as hiking and bicycle trails',
-                    'Greens and commons, sitting areas and picnic areas',
-                    'Park related public facilities such as public toilet/changing room'
-                ],
-                prohibited: [
-                    'All types of industrial uses', 'All types of residential uses',
-                    'Commercial uses exceeding prescribed limits', 'All types of major public facilities',
-                    'Major infrastructure installations'
-                ],
-                conditional: [
-                    'Restaurants, kiosks, art and souvenirs shops and other commercial structures not exceeding 0.05 FAR up to 150 m²'
-                ],
-                minLotSize: 'N/A',
-                maxHeight: 'G+1 maximum',
-                maxFAR: '0.05 up to 150 m²',
-                coverage: 'N/A',
-                landscaping: 'N/A'
-            },
-            
-            'T-Transportation zone': {
-                description: 'Identify and locate major transport related areas including public transport services',
-                permitted: [
-                    'All transport infrastructure', 'BRT stations and Terminals',
-                    'Parking area', 'Holding depots'
-                ],
-                prohibited: [
-                    'Major industrial uses', 'Major residential uses'
-                ],
-                conditional: [
-                    'Motor repair garage', 'Commercial Uses if developed with Transport Terminals',
-                    'Service station', 'Commercial and office spaces',
-                    'Hotels and Restaurants', 'Workers accommodation'
-                ],
-                minLotSize: 'N/
+</html>
