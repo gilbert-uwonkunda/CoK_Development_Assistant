@@ -5,11 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
     <title>🌌 TerraNebular</title>
     
-    <!-- ArcGIS CSS -->
-    <link rel="stylesheet" href="https://js.arcgis.com/4.28/esri/themes/light/main.css">
+    <!-- ArcGIS CSS (using lightweight dark theme for faster rendering) -->
+    <link rel="stylesheet" href="https://js.arcgis.com/4.28/esri/themes/dark/main.css">
     
     <style>
-        /* TerraNebular Cosmic Color Palette */
+        /* Optimized Cosmic Color Palette */
         :root {
             --nebular-deep-blue: #0F172A;
             --nebular-space-blue: #1E3A8A;
@@ -32,7 +32,7 @@
             margin: 0;
             padding: 0;
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: linear-gradient(135deg, var(--nebular-deep-blue) 0%, var(--nebular-space-blue) 50%, var(--nebular-cosmic-purple) 100%);
+            background: var(--nebular-deep-blue); /* Simplified background for faster load */
             overflow: hidden;
         }
         
@@ -42,18 +42,17 @@
             position: relative;
         }
         
-        /* Cosmic Header */
+        /* Simplified Header */
         #mobileHeader {
             position: absolute;
             top: 0;
             left: 0;
             right: 0;
-            background: linear-gradient(135deg, var(--nebular-deep-blue) 0%, var(--nebular-space-blue) 50%, var(--nebular-cosmic-purple) 100%);
+            background: var(--nebular-deep-blue);
             color: var(--nebular-comet-white);
-            padding: 12px 16px;
+            padding: 8px 12px;
             z-index: 100;
-            box-shadow: 0 4px 20px rgba(15, 23, 42, 0.6);
-            backdrop-filter: blur(10px);
+            box-shadow: 0 2px 10px rgba(15, 23, 42, 0.4);
         }
         
         .header-content {
@@ -66,123 +65,87 @@
             display: flex;
             flex-direction: column;
             align-items: flex-end;
-            gap: 8px;
+            gap: 6px;
         }
         
         .control-row {
             display: flex;
-            gap: 8px;
+            gap: 6px;
             align-items: center;
         }
         
         .location-btn, .api-btn {
-            background: linear-gradient(135deg, var(--nebular-stellar-gold) 0%, var(--nebular-meteor-orange) 100%);
+            background: var(--nebular-stellar-gold);
             color: var(--nebular-comet-white);
             border: none;
-            padding: 6px 10px;
-            border-radius: 16px;
-            font-size: 10px;
+            padding: 5px 8px;
+            border-radius: 12px;
+            font-size: 9px;
             font-weight: 600;
             cursor: pointer;
-            box-shadow: 0 2px 12px rgba(245, 158, 11, 0.4);
-            transition: all 0.3s ease;
-            white-space: nowrap;
-            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+            transition: background 0.2s ease; /* Reduced animation complexity */
         }
 
         .api-btn {
-            background: linear-gradient(135deg, var(--nebular-cosmic-purple) 0%, var(--nebular-plasma-pink) 100%);
-            box-shadow: 0 2px 12px rgba(99, 102, 241, 0.4);
+            background: var(--nebular-cosmic-purple);
         }
         
         .location-btn:hover, .api-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(245, 158, 11, 0.6);
+            background: var(--nebular-meteor-orange);
         }
 
         .api-btn:hover {
-            box-shadow: 0 6px 20px rgba(99, 102, 241, 0.6);
-        }
-        
-        .location-btn:active, .api-btn:active {
-            transform: translateY(0);
+            background: var(--nebular-plasma-pink);
         }
         
         .location-btn:disabled, .api-btn:disabled {
             background: var(--nebular-stardust);
             color: var(--nebular-deep-blue);
             cursor: not-allowed;
-            transform: none;
-            box-shadow: none;
         }
         
         .app-title {
-            font-size: 16px;
+            font-size: 14px;
             font-weight: 700;
             margin: 0;
-            line-height: 1.2;
         }
         
         .app-subtitle {
-            font-size: 11px;
-            opacity: 0.9;
+            font-size: 10px;
+            opacity: 0.8;
             margin: 2px 0 0 0;
-            line-height: 1.3;
         }
         
         .status-indicator {
             display: flex;
             align-items: center;
-            gap: 6px;
-            font-size: 10px;
+            gap: 5px;
+            font-size: 9px;
         }
         
         .status-dot {
-            width: 8px;
-            height: 8px;
+            width: 6px;
+            height: 6px;
             border-radius: 50%;
             background: var(--nebular-stellar-gold);
-            animation: cosmicPulse 2s infinite;
-            box-shadow: 0 0 6px rgba(245, 158, 11, 0.6);
         }
         
         .status-dot.ready {
             background: var(--nebular-aurora-green);
-            animation: none;
-            box-shadow: 0 0 6px rgba(16, 185, 129, 0.6);
         }
         
-        @keyframes cosmicPulse {
-            0%, 100% { 
-                opacity: 1; 
-                transform: scale(1);
-                box-shadow: 0 0 6px rgba(245, 158, 11, 0.6);
-            }
-            50% { 
-                opacity: 0.6; 
-                transform: scale(1.1);
-                box-shadow: 0 0 12px rgba(245, 158, 11, 0.8);
-            }
-        }
-        
-        /* Hidden file upload */
-        #fileUpload {
-            display: none;
-        }
-
-        /* API Key Input Modal */
+        /* Simplified Modal */
         .modal-overlay {
             position: fixed;
             top: 0;
             left: 0;
             right: 0;
             bottom: 0;
-            background: rgba(15, 23, 42, 0.9);
+            background: rgba(15, 23, 42, 0.8);
             display: none;
             align-items: center;
             justify-content: center;
             z-index: 300;
-            backdrop-filter: blur(10px);
         }
 
         .modal-overlay.show {
@@ -190,56 +153,53 @@
         }
 
         .modal-content {
-            background: linear-gradient(135deg, var(--nebular-comet-white) 0%, var(--nebular-stardust) 100%);
-            border-radius: 20px;
-            padding: 24px;
-            max-width: 400px;
-            width: 90%;
-            box-shadow: 0 20px 40px rgba(15, 23, 42, 0.5);
+            background: var(--nebular-comet-white);
+            border-radius: 12px;
+            padding: 16px;
+            max-width: 360px;
+            width: 85%;
+            box-shadow: 0 10px 20px rgba(15, 23, 42, 0.3);
         }
 
         .modal-title {
-            font-size: 18px;
-            font-weight: 700;
+            font-size: 16px;
+            font-weight: 600;
             color: var(--nebular-deep-blue);
-            margin: 0 0 16px 0;
+            margin: 0 0 12px 0;
             text-align: center;
         }
 
         .modal-input {
             width: 100%;
-            padding: 12px 16px;
-            border: 2px solid var(--nebular-stardust);
-            border-radius: 12px;
-            font-size: 14px;
-            margin-bottom: 16px;
+            padding: 10px 12px;
+            border: 1px solid var(--nebular-stardust);
+            border-radius: 8px;
+            font-size: 13px;
+            margin-bottom: 12px;
             outline: none;
-            transition: all 0.3s ease;
         }
 
         .modal-input:focus {
             border-color: var(--nebular-cosmic-purple);
-            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
         }
 
         .modal-buttons {
             display: flex;
-            gap: 12px;
+            gap: 10px;
         }
 
         .modal-btn {
             flex: 1;
-            padding: 12px 16px;
+            padding: 10px;
             border: none;
-            border-radius: 12px;
-            font-size: 14px;
+            border-radius: 8px;
+            font-size: 13px;
             font-weight: 600;
             cursor: pointer;
-            transition: all 0.3s ease;
         }
 
         .modal-btn.primary {
-            background: linear-gradient(135deg, var(--nebular-cosmic-purple) 0%, var(--nebular-plasma-pink) 100%);
+            background: var(--nebular-cosmic-purple);
             color: var(--nebular-comet-white);
         }
 
@@ -247,25 +207,20 @@
             background: var(--nebular-stardust);
             color: var(--nebular-deep-blue);
         }
-
-        .modal-btn:hover {
-            transform: translateY(-1px);
-        }
         
-        /* Cosmic Bottom Panel */
+        /* Simplified Bottom Panel */
         #bottomPanel {
             position: absolute;
             bottom: 0;
             left: 0;
             right: 0;
-            background: linear-gradient(135deg, var(--nebular-comet-white) 0%, var(--nebular-stardust) 100%);
-            border-radius: 20px 20px 0 0;
-            box-shadow: 0 -8px 32px rgba(15, 23, 42, 0.3);
+            background: var(--nebular-comet-white);
+            border-radius: 12px 12px 0 0;
+            box-shadow: 0 -4px 16px rgba(15, 23, 42, 0.2);
             z-index: 100;
             max-height: 50vh;
-            transition: transform 0.3s ease;
+            transition: transform 0.2s ease;
             transform: translateY(100%);
-            backdrop-filter: blur(10px);
         }
         
         #bottomPanel.show {
@@ -273,16 +228,15 @@
         }
         
         .panel-handle {
-            width: 40px;
-            height: 4px;
-            background: linear-gradient(135deg, var(--nebular-cosmic-purple) 0%, var(--nebular-plasma-pink) 100%);
-            border-radius: 2px;
-            margin: 12px auto 8px;
-            opacity: 0.7;
+            width: 30px;
+            height: 3px;
+            background: var(--nebular-cosmic-purple);
+            border-radius: 1px;
+            margin: 8px auto;
         }
         
         .panel-content {
-            padding: 0 20px 20px;
+            padding: 0 16px 16px;
             overflow-y: auto;
             max-height: 40vh;
         }
@@ -290,9 +244,9 @@
         .location-header {
             display: flex;
             align-items: center;
-            gap: 12px;
-            margin-bottom: 16px;
-            padding-bottom: 12px;
+            gap: 10px;
+            margin-bottom: 12px;
+            padding-bottom: 8px;
             border-bottom: 1px solid #E5E7EB;
         }
         
@@ -301,37 +255,32 @@
         }
         
         .zone-name {
-            font-size: 15px;
+            font-size: 14px;
             font-weight: 600;
             color: var(--nebular-deep-blue);
-            margin: 0 0 4px 0;
-            line-height: 1.3;
+            margin: 0;
         }
         
         .zone-description {
-            font-size: 12px;
+            font-size: 11px;
             color: var(--nebular-space-blue);
             margin: 0;
-            line-height: 1.4;
         }
         
         .zone-color-indicator {
-            width: 20px;
-            height: 20px;
-            border-radius: 6px;
-            border: 2px solid var(--nebular-comet-white);
-            box-shadow: 0 2px 8px rgba(15, 23, 42, 0.2);
-            flex-shrink: 0;
+            width: 16px;
+            height: 16px;
+            border-radius: 4px;
+            border: 1px solid var(--nebular-comet-white);
         }
         
-        /* Cosmic AI Chat Interface */
+        /* Simplified Chat Interface */
         .chat-container {
-            background: linear-gradient(135deg, var(--nebular-stardust) 0%, var(--nebular-comet-white) 100%);
-            border-radius: 12px;
-            padding: 16px;
+            background: var(--nebular-comet-white);
+            border-radius: 8px;
+            padding: 12px;
             margin-top: 8px;
             display: none;
-            box-shadow: inset 0 1px 3px rgba(15, 23, 42, 0.1);
         }
         
         .chat-container.show {
@@ -339,99 +288,79 @@
         }
         
         .ai-response {
-            background: linear-gradient(135deg, var(--nebular-comet-white) 0%, var(--nebular-stardust) 100%);
-            padding: 14px;
-            border-radius: 12px;
-            border-left: 4px solid var(--nebular-cosmic-purple);
-            font-size: 13px;
-            line-height: 1.5;
+            background: var(--nebular-stardust);
+            padding: 10px;
+            border-radius: 8px;
+            border-left: 3px solid var(--nebular-cosmic-purple);
+            font-size: 12px;
+            line-height: 1.4;
             white-space: pre-wrap;
-            margin-bottom: 12px;
-            box-shadow: 0 2px 8px rgba(15, 23, 42, 0.1);
+            margin-bottom: 10px;
             color: var(--nebular-deep-blue);
         }
         
         .chat-input-container {
             display: flex;
-            gap: 8px;
+            gap: 6px;
             align-items: flex-end;
         }
         
         .chat-input {
             flex: 1;
-            padding: 12px 14px;
-            border: 2px solid var(--nebular-stardust);
-            border-radius: 20px;
-            font-size: 13px;
+            padding: 8px 10px;
+            border: 1px solid var(--nebular-stardust);
+            border-radius: 16px;
+            font-size: 12px;
             resize: none;
-            min-height: 40px;
-            max-height: 80px;
+            min-height: 36px;
+            max-height: 72px;
             outline: none;
-            transition: all 0.3s ease;
             background: var(--nebular-comet-white);
             color: var(--nebular-deep-blue);
         }
         
         .chat-input:focus {
             border-color: var(--nebular-cosmic-purple);
-            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
         }
         
         .chat-input::placeholder {
             color: var(--nebular-space-blue);
-            font-style: italic;
         }
         
         .send-btn {
-            background: linear-gradient(135deg, var(--nebular-cosmic-purple) 0%, var(--nebular-plasma-pink) 100%);
+            background: var(--nebular-cosmic-purple);
             color: var(--nebular-comet-white);
             border: none;
-            width: 40px;
-            height: 40px;
-            border-radius: 20px;
+            width: 36px;
+            height: 36px;
+            border-radius: 18px;
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
-            transition: all 0.3s ease;
-            box-shadow: 0 2px 12px rgba(99, 102, 241, 0.4);
-            flex-shrink: 0;
-        }
-        
-        .send-btn:hover {
-            transform: translateY(-1px);
-            box-shadow: 0 4px 16px rgba(99, 102, 241, 0.6);
-        }
-        
-        .send-btn:active {
-            transform: scale(0.95);
         }
         
         .send-btn:disabled {
             background: var(--nebular-stardust);
             color: var(--nebular-space-blue);
-            box-shadow: none;
-            transform: none;
         }
         
-        /* Cosmic Data Banner */
+        /* Simplified Data Banner */
         .data-banner {
             position: absolute;
-            top: 70px;
-            left: 16px;
-            right: 16px;
-            background: linear-gradient(135deg, var(--nebular-cosmic-purple) 0%, var(--nebular-plasma-pink) 100%);
+            top: 60px;
+            left: 12px;
+            right: 12px;
+            background: var(--nebular-cosmic-purple);
             color: var(--nebular-comet-white);
-            padding: 12px 16px;
-            border-radius: 12px;
-            font-size: 13px;
+            padding: 8px 12px;
+            border-radius: 8px;
+            font-size: 12px;
             font-weight: 600;
             z-index: 99;
             cursor: pointer;
-            transition: all 0.3s ease;
             transform: translateY(-100px);
-            box-shadow: 0 4px 20px rgba(99, 102, 241, 0.4);
-            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+            transition: transform 0.2s ease;
         }
         
         .data-banner.show {
@@ -439,25 +368,23 @@
         }
         
         .data-banner.loaded {
-            background: linear-gradient(135deg, var(--nebular-aurora-green) 0%, var(--nebular-stellar-gold) 100%);
-            box-shadow: 0 4px 20px rgba(16, 185, 129, 0.4);
+            background: var(--nebular-aurora-green);
         }
         
-        /* Cosmic Loading Overlay */
+        /* Simplified Loading Overlay */
         .loading-overlay {
             position: absolute;
             top: 0;
             left: 0;
             right: 0;
             bottom: 0;
-            background: linear-gradient(135deg, rgba(15, 23, 42, 0.95) 0%, rgba(30, 58, 138, 0.95) 100%);
+            background: rgba(15, 23, 42, 0.9);
             display: none;
             align-items: center;
             justify-content: center;
             z-index: 200;
             flex-direction: column;
-            gap: 20px;
-            backdrop-filter: blur(10px);
+            gap: 16px;
         }
         
         .loading-overlay.show {
@@ -465,12 +392,12 @@
         }
         
         .loading-spinner {
-            width: 40px;
-            height: 40px;
-            border: 3px solid rgba(226, 232, 240, 0.3);
-            border-top: 3px solid var(--nebular-cosmic-purple);
+            width: 32px;
+            height: 32px;
+            border: 2px solid rgba(226, 232, 240, 0.3);
+            border-top: 2px solid var(--nebular-cosmic-purple);
             border-radius: 50%;
-            animation: cosmicSpin 1s linear infinite;
+            animation: cosmicSpin 0.8s linear infinite;
         }
         
         @keyframes cosmicSpin {
@@ -481,98 +408,45 @@
         .loading-text {
             color: var(--nebular-comet-white);
             font-weight: 600;
-            text-align: center;
-            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+            font-size: 12px;
         }
         
-        /* Cosmic Response States */
+        /* Simplified Response States */
         .response-success {
             border-left-color: var(--nebular-aurora-green);
-            background: linear-gradient(135deg, #ECFDF5 0%, #F0FDF4 100%);
-            box-shadow: 0 0 20px rgba(16, 185, 129, 0.1);
+            background: #ECFDF5;
         }
         
         .response-warning {
             border-left-color: var(--nebular-stellar-gold);
-            background: linear-gradient(135deg, #FFFBEB 0%, #FEF3C7 100%);
-            box-shadow: 0 0 20px rgba(245, 158, 11, 0.1);
+            background: #FFFBEB;
         }
         
         .response-error {
             border-left-color: var(--nebular-plasma-pink);
-            background: linear-gradient(135deg, #FDF2F8 0%, #FCE7F3 100%);
-            box-shadow: 0 0 20px rgba(236, 72, 153, 0.1);
+            background: #FDF2F8;
         }
         
         /* Quick Action Buttons */
         .quick-actions {
             display: flex;
             flex-wrap: wrap;
-            gap: 8px;
-            margin-bottom: 12px;
+            gap: 6px;
+            margin-bottom: 10px;
         }
         
         .quick-actions .location-btn {
-            font-size: 11px;
-            padding: 6px 12px;
-            background: linear-gradient(135deg, var(--nebular-cosmic-purple) 0%, var(--nebular-plasma-pink) 100%);
+            font-size: 10px;
+            padding: 5px 10px;
+            background: var(--nebular-cosmic-purple);
         }
         
-        /* Enhanced Mobile Responsiveness */
+        /* Minimal Mobile Responsiveness */
         @media (max-width: 480px) {
             .panel-content {
-                padding: 0 12px 16px;
+                padding: 0 10px 12px;
             }
             
-            .app-title {
-                font-size: 14px;
-            }
-            
-            .app-subtitle {
-                font-size: 10px;
-            }
-            
-            .location-btn, .api-btn {
-                padding: 5px 8px;
-                font-size: 9px;
-            }
-            
-            .quick-actions .location-btn {
-                font-size: 10px;
-                padding: 5px 10px;
-            }
-            
-            .zone-name {
-                font-size: 14px;
-            }
-            
-            .zone-description {
-                font-size: 11px;
-            }
-            
-            .ai-response {
-                padding: 12px;
-                font-size: 12px;
-            }
-            
-            .chat-input {
-                padding: 10px 12px;
-                font-size: 12px;
-                min-height: 38px;
-            }
-            
-            .send-btn {
-                width: 38px;
-                height: 38px;
-                border-radius: 19px;
-            }
-            
-            .chat-input::placeholder {
-                font-size: 11px;
-            }
-        }
-        
-        @media (max-width: 360px) {
             .app-title {
                 font-size: 13px;
             }
@@ -586,8 +460,9 @@
                 font-size: 8px;
             }
             
-            .panel-content {
-                padding: 0 10px 14px;
+            .quick-actions .location-btn {
+                font-size: 9px;
+                padding: 4px 8px;
             }
             
             .zone-name {
@@ -596,6 +471,23 @@
             
             .zone-description {
                 font-size: 10px;
+            }
+            
+            .ai-response {
+                padding: 8px;
+                font-size: 11px;
+            }
+            
+            .chat-input {
+                padding: 8px 10px;
+                font-size: 11px;
+                min-height: 34px;
+            }
+            
+            .send-btn {
+                width: 34px;
+                height: 34px;
+                border-radius: 17px;
             }
         }
     </style>
@@ -622,7 +514,7 @@
         <div class="header-content">
             <div>
                 <h1 class="app-title">🌌 TerraNebular</h1>
-                <p class="app-subtitle">Where Development Dreams Take Shape with AI</p>
+                <p class="app-subtitle">AI-Powered Zoning Insights</p>
             </div>
             <div class="header-controls">
                 <div class="control-row">
@@ -643,13 +535,13 @@
     
     <!-- Data Status Banner -->
     <div class="data-banner" id="dataBanner" onclick="loadDataFile()">
-        🌌 Tap to load cosmic zoning data
+        🌌 Tap to load zoning data
     </div>
     
     <!-- Loading Overlay -->
     <div class="loading-overlay" id="loadingOverlay">
         <div class="loading-spinner"></div>
-        <div class="loading-text" id="loadingText">Loading zoning data...</div>
+        <div class="loading-text" id="loadingText">Loading map...</div>
     </div>
     
     <!-- Map Container -->
@@ -671,7 +563,7 @@
                 <div class="ai-response" id="aiResponse"></div>
                 <div class="chat-input-container">
                     <textarea class="chat-input" id="chatInput" 
-                              placeholder="Ask Claude: 'Can I build a restaurant here?', 'What's the maximum height?', 'Investment potential?'" 
+                              placeholder="Ask about zoning: 'Can I build a restaurant?', 'Max height?', 'Investment potential?'" 
                               rows="1"></textarea>
                     <button class="send-btn" id="sendBtn" onclick="sendMessage()">
                         ➤
@@ -689,176 +581,91 @@
     let currentZoning = null;
     let view = null;
     let zoningFeatures = [];
-    let spatialIndex = null;
+    let spatialIndex = new Map();
     let conversationHistory = [];
     let claudeApiKey = null;
 
-    // Enhanced Zone Details with Complete Official Kigali Regulations
+    // Simplified Zoning Regulations
     const KIGALI_ZONING_REGULATIONS = {
         'C1-Mixed use zone': {
-            description: 'Zone established to create high flexibility in the mix of uses and ensure continuity in ground level commercial activities',
-            permitted: [
-                'Commercial/Retail', 'Restaurants and Recreational activities', 'Office use above 1st floor',
-                'Co-working spaces', 'Residential', 'Home Occupation'
-            ],
-            prohibited: [
-                'Large scale commercial complex', 'Industrial Uses', 'Major Infrastructure Installations'
-            ],
-            conditional: [
-                'Public Facilities', 'Transportation Terminals', 'Hotels', 'Petrol stations',
-                'Garages and Car Repair - Grade E as per RBS', 'Car Wash Services'
-            ],
+            description: 'Mixed-use zone for commercial and residential activities',
+            permitted: ['Commercial/Retail', 'Restaurants', 'Offices', 'Residential'],
+            prohibited: ['Industrial Uses', 'Major Infrastructure'],
+            conditional: ['Hotels', 'Petrol stations'],
             minLotSize: '500 m²',
-            maxHeight: 'G+4 maximum (Additional floors may be authorised along BRT, Wetland Front)',
-            maxFAR: '1.6 maximum',
-            coverage: '60% maximum',
-            landscaping: '10% minimum'
+            maxHeight: 'G+4',
+            maxFAR: '1.6',
+            coverage: '60%'
         },
         'C3-City commercial zone': {
-            description: 'Zone established to meet most retail, commercial and services needs for larger community',
-            permitted: [
-                'Developments allowed in C1 zone', 'Shopping centres', 'Offices', 'Hotels',
-                'Apartments', 'Leisure and entertainment centres', 'Galleries', 'Education Institutions',
-                'Coworking spaces'
-            ],
-            prohibited: [
-                'Major Industrial Uses', 'Major Infrastructure Installations'
-            ],
-            conditional: [
-                'Public Facilities', 'Petrol stations', 'Transport Interchange',
-                'Garages and Car Repair - Grade E as per RBS', 'Car Wash Services'
-            ],
+            description: 'Zone for large-scale retail and commercial services',
+            permitted: ['Shopping centres', 'Offices', 'Hotels'],
+            prohibited: ['Major Industrial Uses'],
+            conditional: ['Public Facilities'],
             minLotSize: '1,000 m²',
-            maxHeight: 'G+10 maximum',
-            maxFAR: '2.4 maximum',
-            coverage: '70% maximum',
-            landscaping: '10% minimum'
+            maxHeight: 'G+10',
+            maxFAR: '2.4',
+            coverage: '70%'
         },
         'R1-Low density residential zone': {
-            description: 'Intended for villa and bungalow typology and complementary public facilities',
-            permitted: [
-                'Single family houses', 'Home Occupation'
-            ],
-            prohibited: [
-                'Industrial uses', 'Major infrastructure'
-            ],
-            conditional: [
-                'Uses as per R1A regulations', 'Apartments exceeding G + 2', 'Semi-Detached',
-                'Multifamily Houses', 'Restaurants, Guest houses, B&B, Hotels',
-                'Public facilities when suggested by Public Facilities Overlay',
-                'Commercial Retail Facilities when allowed by O-C2 Overlay',
-                'Accessory Residential Units'
-            ],
-            minLotSize: 'Max 500 m² as per URBAN PLANNING CODE',
-            maxHeight: 'G+1+P (Penthouse)',
-            maxFAR: '0.5 maximum',
-            coverage: '40% maximum',
-            landscaping: '20% minimum'
-        },
-        // Add other zones as needed...
+            description: 'Zone for single-family homes and villas',
+            permitted: ['Single family houses'],
+            prohibited: ['Industrial uses'],
+            conditional: ['Apartments', 'Guest houses'],
+            minLotSize: '500 m²',
+            maxHeight: 'G+1+P',
+            maxFAR: '0.5',
+            coverage: '40%'
+        }
     };
 
     // Zone color mapping
     const ZONE_COLORS = {
-        'A1-Agriculture zone': '#90EE90',
         'C1-Mixed use zone': '#FFB6C1',
         'C3-City commercial zone': '#CD5626',
-        'I1-Light industrial zone': '#DDA0DD',
-        'I2-General industrial zone': '#9370DB',
-        'I3-Mining/ Extraction/Quarry': '#8B4513',
-        'P1-Parks and open spaces zone': '#32CD32',
-        'R1-Low density residential zone': '#FFFFE0',
-        'R1A-Low density residential densification zone': '#FFFACD',
-        'R1B-Rural residential zone': '#F0E68C',
-        'R2-Medium density residential - Improvement zone': '#F59E0B',
-        'R3-Medium density residential - Expansion zone': '#FF7F50',
-        'R4-High density residential zone': '#FF6347',
-        'T-Transportation zone': '#A9A9A9',
-        'U-Utility zone': '#D3D3D3',
-        'WR-Waterbody zone': '#87CEEB'
+        'R1-Low density residential zone': '#FFFFE0'
     };
 
     // API Configuration Functions
     function showApiModal() {
         const modal = document.getElementById('apiKeyModal');
-        const input = document.getElementById('apiKeyInput');
-        
-        // Pre-fill if key exists
-        if (claudeApiKey) {
-            input.value = '••••••••••••••••••••••••••••••••••••••••';
-        }
-        
         modal.classList.add('show');
-        input.focus();
+        document.getElementById('apiKeyInput').focus();
     }
 
     function closeApiModal() {
-        const modal = document.getElementById('apiKeyModal');
-        modal.classList.remove('show');
+        document.getElementById('apiKeyModal').classList.remove('show');
     }
 
     function saveApiKey() {
         const input = document.getElementById('apiKeyInput');
         const key = input.value.trim();
         
-        if (!key || key === '••••••••••••••••••••••••••••••••••••••••') {
+        if (!key) {
             alert('Please enter a valid API key');
             return;
         }
         
-        // Basic validation
         if (!key.startsWith('sk-ant-')) {
-            alert('Invalid API key format. Claude API keys should start with "sk-ant-"');
+            alert('Invalid API key format');
             return;
         }
         
         claudeApiKey = key;
-        
-        // Store in session storage (not localStorage for security)
         sessionStorage.setItem('claude_api_key', key);
-        
-        // Update UI
-        const apiBtn = document.getElementById('apiKeyBtn');
-        apiBtn.innerHTML = '✅ AI Ready';
-        apiBtn.style.background = 'linear-gradient(135deg, var(--nebular-aurora-green) 0%, var(--nebular-stellar-gold) 100%)';
-        
+        document.getElementById('apiKeyBtn').innerHTML = '✅ AI Ready';
         closeApiModal();
-        
-        // Update chat placeholder
-        const chatInput = document.getElementById('chatInput');
-        chatInput.placeholder = 'Ask Claude: "Can I build a restaurant here?", "What\'s the maximum height?", "Investment potential?"';
-        
-        alert('🚀 Claude AI is now ready to assist with your zoning questions!');
     }
 
-    // Claude API Integration
+    // Simplified Claude API Integration
     async function callClaudeAPI(message, context = {}) {
-        if (!claudeApiKey) {
-            throw new Error('Please configure your Claude API key first');
-        }
-
-        const systemPrompt = `You are TerraNebular's AI assistant, an expert in Kigali city zoning regulations and development guidance. You help users understand zoning laws, building permits, and development opportunities in Kigali, Rwanda.
-
-Current context:
-- Selected zone: ${context.zoneName || 'Unknown'}
-- Zone description: ${context.zoneDescription || 'Not available'}
+        if (!claudeApiKey) throw new Error('No API key configured');
+        
+        const systemPrompt = `You are an expert in Kigali zoning regulations. Provide concise answers based on:
+- Zone: ${context.zoneName || 'Unknown'}
 - Coordinates: ${context.coordinates || 'Not specified'}
-
-Your responses should be:
-- Accurate and based on official Kigali zoning regulations
-- Helpful for developers, investors, and residents
-- Include specific regulatory details when available
-- Mention when users should contact City of Kigali for official confirmation
-- Use emojis appropriately to make responses engaging
-- Be concise but comprehensive
-
-Always remind users that final decisions require official approval from City of Kigali planning authorities.`;
-
-        const userMessage = `Zone: ${context.zoneName || 'Unknown'}
-User Question: ${message}
-
-Please provide expert guidance on this zoning question for Kigali city development.`;
-
+Always suggest contacting City of Kigali for official confirmation.`;
+        
         try {
             const response = await fetch('https://api.anthropic.com/v1/messages', {
                 method: 'POST',
@@ -869,36 +676,25 @@ Please provide expert guidance on this zoning question for Kigali city developme
                 },
                 body: JSON.stringify({
                     model: 'claude-3-sonnet-20240229',
-                    max_tokens: 1000,
+                    max_tokens: 500,
                     system: systemPrompt,
-                    messages: [
-                        {
-                            role: 'user',
-                            content: userMessage
-                        }
-                    ]
+                    messages: [{ role: 'user', content: message }]
                 })
             });
-
-            if (!response.ok) {
-                const errorData = await response.json().catch(() => ({}));
-                throw new Error(`API Error: ${response.status} - ${errorData.error?.message || 'Unknown error'}`);
-            }
-
+            
+            if (!response.ok) throw new Error(`API Error: ${response.status}`);
             const data = await response.json();
             return data.content[0].text;
-
         } catch (error) {
-            console.error('Claude API Error:', error);
-            throw error;
+            throw new Error(`Claude API Error: ${error.message}`);
         }
     }
 
-    // Enhanced response generation with Claude API
+    // Simplified Response Generation
     async function generateSmartResponse(question, zoning) {
         const zoneName = zoning.zoneName;
         const regulations = KIGALI_ZONING_REGULATIONS[zoneName] || {
-            description: 'Development zone per master plan',
+            description: 'Unknown zone',
             permitted: ['Check regulations'],
             prohibited: ['Check regulations'],
             conditional: ['Check regulations'],
@@ -907,47 +703,25 @@ Please provide expert guidance on this zoning question for Kigali city developme
             coverage: 'Check regulations'
         };
 
-        // Store question in conversation history
-        conversationHistory.push({ question, zoneName });
-        if (conversationHistory.length > 5) {
-            conversationHistory.shift(); // Keep only last 5 for context
-        }
-
-        // If Claude API is available, use it
         if (claudeApiKey) {
             try {
                 const context = {
-                    zoneName: zoneName,
+                    zoneName,
                     zoneDescription: regulations.description,
-                    coordinates: currentLocation ? `${currentLocation.latitude}, ${currentLocation.longitude}` : null,
-                    regulations: regulations
+                    coordinates: currentLocation ? `${currentLocation.latitude}, ${currentLocation.longitude}` : null
                 };
-
-                const response = await callClaudeAPI(question, context);
-                return response;
-
+                return await callClaudeAPI(question, context);
             } catch (error) {
-                console.error('Claude API failed, falling back to local response:', error);
-                
-                // Show error to user but continue with fallback
-                const errorMsg = error.message.includes('API Error: 401') ? 
-                    '🔑 Invalid API key. Please check your Claude API configuration.' :
-                    '⚠️ AI service temporarily unavailable. Using local knowledge...';
-                
-                // Return local response with error note
-                return errorMsg + '\n\n' + generateLocalResponse(question, zoning);
+                return `⚠️ AI unavailable: ${error.message}\n\n${generateLocalResponse(question, zoning)}`;
             }
         }
-
-        // Fallback to local response generation
         return generateLocalResponse(question, zoning);
     }
 
-    // Local response generation (existing logic)
     function generateLocalResponse(question, zoning) {
         const zoneName = zoning.zoneName;
         const regulations = KIGALI_ZONING_REGULATIONS[zoneName] || {
-            description: 'Development zone per master plan',
+            description: 'Unknown zone',
             permitted: ['Check regulations'],
             prohibited: ['Check regulations'],
             conditional: ['Check regulations'],
@@ -956,318 +730,77 @@ Please provide expert guidance on this zoning question for Kigali city developme
             coverage: 'Check regulations'
         };
 
-        const questionType = detectQuestionType(question);
         const buildingType = extractBuildingType(question);
-
-        // Handle different question types
-        switch (questionType) {
-            case 'permission':
-                if (!buildingType) {
-                    return `📍 Zone: ${zoneName}
-
-What you can build here:
-✅ PERMITTED: ${regulations.permitted.slice(0, 5).join(', ')}
-❌ PROHIBITED: ${regulations.prohibited.slice(0, 3).join(', ')}
-⚠️ CONDITIONAL: ${regulations.conditional.slice(0, 3).join(', ')}
-
-📏 Max Height: ${regulations.maxHeight}
-📐 Min Lot Size: ${regulations.minLotSize}
-🏗️ Max Coverage: ${regulations.coverage}
-
-💡 Specify a building type (e.g., restaurant, house) for detailed guidance.
-📞 Contact City of Kigali for official confirmation.`;
-                }
-
-                const isPermitted = regulations.permitted.some(item => 
-                    item.toLowerCase().includes(buildingType) || 
-                    buildingType.includes(item.toLowerCase().split(' ')[0])
-                );
-                const isProhibited = regulations.prohibited.some(item => 
-                    item.toLowerCase().includes(buildingType) || 
-                    buildingType.includes(item.toLowerCase().split(' ')[0])
-                );
-                const isConditional = regulations.conditional.some(item => 
-                    item.toLowerCase().includes(buildingType) || 
-                    buildingType.includes(item.toLowerCase().split(' ')[0])
-                );
-
-                if (isPermitted) {
-                    return `✅ YES - ${buildingType.toUpperCase()} IS PERMITTED
-
-Zone: ${zoneName}
-Status: FULLY ALLOWED
-
-📋 Requirements:
-• Min lot size: ${regulations.minLotSize}
-• Max height: ${regulations.maxHeight}
-• Max coverage: ${regulations.coverage}
-
-🚀 You can proceed with your ${buildingType} project!
-
-⚖️ Still need: Building permit from City of Kigali
-📞 Contact: City of Kigali Planning Office for official confirmation`;
-                }
-                if (isProhibited) {
-                    return `❌ NO - ${buildingType.toUpperCase()} IS PROHIBITED
-
-Zone: ${zoneName}
-Status: NOT ALLOWED
-
-🚫 Prohibited uses include:
-${regulations.prohibited.slice(0, 4).map(item => `• ${item}`).join('\n')}
-
-💡 Consider these zones instead:
-${getSuggestedZones(buildingType).join(', ')}
-
-📞 Contact City of Kigali for alternative options.`;
-                }
-                if (isConditional) {
-                    return `⚠️ MAYBE - ${buildingType.toUpperCase()} NEEDS APPROVAL
-
-Zone: ${zoneName}
-Status: CONDITIONAL USE
-
-📋 Conditional uses in this zone:
-${regulations.conditional.map(item => `• ${item}`).join('\n')}
-
-✅ Next steps:
-1. Apply for conditional use permit
-2. Submit detailed plans to City of Kigali
-3. Meet all specific requirements
-4. Get community consultation if required
-
-📞 Contact: City of Kigali Planning Office`;
-                }
-
-                return `❓ ${buildingType.toUpperCase()} - CHECK WITH AUTHORITIES
-
-Zone: ${zoneName}
-
-✅ PERMITTED: ${regulations.permitted.slice(0, 3).join(', ')}
-❌ PROHIBITED: ${regulations.prohibited.slice(0, 3).join(', ')}
-⚠️ CONDITIONAL: ${regulations.conditional.slice(0, 3).join(', ')}
-
-📞 Contact City of Kigali Planning Office for clarification.`;
-
-            default:
-                return `🌌 General Information for ${zoneName}
-
-Description: ${regulations.description}
-
-✅ PERMITTED: ${regulations.permitted.slice(0, 5).join(', ')}
-❌ PROHIBITED: ${regulations.prohibited.slice(0, 3).join(', ')}
-⚠️ CONDITIONAL: ${regulations.conditional.slice(0, 3).join(', ')}
-
-📏 Key Regulations:
-• Max Height: ${regulations.maxHeight}
-• Min Lot Size: ${regulations.minLotSize}
-• Max Coverage: ${regulations.coverage}
-
-💡 Ask specific questions like:
-• Can I build a restaurant here?
-• What's the maximum height?
-• What's the investment potential?
-
-📞 Contact City of Kigali for detailed guidance.`;
+        if (buildingType) {
+            const isPermitted = regulations.permitted.some(item => item.toLowerCase().includes(buildingType));
+            if (isPermitted) {
+                return `✅ ${buildingType.toUpperCase()} allowed in ${zoneName}\nMax Height: ${regulations.maxHeight}\nContact City of Kigali for permits.`;
+            }
+            return `❌ ${buildingType.toUpperCase()} not allowed in ${zoneName}\nContact City of Kigali for alternatives.`;
         }
+        return `📍 ${zoneName}\nPermitted: ${regulations.permitted.join(', ')}\nMax Height: ${regulations.maxHeight}\nContact City of Kigali for details.`;
     }
 
-    // Enhanced building types with more keywords
-    const buildingTypes = {
-        'restaurant': ['restaurant', 'eatery', 'diner', 'cafe', 'food outlet', 'bistro', 'kitchen'],
-        'hotel': ['hotel', 'lodge', 'guest house', 'accommodation', 'motel', 'inn', 'hostel'],
-        'house': ['house', 'home', 'residence', 'dwelling', 'villa', 'bungalow', 'cottage'],
-        'shop': ['shop', 'store', 'retail', 'boutique', 'market', 'grocery', 'supermarket'],
-        'apartment': ['apartment', 'flat', 'condo', 'residential building', 'multi-family', 'high-rise'],
-        'office': ['office', 'workspace', 'business center', 'co-working', 'commercial office'],
-        'warehouse': ['warehouse', 'storage', 'depot', 'distribution center', 'logistics'],
-        'factory': ['factory', 'manufacturing', 'industry', 'plant', 'production'],
-        'shopping center': ['shopping center', 'mall', 'plaza', 'commercial center'],
-        'nightclub': ['nightclub', 'club', 'disco', 'bar', 'lounge'],
-        'supermarket': ['supermarket', 'grocery', 'market', 'food store'],
-        'school': ['school', 'education', 'university', 'college', 'academy', 'institute'],
-        'hospital': ['hospital', 'clinic', 'medical', 'health center', 'healthcare'],
-        'farm': ['farm', 'agriculture', 'farming', 'ranch', 'plantation'],
-        'greenhouse': ['greenhouse', 'agricultural structure', 'hydroponics'],
-        'parking': ['parking', 'garage', 'car park', 'parking lot'],
-        'transport': ['transport', 'terminal', 'station', 'transit hub'],
-        'petrol station': ['petrol station', 'gas station', 'fuel station', 'service station'],
-        'garage': ['garage', 'auto repair', 'car repair', 'mechanic']
-    };
-
-    // Question type detection
-    function detectQuestionType(question) {
-        const lowerQuestion = question.toLowerCase();
-        
-        if (lowerQuestion.includes('can i build') || lowerQuestion.includes('is it allowed') || 
-            lowerQuestion.includes('permitted') || lowerQuestion.includes('prohibited')) {
-            return 'permission';
-        }
-        if (lowerQuestion.includes('height') || lowerQuestion.includes('how tall') || 
-            lowerQuestion.includes('maximum height')) {
-            return 'height';
-        }
-        if (lowerQuestion.includes('investment') || lowerQuestion.includes('potential') || 
-            lowerQuestion.includes('opportunity') || lowerQuestion.includes('profitable')) {
-            return 'investment';
-        }
-        if (lowerQuestion.includes('process') || lowerQuestion.includes('how to') || 
-            lowerQuestion.includes('steps') || lowerQuestion.includes('apply')) {
-            return 'process';
-        }
-        return 'general';
-    }
-
-    // Extract building type from question
     function extractBuildingType(question) {
         const lowerQuestion = question.toLowerCase();
-        for (const [type, keywords] of Object.entries(buildingTypes)) {
-            for (const keyword of keywords) {
-                if (lowerQuestion.includes(keyword)) {
-                    return type;
-                }
-            }
-        }
-        return null;
+        const types = ['restaurant', 'hotel', 'house', 'shop', 'apartment', 'office'];
+        return types.find(type => lowerQuestion.includes(type)) || null;
     }
 
-    // Suggest alternative zones for a building type
-    function getSuggestedZones(buildingType) {
-        const suggestions = {
-            'restaurant': ['C1-Mixed use zone', 'C3-City commercial zone'],
-            'hotel': ['C1-Mixed use zone', 'C3-City commercial zone'],
-            'house': ['R1-Low density residential zone', 'R2-Medium density residential - Improvement zone'],
-            'shop': ['C1-Mixed use zone', 'C3-City commercial zone'],
-            'apartment': ['R2-Medium density residential - Improvement zone', 'R4-High density residential zone'],
-            'office': ['C1-Mixed use zone', 'C3-City commercial zone'],
-            'warehouse': ['I1-Light industrial zone', 'I2-General industrial zone'],
-            'factory': ['I1-Light industrial zone', 'I2-General industrial zone']
-        };
-        
-        return suggestions[buildingType] || ['C1-Mixed use zone', 'C3-City commercial zone'];
-    }
-
-    // Initialize API key on page load
-    function initializeApiKey() {
-        // Check if API key is stored in session
-        const storedKey = sessionStorage.getItem('claude_api_key');
-        if (storedKey) {
-            claudeApiKey = storedKey;
-            const apiBtn = document.getElementById('apiKeyBtn');
-            apiBtn.innerHTML = '✅ AI Ready';
-            apiBtn.style.background = 'linear-gradient(135deg, var(--nebular-aurora-green) 0%, var(--nebular-stellar-gold) 100%)';
-        }
-    }
-
-    // Use current location functionality
     function useCurrentLocation() {
-        const btn = document.getElementById('useLocationBtn');
-        
         if (!navigator.geolocation) {
-            alert('🛸 Your device cannot detect cosmic coordinates');
+            alert('Geolocation not supported');
             return;
         }
         
-        // Show loading state
+        const btn = document.getElementById('useLocationBtn');
         btn.disabled = true;
         btn.innerHTML = '🛰️ Scanning...';
-        updateStatus('loading', 'Getting your location...');
+        updateStatus('loading', 'Getting location...');
         
         navigator.geolocation.getCurrentPosition(
-            // Success callback
-            function(position) {
-                const lat = position.coords.latitude;
-                const lng = position.coords.longitude;
-                
-                // Check if location is in Kigali area (rough bounds)
-                if (lat < -2.2 || lat > -1.7 || lng < 29.8 || lng > 30.3) {
+            position => {
+                const { latitude, longitude } = position.coords;
+                if (latitude < -2.2 || latitude > -1.7 || longitude < 29.8 || longitude > 30.3) {
+                    alert('Location outside Kigali');
+                    updateStatus('ready', 'Location outside Kigali');
                     btn.disabled = false;
                     btn.innerHTML = '📍 Use My Location';
-                    updateStatus('ready', 'Location outside Kigali area');
-                    alert('🚀 Your cosmic coordinates are outside the Kigali development galaxy.\n\nTerraNebular is currently optimized for Kigali\'s zoning universe.');
                     return;
                 }
                 
-                // Center map on user location
-                if (view) {
-                    view.center = [lng, lat];
-                    view.zoom = 16;
-                    
-                    // Create a point and simulate click
-                    require(["esri/geometry/Point"], function(Point) {
-                        const userPoint = new Point({
-                            longitude: lng,
-                            latitude: lat,
-                            spatialReference: view.spatialReference
-                        });
-                        
-                        // Simulate map click at user location
-                        handleMapClick({ mapPoint: userPoint });
-                    });
-                }
+                view.center = [longitude, latitude];
+                view.zoom = 16;
+                require(["esri/geometry/Point"], function(Point) {
+                    handleMapClick({ mapPoint: new Point({ longitude, latitude, spatialReference: view.spatialReference }) });
+                });
                 
-                btn.disabled = false;
-                btn.innerHTML = '✨ Location Found';
-                updateStatus('ready', 'Analyzing your location...');
-                
-                // Reset button text after 3 seconds
-                setTimeout(() => {
-                    btn.innerHTML = '📍 Use My Location';
-                }, 3000);
-            },
-            // Error callback
-            function(error) {
                 btn.disabled = false;
                 btn.innerHTML = '📍 Use My Location';
-                
-                let errorMessage = '';
-                switch(error.code) {
-                    case error.PERMISSION_DENIED:
-                        errorMessage = '📡 TerraNebular needs access to your cosmic coordinates.\n\nPlease allow location access and try again.';
-                        updateStatus('ready', 'Location permission denied');
-                        break;
-                    case error.POSITION_UNAVAILABLE:
-                        errorMessage = '🛸 Unable to detect your cosmic position.\n\nPlease check your GPS/internet connection.';
-                        updateStatus('ready', 'Location unavailable');
-                        break;
-                    case error.TIMEOUT:
-                        errorMessage = '⏰ Cosmic location scan timed out.\n\nPlease try again.';
-                        updateStatus('ready', 'Location timeout');
-                        break;
-                    default:
-                        errorMessage = '❌ Unknown cosmic navigation error.\n\nPlease try tapping on the map instead.';
-                        updateStatus('ready', 'Location error');
-                        break;
-                }
-                alert(errorMessage);
+                updateStatus('ready', 'Location found');
             },
-            // Options
-            {
-                enableHighAccuracy: true,
-                timeout: 10000,
-                maximumAge: 60000
-            }
+            error => {
+                alert('Geolocation error: ' + error.message);
+                updateStatus('ready', 'Location error');
+                btn.disabled = false;
+                btn.innerHTML = '📍 Use My Location';
+            },
+            { enableHighAccuracy: true, timeout: 5000 }
         );
     }
 
-    document.addEventListener('DOMContentLoaded', function() {
-        initializeApp();
-        initializeApiKey();
-        checkCachedData();
-    });
+    document.addEventListener('DOMContentLoaded', initializeApp);
 
     function initializeApp() {
         updateStatus('loading', 'Initializing map...');
+        showLoading(true, 'Loading map...');
         
         require([
             "esri/Map",
-            "esri/views/MapView",
-            "esri/Graphic",
-            "esri/geometry/Point"
-        ], function(Map, MapView, Graphic, Point) {
-            
+            "esri/views/MapView"
+        ], function(Map, MapView) {
             const map = new Map({
-                basemap: "hybrid"  // Keep satellite imagery for better context
+                basemap: "streets-vector" // Lightweight vector basemap
             });
             
             view = new MapView({
@@ -1275,69 +808,46 @@ Description: ${regulations.description}
                 map: map,
                 center: [30.0619, -1.9441],
                 zoom: 13,
-                ui: {
-                    components: ["attribution"]
-                }
+                ui: { components: ["attribution"] }
             });
             
             view.on("click", handleMapClick);
-            view.popup.autoOpenEnabled = false;
-            
             view.when(() => {
+                showLoading(false);
                 updateStatus('ready', 'Map ready');
             });
         });
         
         document.getElementById('fileUpload').addEventListener('change', handleFileUpload);
-        
-        const chatInput = document.getElementById('chatInput');
-        chatInput.addEventListener('input', autoResizeTextarea);
-        chatInput.addEventListener('keypress', function(e) {
+        document.getElementById('chatInput').addEventListener('input', autoResizeTextarea);
+        document.getElementById('chatInput').addEventListener('keypress', function(e) {
             if (e.key === 'Enter' && !e.shiftKey) {
                 e.preventDefault();
                 sendMessage();
             }
         });
-
-        // Close modal when clicking outside
         document.getElementById('apiKeyModal').addEventListener('click', function(e) {
-            if (e.target === this) {
-                closeApiModal();
-            }
+            if (e.target === this) closeApiModal();
         });
-
-        // Handle Enter key in API key input
-        document.getElementById('apiKeyInput').addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') {
-                saveApiKey();
-            }
-        });
+        showDataBanner();
     }
 
-    // Auto-resize textarea
     function autoResizeTextarea() {
         const textarea = document.getElementById('chatInput');
         textarea.style.height = 'auto';
-        textarea.style.height = `${Math.min(textarea.scrollHeight, 80)}px`;
+        textarea.style.height = `${Math.min(textarea.scrollHeight, 72)}px`;
     }
 
-    // Quick action buttons for common questions
     function addQuickActionButtons() {
         const chatContainer = document.getElementById('chatContainer');
-        
-        // Check if quick actions already exist
-        if (chatContainer.querySelector('.quick-actions')) {
-            return;
-        }
+        if (chatContainer.querySelector('.quick-actions')) return;
         
         const quickActions = document.createElement('div');
         quickActions.className = 'quick-actions';
         
         const actions = [
-            { text: 'Can I build a restaurant?', question: 'Can I build a restaurant here?' },
-            { text: 'Max height?', question: 'What is the maximum height?' },
-            { text: 'Investment potential?', question: 'What is the investment potential?' },
-            { text: 'Permit process?', question: 'What is the process to get a permit?' }
+            { text: 'Restaurant?', question: 'Can I build a restaurant?' },
+            { text: 'Max Height?', question: 'What is the maximum height?' }
         ];
 
         actions.forEach(action => {
@@ -1351,7 +861,6 @@ Description: ${regulations.description}
         chatContainer.insertBefore(quickActions, chatContainer.querySelector('.ai-response'));
     }
 
-    // Simulate asking a question
     function askQuestion(question) {
         const chatInput = document.getElementById('chatInput');
         chatInput.value = question;
@@ -1359,11 +868,9 @@ Description: ${regulations.description}
         sendMessage();
     }
 
-    // Enhanced sendMessage with Claude API integration
     async function sendMessage() {
         const input = document.getElementById('chatInput');
         const question = input.value.trim();
-        
         if (!question || !currentZoning) return;
         
         const sendBtn = document.getElementById('sendBtn');
@@ -1372,13 +879,7 @@ Description: ${regulations.description}
         
         sendBtn.disabled = true;
         sendBtn.innerHTML = '⏳';
-        
-        // Show different loading message based on API availability
-        const loadingMsg = claudeApiKey ? 
-            '🤖 Claude is analyzing your zoning question...' : 
-            '🌌 Analyzing cosmic development patterns...';
-        
-        aiResponse.innerHTML = loadingMsg;
+        aiResponse.innerHTML = 'Analyzing...';
         aiResponse.className = 'ai-response';
         chatContainer.classList.add('show');
         
@@ -1387,27 +888,11 @@ Description: ${regulations.description}
         
         try {
             const response = await generateSmartResponse(question, currentZoning);
-            
-            let responseClass = 'ai-response';
-            if (response.includes('✅ YES')) {
-                responseClass += ' response-success';
-            } else if (response.includes('❌ NO')) {
-                responseClass += ' response-error';
-            } else if (response.includes('⚠️ MAYBE')) {
-                responseClass += ' response-warning';
-            }
-            
             aiResponse.innerHTML = response;
-            aiResponse.className = responseClass;
-            
-            // Add quick action buttons after first response
-            if (!chatContainer.querySelector('.quick-actions')) {
-                addQuickActionButtons();
-            }
-            
+            aiResponse.className = 'ai-response' + (response.includes('✅') ? ' response-success' : response.includes('❌') ? ' response-error' : '');
+            addQuickActionButtons();
         } catch (error) {
-            console.error('Error generating response:', error);
-            aiResponse.innerHTML = '❌ Sorry, I encountered an error generating a response. Please try again.';
+            aiResponse.innerHTML = '❌ Error: ' + error.message;
             aiResponse.className = 'ai-response response-error';
         } finally {
             sendBtn.disabled = false;
@@ -1415,135 +900,69 @@ Description: ${regulations.description}
         }
     }
 
-    // Update displayLocationInfo to initialize chat with enhanced features
     function displayLocationInfo(zoning) {
         const zoneName = zoning.zoneName;
-        const regulations = KIGALI_ZONING_REGULATIONS[zoneName] || {
-            description: 'Development zone per master plan',
-            maxHeight: 'Check regulations',
-            coverage: 'Per regulations'
-        };
+        const regulations = KIGALI_ZONING_REGULATIONS[zoneName] || { description: 'Unknown zone' };
         
         document.getElementById('zoneName').textContent = zoneName;
         document.getElementById('zoneDescription').textContent = regulations.description;
-        
-        const colorIndicator = document.getElementById('zoneColorIndicator');
-        const zoneColor = ZONE_COLORS[zoneName] || '#999999';
-        colorIndicator.style.background = zoneColor;
-        
+        document.getElementById('zoneColorIndicator').style.background = ZONE_COLORS[zoneName] || '#999999';
         document.getElementById('locationHeader').style.display = 'flex';
         
-        const chatContainer = document.getElementById('chatContainer');
         const aiResponse = document.getElementById('aiResponse');
-        
-        const welcomeMsg = claudeApiKey ? 
-            `🤖 Claude AI is ready to assist with your zoning questions!\n\n📍 You've selected: ${zoneName}\n\n✨ I'm powered by Claude AI and have deep knowledge of Kigali's zoning regulations, building requirements, and development opportunities. Ask me anything about development in this zone!` :
-            `🌌 Welcome to TerraNebular - where development dreams take shape.\n\n📍 You've selected: ${zoneName}\n\n✨ I'm your intelligent assistant for navigating Kigali's zoning regulations. Configure Claude AI for enhanced responses, or ask me basic questions about this zone.\n\n💡 Tap "Setup AI" to unlock advanced AI assistance!`;
-        
-        aiResponse.innerHTML = welcomeMsg;
+        const chatContainer = document.getElementById('chatContainer');
+        aiResponse.innerHTML = `📍 Selected: ${zoneName}\nAsk about zoning regulations or building options!`;
         aiResponse.className = 'ai-response response-success';
         chatContainer.classList.add('show');
         
-        // Add quick action buttons
-        if (!chatContainer.querySelector('.quick-actions')) {
-            addQuickActionButtons();
-        }
+        addQuickActionButtons();
     }
 
-    // Add location pin on map
     function addLocationPin(point) {
         require(["esri/Graphic", "esri/geometry/Point"], function(Graphic, Point) {
             view.graphics.removeAll();
-            
-            const pinSymbol = {
-                type: "simple-marker",
-                color: [236, 72, 153, 0.9],
-                size: 12,
-                outline: {
-                    color: [255, 255, 255],
-                    width: 2
-                }
-            };
-            
             const pinGraphic = new Graphic({
                 geometry: point,
-                symbol: pinSymbol
+                symbol: {
+                    type: "simple-marker",
+                    color: [236, 72, 153, 0.9],
+                    size: 10,
+                    outline: { color: [255, 255, 255], width: 1 }
+                }
             });
-            
             view.graphics.add(pinGraphic);
         });
     }
 
-    // Show bottom panel
     function showBottomPanel() {
-        const panel = document.getElementById('bottomPanel');
-        panel.classList.add('show');
+        document.getElementById('bottomPanel').classList.add('show');
     }
 
-    // Show no data message
     function showNoDataMessage() {
-        const chatContainer = document.getElementById('chatContainer');
         const aiResponse = document.getElementById('aiResponse');
-        
-        aiResponse.innerHTML = `🌌 No zoning data found for this location.\n\nPlease try another location or load zoning data using the banner above.`;
+        const chatContainer = document.getElementById('chatContainer');
+        aiResponse.innerHTML = '🌌 No zoning data found.\nLoad zoning data using the banner above.';
         aiResponse.className = 'ai-response response-error';
         chatContainer.classList.add('show');
     }
 
-    // Cache management functions
-    const CACHE_KEY = 'kigali_zoning_data';
-    const CACHE_VERSION = '1.0';
-
-    function checkCachedData() {
-        // Note: In a real implementation, you'd check for cached data
-        // For this demo, we'll show the data banner
-        showDataBanner();
-    }
-
     function showDataBanner(loaded = false) {
         const banner = document.getElementById('dataBanner');
-        
-        if (loaded) {
-            banner.innerHTML = '✨ Cosmic zoning data loaded successfully';
-            banner.classList.add('loaded');
-            banner.onclick = null;
-            
-            setTimeout(() => {
-                banner.classList.remove('show');
-            }, 3000);
-        } else {
-            banner.innerHTML = '🌌 Tap to load cosmic zoning data';
-            banner.classList.remove('loaded');
-            banner.onclick = loadDataFile;
-        }
-        
+        banner.innerHTML = loaded ? '✨ Zoning data loaded' : '🌌 Tap to load zoning data';
+        banner.classList.toggle('loaded', loaded);
         banner.classList.add('show');
+        if (loaded) setTimeout(() => banner.classList.remove('show'), 2000);
     }
 
     function updateStatus(status, text) {
-        const dot = document.getElementById('statusDot');
-        const statusText = document.getElementById('statusText');
-        
-        dot.className = `status-dot ${status}`;
-        
-        // Add cosmic flair to status messages
-        const cosmicMessages = {
-            'loading': '🌌 Initializing cosmic sensors...',
-            'ready': '✨ Ready to explore the development universe',
-            'Location outside Kigali area': '🚀 Signal detected outside Kigali galaxy',
-            'Location permission denied': '📡 Cosmic location access denied',
-            'Location unavailable': '🛸 Unable to detect cosmic coordinates',
-            'Location timeout': '⏰ Cosmic location scan timed out',
-            'Location error': '❌ Cosmic navigation error',
-            'Getting your location...': '🛰️ Scanning your cosmic coordinates...',
-            'Analyzing your location...': '🔍 Analyzing development potential...'
-        };
-        
-        statusText.textContent = cosmicMessages[text] || text;
+        document.getElementById('statusDot').className = `status-dot ${status}`;
+        document.getElementById('statusText').textContent = text;
     }
 
-    function loadDataFile() {
-        document.getElementById('fileUpload').click();
+    function showLoading(show, text = 'Loading...') {
+        const overlay = document.getElementById('loadingOverlay');
+        document.getElementById('loadingText').textContent = text;
+        overlay.classList.toggle('show', show);
     }
 
     async function handleFileUpload(event) {
@@ -1555,13 +974,10 @@ Description: ${regulations.description}
         try {
             const text = await file.text();
             const data = JSON.parse(text);
-            
             await processZoningData(data);
-            
             showLoading(false);
             showDataBanner(true);
             updateStatus('ready', `${zoningFeatures.length} zones loaded`);
-            
         } catch (error) {
             showLoading(false);
             alert('❌ Error loading file: ' + error.message);
@@ -1569,24 +985,11 @@ Description: ${regulations.description}
     }
 
     async function processZoningData(data) {
-        let features = [];
-        
-        if (data.type === 'FeatureCollection') {
-            features = data.features;
-        } else if (Array.isArray(data)) {
-            features = data;
-        } else if (data.features) {
-            features = data.features;
-        }
-        
-        if (!features || features.length === 0) {
-            throw new Error('No features found in JSON file');
-        }
-        
+        let features = data.type === 'FeatureCollection' ? data.features : data.features || data;
         zoningFeatures = [];
         spatialIndex = new Map();
         
-        for (let i = 0; i < features.length; i++) {
+        for (let i = 0; i < Math.min(features.length, 1000); i++) { // Limit processing for performance
             const feature = features[i];
             const props = feature.properties || feature.attributes || feature;
             const zoneName = extractZoneName(props);
@@ -1600,41 +1003,28 @@ Description: ${regulations.description}
                 };
                 
                 zoningFeatures.push(processedFeature);
-                
                 if (processedFeature.bounds) {
                     const gridKey = Math.floor(processedFeature.bounds.centerLat * 1000) + ',' + 
                                    Math.floor(processedFeature.bounds.centerLng * 1000);
-                    if (!spatialIndex.has(gridKey)) {
-                        spatialIndex.set(gridKey, []);
-                    }
-                    spatialIndex.get(gridKey).push(processedFeature);
+                    spatialIndex.set(gridKey, spatialIndex.get(gridKey) || []).push(processedFeature);
                 }
             }
         }
     }
 
     function extractZoneName(properties) {
-        const possibleFields = [
-            'New_Zoning', 'new_zoning', 'Zone_Code', 'zone_code',
-            'zoning', 'ZONING', 'zone_name', 'type'
-        ];
-        
-        for (const field of possibleFields) {
-            if (properties[field] && typeof properties[field] === 'string') {
-                return properties[field].trim();
-            }
+        const fields = ['New_Zoning', 'zone_code', 'zoning', 'type'];
+        for (const field of fields) {
+            if (properties[field]) return properties[field].trim();
         }
         return null;
     }
 
     function calculateBounds(geometry) {
         if (!geometry || !geometry.coordinates) return null;
-        
         try {
-            let minLng = Infinity, maxLng = -Infinity;
-            let minLat = Infinity, maxLat = -Infinity;
-            
-            const processCoordinates = (coords) => {
+            let minLng = Infinity, maxLng = -Infinity, minLat = Infinity, maxLat = -Infinity;
+            const processCoordinates = coords => {
                 if (typeof coords[0] === 'number') {
                     minLng = Math.min(minLng, coords[0]);
                     maxLng = Math.max(maxLng, coords[0]);
@@ -1644,28 +1034,10 @@ Description: ${regulations.description}
                     coords.forEach(processCoordinates);
                 }
             };
-            
             processCoordinates(geometry.coordinates);
-            
-            return {
-                minLng, maxLng, minLat, maxLat,
-                centerLng: (minLng + maxLng) / 2,
-                centerLat: (minLat + maxLat) / 2
-            };
+            return { minLng, maxLng, minLat, maxLat, centerLng: (minLng + maxLng) / 2, centerLat: (minLat + maxLat) / 2 };
         } catch (error) {
             return null;
-        }
-    }
-
-    function showLoading(show, text = 'Loading...') {
-        const overlay = document.getElementById('loadingOverlay');
-        const loadingText = document.getElementById('loadingText');
-        
-        if (show) {
-            loadingText.textContent = text;
-            overlay.classList.add('show');
-        } else {
-            overlay.classList.remove('show');
         }
     }
 
@@ -1691,56 +1063,16 @@ Description: ${regulations.description}
     function queryZoningData(point) {
         const lat = point.latitude;
         const lng = point.longitude;
-        
         const gridKey = Math.floor(lat * 1000) + ',' + Math.floor(lng * 1000);
         const nearbyFeatures = spatialIndex.get(gridKey) || [];
-        
-        for (let i = -1; i <= 1; i++) {
-            for (let j = -1; j <= 1; j++) {
-                if (i === 0 && j === 0) continue;
-                const nearbyKey = (Math.floor(lat * 1000) + i) + ',' + (Math.floor(lng * 1000) + j);
-                const features = spatialIndex.get(nearbyKey) || [];
-                nearbyFeatures.push(...features);
-            }
-        }
         
         for (const feature of nearbyFeatures) {
             if (feature.bounds && 
                 lat >= feature.bounds.minLat && lat <= feature.bounds.maxLat &&
                 lng >= feature.bounds.minLng && lng <= feature.bounds.maxLng) {
-                
-                return {
-                    zoneName: feature.zoneName,
-                    properties: feature.properties,
-                    source: 'official',
-                    featureId: feature.id
-                };
+                return { zoneName: feature.zoneName, properties: feature.properties, source: 'official', featureId: feature.id };
             }
         }
-        
-        // Fallback: find nearest zone
-        let nearest = null;
-        let minDistance = Infinity;
-        
-        for (const feature of zoningFeatures.slice(0, 500)) {
-            if (!feature.bounds) continue;
-            
-            const distance = Math.sqrt(
-                Math.pow(lat - feature.bounds.centerLat, 2) + 
-                Math.pow(lng - feature.bounds.centerLng, 2)
-            );
-            
-            if (distance < minDistance && distance < 0.005) {
-                minDistance = distance;
-                nearest = {
-                    zoneName: feature.zoneName,
-                    properties: feature.properties,
-                    source: 'approximate',
-                    distance: (distance * 111).toFixed(1),
-                    featureId: feature.id
-                };
-            }
-        }
-        
-        return nearest;
+        return null;
     }
+    </script>
