@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -34,48 +35,68 @@
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             background: linear-gradient(135deg, var(--nebular-deep-blue) 0%, var(--nebular-space-blue) 50%, var(--nebular-cosmic-purple) 100%);
             overflow: hidden;
-        }
-        
-        #viewDiv {
             height: 100vh;
-            width: 100%;
-            position: relative;
-        }
-        
-        /* Cosmic Header */
-        #mobileHeader {
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            background: linear-gradient(135deg, var(--nebular-deep-blue) 0%, var(--nebular-space-blue) 50%, var(--nebular-cosmic-purple) 100%);
-            color: var(--nebular-comet-white);
-            padding: 12px 16px;
-            z-index: 100;
-            box-shadow: 0 4px 20px rgba(15, 23, 42, 0.6);
-            backdrop-filter: blur(10px);
-        }
-        
-        .header-content {
             display: flex;
-            align-items: center;
-            justify-content: space-between;
         }
-        
-        .header-controls {
+
+        /* Main Layout */
+        .app-container {
+            display: flex;
+            width: 100%;
+            height: 100vh;
+        }
+
+        /* Left Panel */
+        #leftPanel {
+            width: 400px;
+            min-width: 350px;
+            max-width: 500px;
+            background: linear-gradient(135deg, var(--nebular-comet-white) 0%, var(--nebular-stardust) 100%);
+            box-shadow: 4px 0 32px rgba(15, 23, 42, 0.2);
+            z-index: 100;
             display: flex;
             flex-direction: column;
-            align-items: flex-end;
-            gap: 8px;
+            transition: width 0.3s ease;
+            resize: horizontal;
+            overflow: hidden;
+        }
+
+        /* Panel Header */
+        .panel-header {
+            background: linear-gradient(135deg, var(--nebular-deep-blue) 0%, var(--nebular-space-blue) 50%, var(--nebular-cosmic-purple) 100%);
+            color: var(--nebular-comet-white);
+            padding: 20px;
+            flex-shrink: 0;
+        }
+
+        .app-title {
+            font-size: 20px;
+            font-weight: 700;
+            margin: 0 0 4px 0;
+            line-height: 1.2;
+        }
+        
+        .app-subtitle {
+            font-size: 13px;
+            opacity: 0.9;
+            margin: 0 0 16px 0;
+            line-height: 1.3;
+        }
+
+        .header-controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
         }
         
         .location-btn {
             background: linear-gradient(135deg, var(--nebular-stellar-gold) 0%, var(--nebular-meteor-orange) 100%);
             color: var(--nebular-comet-white);
             border: none;
-            padding: 6px 10px;
-            border-radius: 16px;
-            font-size: 10px;
+            padding: 8px 14px;
+            border-radius: 20px;
+            font-size: 12px;
             font-weight: 600;
             cursor: pointer;
             box-shadow: 0 2px 12px rgba(245, 158, 11, 0.4);
@@ -101,25 +122,11 @@
             box-shadow: none;
         }
         
-        .app-title {
-            font-size: 16px;
-            font-weight: 700;
-            margin: 0;
-            line-height: 1.2;
-        }
-        
-        .app-subtitle {
-            font-size: 11px;
-            opacity: 0.9;
-            margin: 2px 0 0 0;
-            line-height: 1.3;
-        }
-        
         .status-indicator {
             display: flex;
             align-items: center;
-            gap: 6px;
-            font-size: 10px;
+            gap: 8px;
+            font-size: 11px;
         }
         
         .status-dot {
@@ -149,54 +156,50 @@
                 box-shadow: 0 0 12px rgba(245, 158, 11, 0.8);
             }
         }
-        
-        /* Hidden file upload */
-        #fileUpload {
-            display: none;
-        }
-        
-        /* Cosmic Bottom Panel */
-        #bottomPanel {
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            background: linear-gradient(135deg, var(--nebular-comet-white) 0%, var(--nebular-stardust) 100%);
-            border-radius: 20px 20px 0 0;
-            box-shadow: 0 -8px 32px rgba(15, 23, 42, 0.3);
-            z-index: 100;
-            max-height: 50vh;
-            transition: transform 0.3s ease;
-            transform: translateY(100%);
-            backdrop-filter: blur(10px);
-        }
-        
-        #bottomPanel.show {
-            transform: translateY(0);
-        }
-        
-        .panel-handle {
-            width: 40px;
-            height: 4px;
-            background: linear-gradient(135deg, var(--nebular-cosmic-purple) 0%, var(--nebular-plasma-pink) 100%);
-            border-radius: 2px;
-            margin: 12px auto 8px;
-            opacity: 0.7;
-        }
-        
+
+        /* Panel Content */
         .panel-content {
-            padding: 0 20px 20px;
+            flex: 1;
             overflow-y: auto;
-            max-height: 40vh;
+            padding: 20px;
+        }
+
+        /* Data Banner */
+        .data-banner {
+            background: linear-gradient(135deg, var(--nebular-cosmic-purple) 0%, var(--nebular-plasma-pink) 100%);
+            color: var(--nebular-comet-white);
+            padding: 12px 16px;
+            border-radius: 12px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 20px rgba(99, 102, 241, 0.4);
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+            margin-bottom: 20px;
+            text-align: center;
         }
         
+        .data-banner.loaded {
+            background: linear-gradient(135deg, var(--nebular-aurora-green) 0%, var(--nebular-stellar-gold) 100%);
+            box-shadow: 0 4px 20px rgba(16, 185, 129, 0.4);
+        }
+
+        .data-banner:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 24px rgba(99, 102, 241, 0.6);
+        }
+
+        /* Location Info */
         .location-header {
             display: flex;
             align-items: center;
             gap: 12px;
-            margin-bottom: 16px;
-            padding-bottom: 12px;
-            border-bottom: 1px solid #E5E7EB;
+            margin-bottom: 20px;
+            padding: 16px;
+            background: linear-gradient(135deg, var(--nebular-stardust) 0%, var(--nebular-comet-white) 100%);
+            border-radius: 12px;
+            box-shadow: 0 2px 12px rgba(15, 23, 42, 0.1);
         }
         
         .zone-info {
@@ -204,7 +207,7 @@
         }
         
         .zone-name {
-            font-size: 15px;
+            font-size: 16px;
             font-weight: 600;
             color: var(--nebular-deep-blue);
             margin: 0 0 4px 0;
@@ -212,22 +215,22 @@
         }
         
         .zone-description {
-            font-size: 12px;
+            font-size: 13px;
             color: var(--nebular-space-blue);
             margin: 0;
             line-height: 1.4;
         }
         
         .zone-color-indicator {
-            width: 20px;
-            height: 20px;
-            border-radius: 6px;
+            width: 24px;
+            height: 24px;
+            border-radius: 8px;
             border: 2px solid var(--nebular-comet-white);
             box-shadow: 0 2px 8px rgba(15, 23, 42, 0.2);
             flex-shrink: 0;
         }
-        
-        /* Cosmic AI Chat Interface */
+
+        /* Chat Interface */
         .chat-container {
             background: linear-gradient(135deg, var(--nebular-stardust) 0%, var(--nebular-comet-white) 100%);
             border-radius: 12px;
@@ -243,32 +246,34 @@
         
         .ai-response {
             background: linear-gradient(135deg, var(--nebular-comet-white) 0%, var(--nebular-stardust) 100%);
-            padding: 14px;
+            padding: 16px;
             border-radius: 12px;
             border-left: 4px solid var(--nebular-cosmic-purple);
             font-size: 13px;
-            line-height: 1.5;
+            line-height: 1.6;
             white-space: pre-wrap;
-            margin-bottom: 12px;
+            margin-bottom: 16px;
             box-shadow: 0 2px 8px rgba(15, 23, 42, 0.1);
             color: var(--nebular-deep-blue);
+            max-height: 400px;
+            overflow-y: auto;
         }
         
         .chat-input-container {
             display: flex;
-            gap: 8px;
+            gap: 10px;
             align-items: flex-end;
         }
         
         .chat-input {
             flex: 1;
-            padding: 12px 14px;
+            padding: 12px 16px;
             border: 2px solid var(--nebular-stardust);
-            border-radius: 20px;
+            border-radius: 24px;
             font-size: 13px;
             resize: none;
-            min-height: 40px;
-            max-height: 80px;
+            min-height: 44px;
+            max-height: 100px;
             outline: none;
             transition: all 0.3s ease;
             background: var(--nebular-comet-white);
@@ -289,9 +294,9 @@
             background: linear-gradient(135deg, var(--nebular-cosmic-purple) 0%, var(--nebular-plasma-pink) 100%);
             color: var(--nebular-comet-white);
             border: none;
-            width: 40px;
-            height: 40px;
-            border-radius: 20px;
+            width: 44px;
+            height: 44px;
+            border-radius: 22px;
             cursor: pointer;
             display: flex;
             align-items: center;
@@ -316,37 +321,58 @@
             box-shadow: none;
             transform: none;
         }
+
+        /* Quick Actions */
+        .quick-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 16px;
+        }
         
-        /* Cosmic Data Banner */
-        .data-banner {
-            position: absolute;
-            top: 70px;
-            left: 16px;
-            right: 16px;
+        .quick-actions .location-btn {
+            font-size: 11px;
+            padding: 6px 12px;
             background: linear-gradient(135deg, var(--nebular-cosmic-purple) 0%, var(--nebular-plasma-pink) 100%);
-            color: var(--nebular-comet-white);
-            padding: 12px 16px;
-            border-radius: 12px;
-            font-size: 13px;
-            font-weight: 600;
-            z-index: 99;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            transform: translateY(-100px);
-            box-shadow: 0 4px 20px rgba(99, 102, 241, 0.4);
-            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Response States */
+        .response-success {
+            border-left-color: var(--nebular-aurora-green);
+            background: linear-gradient(135deg, #ECFDF5 0%, #F0FDF4 100%);
+            box-shadow: 0 0 20px rgba(16, 185, 129, 0.1);
         }
         
-        .data-banner.show {
-            transform: translateY(0);
+        .response-warning {
+            border-left-color: var(--nebular-stellar-gold);
+            background: linear-gradient(135deg, #FFFBEB 0%, #FEF3C7 100%);
+            box-shadow: 0 0 20px rgba(245, 158, 11, 0.1);
         }
         
-        .data-banner.loaded {
-            background: linear-gradient(135deg, var(--nebular-aurora-green) 0%, var(--nebular-stellar-gold) 100%);
-            box-shadow: 0 4px 20px rgba(16, 185, 129, 0.4);
+        .response-error {
+            border-left-color: var(--nebular-plasma-pink);
+            background: linear-gradient(135deg, #FDF2F8 0%, #FCE7F3 100%);
+            box-shadow: 0 0 20px rgba(236, 72, 153, 0.1);
+        }
+
+        /* Map Container */
+        #mapContainer {
+            flex: 1;
+            position: relative;
+            background: var(--nebular-deep-blue);
         }
         
-        /* Cosmic Loading Overlay */
+        #viewDiv {
+            height: 100%;
+            width: 100%;
+        }
+
+        /* Hidden file upload */
+        #fileUpload {
+            display: none;
+        }
+
+        /* Loading Overlay */
         .loading-overlay {
             position: absolute;
             top: 0;
@@ -387,62 +413,85 @@
             text-align: center;
             text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
         }
-        
-        /* Cosmic Response States */
-        .response-success {
-            border-left-color: var(--nebular-aurora-green);
-            background: linear-gradient(135deg, #ECFDF5 0%, #F0FDF4 100%);
-            box-shadow: 0 0 20px rgba(16, 185, 129, 0.1);
+
+        /* Panel Resize Handle */
+        .resize-handle {
+            position: absolute;
+            right: 0;
+            top: 0;
+            bottom: 0;
+            width: 4px;
+            background: transparent;
+            cursor: ew-resize;
+            z-index: 101;
         }
-        
-        .response-warning {
-            border-left-color: var(--nebular-stellar-gold);
-            background: linear-gradient(135deg, #FFFBEB 0%, #FEF3C7 100%);
-            box-shadow: 0 0 20px rgba(245, 158, 11, 0.1);
+
+        .resize-handle:hover {
+            background: rgba(99, 102, 241, 0.3);
         }
-        
-        .response-error {
-            border-left-color: var(--nebular-plasma-pink);
-            background: linear-gradient(135deg, #FDF2F8 0%, #FCE7F3 100%);
-            box-shadow: 0 0 20px rgba(236, 72, 153, 0.1);
-        }
-        
-        /* Quick Action Buttons */
-        .quick-actions {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 8px;
-            margin-bottom: 12px;
-        }
-        
-        .quick-actions .location-btn {
-            font-size: 11px;
-            padding: 6px 12px;
-            background: linear-gradient(135deg, var(--nebular-cosmic-purple) 0%, var(--nebular-plasma-pink) 100%);
-        }
-        
-        /* Enhanced Mobile Responsiveness */
-        @media (max-width: 480px) {
-            .panel-content {
-                padding: 0 12px 16px;
+
+        /* Mobile Responsiveness */
+        @media (max-width: 768px) {
+            .app-container {
+                flex-direction: column;
             }
-            
+
+            #leftPanel {
+                width: 100%;
+                max-width: none;
+                height: 40vh;
+                min-height: 300px;
+                resize: vertical;
+            }
+
+            #mapContainer {
+                height: 60vh;
+            }
+
             .app-title {
-                font-size: 14px;
+                font-size: 18px;
             }
             
             .app-subtitle {
-                font-size: 10px;
+                font-size: 12px;
+            }
+            
+            .location-btn {
+                padding: 6px 10px;
+                font-size: 11px;
+            }
+
+            .panel-content {
+                padding: 16px;
+            }
+
+            .resize-handle {
+                right: 0;
+                left: 0;
+                bottom: 0;
+                top: auto;
+                width: auto;
+                height: 4px;
+                cursor: ns-resize;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .panel-content {
+                padding: 12px;
+            }
+            
+            .app-title {
+                font-size: 16px;
+            }
+            
+            .app-subtitle {
+                font-size: 11px;
             }
             
             .location-btn {
                 padding: 5px 8px;
-                font-size: 9px;
-            }
-            
-            .quick-actions .location-btn {
                 font-size: 10px;
-                padding: 5px 10px;
             }
             
             .zone-name {
@@ -450,7 +499,7 @@
             }
             
             .zone-description {
-                font-size: 11px;
+                font-size: 12px;
             }
             
             .ai-response {
@@ -461,44 +510,13 @@
             .chat-input {
                 padding: 10px 12px;
                 font-size: 12px;
-                min-height: 38px;
+                min-height: 40px;
             }
             
             .send-btn {
-                width: 38px;
-                height: 38px;
-                border-radius: 19px;
-            }
-            
-            .chat-input::placeholder {
-                font-size: 11px;
-            }
-        }
-        
-        @media (max-width: 360px) {
-            .app-title {
-                font-size: 13px;
-            }
-            
-            .app-subtitle {
-                font-size: 9px;
-            }
-            
-            .location-btn {
-                padding: 4px 6px;
-                font-size: 8px;
-            }
-            
-            .panel-content {
-                padding: 0 10px 14px;
-            }
-            
-            .zone-name {
-                font-size: 13px;
-            }
-            
-            .zone-description {
-                font-size: 10px;
+                width: 40px;
+                height: 40px;
+                border-radius: 20px;
             }
         }
     </style>
@@ -507,62 +525,68 @@
     <!-- Hidden file upload -->
     <input type="file" id="fileUpload" accept=".json,.geojson" />
     
-    <!-- Mobile Header -->
-    <div id="mobileHeader">
-        <div class="header-content">
-            <div>
+    <div class="app-container">
+        <!-- Left Panel -->
+        <div id="leftPanel">
+            <div class="resize-handle"></div>
+            
+            <!-- Panel Header -->
+            <div class="panel-header">
                 <h1 class="app-title">🌌 TerraNebular</h1>
                 <p class="app-subtitle">Where Development Dreams Take Shape</p>
-            </div>
-            <div class="header-controls">
-                <button class="location-btn" id="useLocationBtn" onclick="useCurrentLocation()">
-                    📍 Use My Location
-                </button>
-                <div class="status-indicator">
-                    <div class="status-dot" id="statusDot"></div>
-                    <span id="statusText">Loading...</span>
-                </div>
-            </div>
-        </div>
-    </div>
-    
-    <!-- Data Status Banner -->
-    <div class="data-banner" id="dataBanner" onclick="loadDataFile()">
-        🌌 Tap to load cosmic zoning data
-    </div>
-    
-    <!-- Loading Overlay -->
-    <div class="loading-overlay" id="loadingOverlay">
-        <div class="loading-spinner"></div>
-        <div class="loading-text" id="loadingText">Loading zoning data...</div>
-    </div>
-    
-    <!-- Map Container -->
-    <div id="viewDiv"></div>
-    
-    <!-- Bottom Panel -->
-    <div id="bottomPanel">
-        <div class="panel-handle"></div>
-        <div class="panel-content">
-            <div class="location-header" id="locationHeader" style="display: none;">
-                <div class="zone-color-indicator" id="zoneColorIndicator"></div>
-                <div class="zone-info">
-                    <h3 class="zone-name" id="zoneName">Select a location</h3>
-                    <p class="zone-description" id="zoneDescription">Tap anywhere on the map</p>
+                
+                <div class="header-controls">
+                    <button class="location-btn" id="useLocationBtn" onclick="useCurrentLocation()">
+                        📍 Use My Location
+                    </button>
+                    <div class="status-indicator">
+                        <div class="status-dot" id="statusDot"></div>
+                        <span id="statusText">Loading...</span>
+                    </div>
                 </div>
             </div>
             
-            <div class="chat-container" id="chatContainer">
-                <div class="ai-response" id="aiResponse"></div>
-                <div class="chat-input-container">
-                    <textarea class="chat-input" id="chatInput" 
-                              placeholder="Ask TerraNebular: 'Can I build a restaurant here?', 'What's the maximum height?', 'Investment potential?'" 
-                              rows="1"></textarea>
-                    <button class="send-btn" id="sendBtn" onclick="sendMessage()">
-                        ➤
-                    </button>
+            <!-- Panel Content -->
+            <div class="panel-content">
+                <!-- Data Banner -->
+                <div class="data-banner" id="dataBanner" onclick="loadDataFile()">
+                    🌌 Tap to load cosmic zoning data
+                </div>
+                
+                <!-- Location Header -->
+                <div class="location-header" id="locationHeader" style="display: none;">
+                    <div class="zone-color-indicator" id="zoneColorIndicator"></div>
+                    <div class="zone-info">
+                        <h3 class="zone-name" id="zoneName">Select a location</h3>
+                        <p class="zone-description" id="zoneDescription">Click anywhere on the map</p>
+                    </div>
+                </div>
+                
+                <!-- Chat Container -->
+                <div class="chat-container" id="chatContainer">
+                    <div class="ai-response" id="aiResponse"></div>
+                    <div class="chat-input-container">
+                        <textarea class="chat-input" id="chatInput" 
+                                  placeholder="Ask TerraNebular: 'Can I build a restaurant here?', 'What's the maximum height?', 'Investment potential?'" 
+                                  rows="1"></textarea>
+                        <button class="send-btn" id="sendBtn" onclick="sendMessage()">
+                            ➤
+                        </button>
+                    </div>
                 </div>
             </div>
+        </div>
+        
+        <!-- Map Container -->
+        <div id="mapContainer">
+            <!-- Loading Overlay -->
+            <div class="loading-overlay" id="loadingOverlay">
+                <div class="loading-spinner"></div>
+                <div class="loading-text" id="loadingText">Loading zoning data...</div>
+            </div>
+            
+            <!-- Map View -->
+            <div id="viewDiv"></div>
         </div>
     </div>
 
@@ -1080,7 +1104,71 @@
     document.addEventListener('DOMContentLoaded', function() {
         initializeApp();
         checkCachedData();
+        setupPanelResize();
     });
+
+    function setupPanelResize() {
+        const panel = document.getElementById('leftPanel');
+        const resizeHandle = panel.querySelector('.resize-handle');
+        let isResizing = false;
+
+        resizeHandle.addEventListener('mousedown', (e) => {
+            isResizing = true;
+            document.addEventListener('mousemove', handleResize);
+            document.addEventListener('mouseup', stopResize);
+            e.preventDefault();
+        });
+
+        function handleResize(e) {
+            if (!isResizing) return;
+            
+            if (window.innerWidth > 768) {
+                // Desktop - horizontal resize
+                const newWidth = e.clientX;
+                if (newWidth >= 300 && newWidth <= 600) {
+                    panel.style.width = newWidth + 'px';
+                }
+            } else {
+                // Mobile - vertical resize
+                const newHeight = e.clientY;
+                if (newHeight >= 250 && newHeight <= window.innerHeight * 0.7) {
+                    panel.style.height = newHeight + 'px';
+                }
+            }
+        }
+
+        function stopResize() {
+            isResizing = false;
+            document.removeEventListener('mousemove', handleResize);
+            document.removeEventListener('mouseup', stopResize);
+        }
+
+        // Touch support for mobile
+        resizeHandle.addEventListener('touchstart', (e) => {
+            isResizing = true;
+            document.addEventListener('touchmove', handleTouchResize);
+            document.addEventListener('touchend', stopTouchResize);
+            e.preventDefault();
+        });
+
+        function handleTouchResize(e) {
+            if (!isResizing) return;
+            const touch = e.touches[0];
+            
+            if (window.innerWidth <= 768) {
+                const newHeight = touch.clientY;
+                if (newHeight >= 250 && newHeight <= window.innerHeight * 0.7) {
+                    panel.style.height = newHeight + 'px';
+                }
+            }
+        }
+
+        function stopTouchResize() {
+            isResizing = false;
+            document.removeEventListener('touchmove', handleTouchResize);
+            document.removeEventListener('touchend', stopTouchResize);
+        }
+    }
 
     function initializeApp() {
         updateStatus('loading', 'Initializing map...');
@@ -1130,7 +1218,7 @@
     function autoResizeTextarea() {
         const textarea = document.getElementById('chatInput');
         textarea.style.height = 'auto';
-        textarea.style.height = `${Math.min(textarea.scrollHeight, 80)}px`;
+        textarea.style.height = `${Math.min(textarea.scrollHeight, 100)}px`;
     }
 
     // Question type detection
@@ -1343,7 +1431,7 @@ ${zone2}:
 🌐 More info: https://www.kigalicity.gov.rw/services/planning-and-construction`;
     }
 
-    // Enhanced response generation
+    // Enhanced response generation with all the original smart logic
     function generateSmartResponse(question, zoning) {
         const zoneName = zoning.zoneName;
         const regulations = KIGALI_ZONING_REGULATIONS[zoneName] || {
@@ -1591,12 +1679,6 @@ Description: ${regulations.description}
         const chatContainer = document.getElementById('chatContainer');
         const quickActions = document.createElement('div');
         quickActions.className = 'quick-actions';
-        quickActions.style.cssText = `
-            display: flex;
-            flex-wrap: wrap;
-            gap: 8px;
-            margin-bottom: 12px;
-        `;
         
         const actions = [
             { text: 'Can I build a restaurant?', question: 'Can I build a restaurant here?' },
@@ -1691,7 +1773,11 @@ Description: ${regulations.description}
         const chatContainer = document.getElementById('chatContainer');
         const aiResponse = document.getElementById('aiResponse');
         
-        aiResponse.innerHTML = `🌌 Welcome to TerraNebular - where development dreams take shape.\n\n📍 You've selected: ${zoneName}\n\n✨ I'm your intelligent assistant for navigating Kigali's zoning regulations, building requirements, and development opportunities. What would you like to explore?`;
+        aiResponse.innerHTML = `🌌 Welcome to TerraNebular - where development dreams take shape.
+
+📍 You've selected: ${zoneName}
+
+✨ I'm your intelligent assistant for navigating Kigali's zoning regulations, building requirements, and development opportunities. What would you like to explore?`;
         aiResponse.className = 'ai-response response-success';
         chatContainer.classList.add('show');
         
@@ -1725,18 +1811,14 @@ Description: ${regulations.description}
         });
     }
 
-    // Show bottom panel
-    function showBottomPanel() {
-        const panel = document.getElementById('bottomPanel');
-        panel.classList.add('show');
-    }
-
     // Show no data message
     function showNoDataMessage() {
         const chatContainer = document.getElementById('chatContainer');
         const aiResponse = document.getElementById('aiResponse');
         
-        aiResponse.innerHTML = `🌌 No zoning data found for this location.\n\nPlease try another location or load zoning data using the banner above.`;
+        aiResponse.innerHTML = `🌌 No zoning data found for this location.
+
+Please try another location or load zoning data using the banner above.`;
         aiResponse.className = 'ai-response response-error';
         chatContainer.classList.add('show');
     }
@@ -1786,15 +1868,14 @@ Description: ${regulations.description}
             banner.onclick = null;
             
             setTimeout(() => {
-                banner.classList.remove('show');
+                banner.style.display = 'none';
             }, 3000);
         } else {
             banner.innerHTML = '🌌 Tap to load cosmic zoning data';
             banner.classList.remove('loaded');
             banner.onclick = loadDataFile;
+            banner.style.display = 'block';
         }
-        
-        banner.classList.add('show');
     }
 
     function updateStatus(status, text) {
@@ -1975,7 +2056,6 @@ Description: ${regulations.description}
         if (zoningResult) {
             currentZoning = zoningResult;
             displayLocationInfo(zoningResult);
-            showBottomPanel();
             addLocationPin(event.mapPoint);
         } else {
             showNoDataMessage();
@@ -2038,3 +2118,5 @@ Description: ${regulations.description}
         return nearest;
     }
 </script>
+</body>
+</html>
