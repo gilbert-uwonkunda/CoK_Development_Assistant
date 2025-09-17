@@ -34,9 +34,33 @@
             padding: 0;
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             background: linear-gradient(135deg, var(--nebular-deep-blue) 0%, var(--nebular-space-blue) 50%, var(--nebular-cosmic-purple) 100%);
+            background-size: 400% 400%;
+            animation: nebulaShift 20s ease-in-out infinite;
             overflow: hidden;
             height: 100vh;
             display: flex;
+            position: relative;
+        }
+
+        /* Cosmic Background Particles */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(2px 2px at 20px 30px, rgba(255, 255, 255, 0.4), transparent),
+                radial-gradient(2px 2px at 40px 70px, rgba(245, 158, 11, 0.3), transparent),
+                radial-gradient(1px 1px at 90px 40px, rgba(99, 102, 241, 0.4), transparent),
+                radial-gradient(1px 1px at 130px 80px, rgba(236, 72, 153, 0.3), transparent),
+                radial-gradient(2px 2px at 160px 30px, rgba(16, 185, 129, 0.2), transparent);
+            background-repeat: repeat;
+            background-size: 200px 100px;
+            animation: stardust 8s ease-in-out infinite;
+            pointer-events: none;
+            z-index: 1;
         }
 
         /* Main Layout */
@@ -44,6 +68,8 @@
             display: flex;
             width: 100%;
             height: 100vh;
+            position: relative;
+            z-index: 2;
         }
 
         /* Left Panel */
@@ -103,6 +129,24 @@
             transition: all 0.3s ease;
             white-space: nowrap;
             text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+            animation: quantumGlow 3s ease-in-out infinite;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .location-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transition: left 0.6s;
+        }
+        
+        .location-btn:hover::before {
+            left: 100%;
         }
         
         .location-btn:hover {
@@ -143,18 +187,11 @@
             animation: none;
             box-shadow: 0 0 6px rgba(16, 185, 129, 0.6);
         }
-        
-        @keyframes cosmicPulse {
-            0%, 100% { 
-                opacity: 1; 
-                transform: scale(1);
-                box-shadow: 0 0 6px rgba(245, 158, 11, 0.6);
-            }
-            50% { 
-                opacity: 0.6; 
-                transform: scale(1.1);
-                box-shadow: 0 0 12px rgba(245, 158, 11, 0.8);
-            }
+
+        .status-dot.error {
+            background: var(--nebular-plasma-pink);
+            animation: none;
+            box-shadow: 0 0 6px rgba(236, 72, 153, 0.6);
         }
 
         /* Panel Content */
@@ -246,17 +283,42 @@
         
         .ai-response {
             background: linear-gradient(135deg, var(--nebular-comet-white) 0%, var(--nebular-stardust) 100%);
-            padding: 16px;
-            border-radius: 12px;
+            padding: 20px;
+            border-radius: 16px;
             border-left: 4px solid var(--nebular-cosmic-purple);
-            font-size: 13px;
-            line-height: 1.6;
+            font-size: 14px;
+            line-height: 1.7;
             white-space: pre-wrap;
             margin-bottom: 16px;
-            box-shadow: 0 2px 8px rgba(15, 23, 42, 0.1);
+            box-shadow: 0 4px 20px rgba(15, 23, 42, 0.1);
             color: var(--nebular-deep-blue);
             max-height: 400px;
             overflow-y: auto;
+            position: relative;
+            animation: fadeInUp 0.6s ease-out;
+        }
+        
+        .ai-response::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            border-radius: 16px;
+            padding: 2px;
+            background: linear-gradient(45deg, var(--nebular-cosmic-purple), var(--nebular-plasma-pink), var(--nebular-stellar-gold));
+            mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            mask-composite: exclude;
+            animation: galaxyRotate 10s linear infinite;
+            opacity: 0.3;
+            z-index: -1;
+        }
+        
+        .ai-response.typing::after {
+            content: '█';
+            animation: blink 1s infinite;
+            color: var(--nebular-cosmic-purple);
         }
         
         .chat-input-container {
@@ -340,19 +402,31 @@
         .response-success {
             border-left-color: var(--nebular-aurora-green);
             background: linear-gradient(135deg, #ECFDF5 0%, #F0FDF4 100%);
-            box-shadow: 0 0 20px rgba(16, 185, 129, 0.1);
+            box-shadow: 0 0 25px rgba(16, 185, 129, 0.2);
+        }
+        
+        .response-success::before {
+            background: linear-gradient(45deg, var(--nebular-aurora-green), var(--nebular-stellar-gold), var(--nebular-aurora-green));
         }
         
         .response-warning {
             border-left-color: var(--nebular-stellar-gold);
             background: linear-gradient(135deg, #FFFBEB 0%, #FEF3C7 100%);
-            box-shadow: 0 0 20px rgba(245, 158, 11, 0.1);
+            box-shadow: 0 0 25px rgba(245, 158, 11, 0.2);
+        }
+        
+        .response-warning::before {
+            background: linear-gradient(45deg, var(--nebular-stellar-gold), var(--nebular-meteor-orange), var(--nebular-stellar-gold));
         }
         
         .response-error {
             border-left-color: var(--nebular-plasma-pink);
             background: linear-gradient(135deg, #FDF2F8 0%, #FCE7F3 100%);
-            box-shadow: 0 0 20px rgba(236, 72, 153, 0.1);
+            box-shadow: 0 0 25px rgba(236, 72, 153, 0.2);
+        }
+        
+        .response-error::before {
+            background: linear-gradient(45deg, var(--nebular-plasma-pink), var(--nebular-cosmic-purple), var(--nebular-plasma-pink));
         }
 
         /* Map Container */
@@ -365,11 +439,6 @@
         #viewDiv {
             height: 100%;
             width: 100%;
-        }
-
-        /* Hidden file upload */
-        #fileUpload {
-            display: none;
         }
 
         /* Loading Overlay */
@@ -394,17 +463,41 @@
         }
         
         .loading-spinner {
-            width: 40px;
-            height: 40px;
-            border: 3px solid rgba(226, 232, 240, 0.3);
-            border-top: 3px solid var(--nebular-cosmic-purple);
+            width: 50px;
+            height: 50px;
+            border: 4px solid rgba(226, 232, 240, 0.3);
+            border-top: 4px solid var(--nebular-cosmic-purple);
+            border-right: 4px solid var(--nebular-plasma-pink);
             border-radius: 50%;
             animation: cosmicSpin 1s linear infinite;
+            position: relative;
         }
         
-        @keyframes cosmicSpin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+        .loading-spinner::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 20px;
+            height: 20px;
+            border: 2px solid var(--nebular-stellar-gold);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            animation: cosmicSpin 2s linear infinite reverse;
+        }
+        
+        .loading-spinner::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 6px;
+            height: 6px;
+            background: var(--nebular-aurora-green);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            box-shadow: 0 0 10px var(--nebular-aurora-green);
+            animation: cosmicPulse 1.5s ease-in-out infinite;
         }
         
         .loading-text {
@@ -412,6 +505,7 @@
             font-weight: 600;
             text-align: center;
             text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+            animation: stellarFloat 3s ease-in-out infinite;
         }
 
         /* Panel Resize Handle */
@@ -428,6 +522,295 @@
 
         .resize-handle:hover {
             background: rgba(99, 102, 241, 0.3);
+        }
+
+        /* Cosmic Splash Screen */
+        .splash-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, var(--nebular-void-black) 0%, var(--nebular-deep-blue) 30%, var(--nebular-space-blue) 70%, var(--nebular-cosmic-purple) 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            animation: fadeOut 1s ease-in-out 3s forwards;
+        }
+
+        .cosmic-background {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+        }
+
+        .star {
+            position: absolute;
+            background: var(--nebular-comet-white);
+            border-radius: 50%;
+            animation: stardust 4s ease-in-out infinite;
+        }
+
+        .star-1 {
+            width: 2px;
+            height: 2px;
+            top: 20%;
+            left: 10%;
+            animation-delay: 0s;
+        }
+
+        .star-2 {
+            width: 3px;
+            height: 3px;
+            top: 40%;
+            left: 80%;
+            animation-delay: 1s;
+        }
+
+        .star-3 {
+            width: 1px;
+            height: 1px;
+            top: 70%;
+            left: 20%;
+            animation-delay: 2s;
+        }
+
+        .star-4 {
+            width: 2px;
+            height: 2px;
+            top: 15%;
+            left: 60%;
+            animation-delay: 0.5s;
+        }
+
+        .star-5 {
+            width: 1px;
+            height: 1px;
+            top: 80%;
+            left: 70%;
+            animation-delay: 1.5s;
+        }
+
+        .nebula {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(1px);
+            animation: nebulaShift 8s ease-in-out infinite;
+        }
+
+        .nebula-1 {
+            width: 100px;
+            height: 100px;
+            background: radial-gradient(circle, rgba(99, 102, 241, 0.3) 0%, transparent 70%);
+            top: 10%;
+            left: 70%;
+            animation-delay: 0s;
+        }
+
+        .nebula-2 {
+            width: 150px;
+            height: 150px;
+            background: radial-gradient(circle, rgba(236, 72, 153, 0.2) 0%, transparent 70%);
+            top: 60%;
+            left: 10%;
+            animation-delay: 2s;
+        }
+
+        .nebula-3 {
+            width: 80px;
+            height: 80px;
+            background: radial-gradient(circle, rgba(16, 185, 129, 0.3) 0%, transparent 70%);
+            top: 30%;
+            left: 30%;
+            animation-delay: 4s;
+        }
+
+        .splash-content {
+            text-align: center;
+            z-index: 10;
+            animation: fadeInUp 1s ease-out;
+        }
+
+        .logo-container {
+            position: relative;
+            display: inline-block;
+            margin-bottom: 30px;
+        }
+
+        .cosmic-ring {
+            position: absolute;
+            border: 2px solid;
+            border-radius: 50%;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            animation: galaxyRotate 4s linear infinite;
+        }
+
+        .ring-1 {
+            width: 80px;
+            height: 80px;
+            border-color: var(--nebular-cosmic-purple);
+            animation-duration: 6s;
+        }
+
+        .ring-2 {
+            width: 100px;
+            height: 100px;
+            border-color: var(--nebular-plasma-pink);
+            animation-duration: 8s;
+            animation-direction: reverse;
+        }
+
+        .ring-3 {
+            width: 120px;
+            height: 120px;
+            border-color: var(--nebular-stellar-gold);
+            animation-duration: 10s;
+        }
+
+        .app-logo {
+            font-size: 48px;
+            display: block;
+            animation: stellarFloat 3s ease-in-out infinite;
+        }
+
+        .splash-title {
+            font-size: 36px;
+            font-weight: 700;
+            color: var(--nebular-comet-white);
+            margin: 0 0 16px 0;
+            text-shadow: 0 0 20px rgba(99, 102, 241, 0.5);
+            animation: quantumGlow 2s ease-in-out infinite;
+        }
+
+        .splash-subtitle {
+            font-size: 16px;
+            color: var(--nebular-stardust);
+            margin: 0 0 40px 0;
+            opacity: 0.9;
+        }
+
+        .loading-progress {
+            width: 200px;
+            height: 4px;
+            background: rgba(226, 232, 240, 0.2);
+            border-radius: 2px;
+            margin: 0 auto;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, var(--nebular-cosmic-purple) 0%, var(--nebular-plasma-pink) 50%, var(--nebular-stellar-gold) 100%);
+            border-radius: 2px;
+            width: 0%;
+            animation: loadingProgress 3s ease-in-out forwards;
+        }
+
+        .progress-glow {
+            position: absolute;
+            top: -2px;
+            bottom: -2px;
+            left: 0;
+            width: 20px;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.6), transparent);
+            border-radius: 4px;
+            animation: progressGlow 3s ease-in-out forwards;
+        }
+
+        /* Animations */
+        @keyframes cosmicPulse {
+            0%, 100% { 
+                opacity: 1; 
+                transform: scale(1);
+                box-shadow: 0 0 6px rgba(245, 158, 11, 0.6);
+            }
+            50% { 
+                opacity: 0.6; 
+                transform: scale(1.1);
+                box-shadow: 0 0 12px rgba(245, 158, 11, 0.8);
+            }
+        }
+
+        @keyframes stellarFloat {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            33% { transform: translateY(-10px) rotate(120deg); }
+            66% { transform: translateY(5px) rotate(240deg); }
+        }
+
+        @keyframes nebulaShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        @keyframes galaxyRotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        @keyframes stardust {
+            0%, 100% { opacity: 0.3; transform: scale(0.8); }
+            50% { opacity: 0.8; transform: scale(1.2); }
+        }
+
+        @keyframes quantumGlow {
+            0%, 100% { 
+                box-shadow: 0 0 5px rgba(99, 102, 241, 0.3),
+                           0 0 10px rgba(99, 102, 241, 0.2),
+                           0 0 15px rgba(99, 102, 241, 0.1);
+            }
+            50% { 
+                box-shadow: 0 0 10px rgba(99, 102, 241, 0.6),
+                           0 0 20px rgba(99, 102, 241, 0.4),
+                           0 0 30px rgba(99, 102, 241, 0.2);
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes blink {
+            0%, 50% { opacity: 1; }
+            51%, 100% { opacity: 0; }
+        }
+
+        @keyframes cosmicSpin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @keyframes fadeOut {
+            to {
+                opacity: 0;
+                visibility: hidden;
+            }
+        }
+
+        @keyframes loadingProgress {
+            to {
+                width: 100%;
+            }
+        }
+
+        @keyframes progressGlow {
+            to {
+                left: 180px;
+            }
         }
 
         /* Mobile Responsiveness */
@@ -521,10 +904,7 @@
         }
     </style>
 </head>
-<body>
-    <!-- Hidden file upload -->
-    <input type="file" id="fileUpload" accept=".json,.geojson" />
-    
+<body>    
     <div class="app-container">
         <!-- Left Panel -->
         <div id="leftPanel">
@@ -549,8 +929,8 @@
             <!-- Panel Content -->
             <div class="panel-content">
                 <!-- Data Banner -->
-                <div class="data-banner" id="dataBanner" onclick="loadDataFile()">
-                    🌌 Tap to load cosmic zoning data
+                <div class="data-banner loaded" id="dataBanner">
+                    ✨ Connected to TerraNebular Intelligence Network
                 </div>
                 
                 <!-- Location Header -->
@@ -590,369 +970,150 @@
         </div>
     </div>
 
+    <!-- Cosmic Splash Screen -->
+    <div id="splashScreen" class="splash-screen">
+        <div class="cosmic-background">
+            <div class="star star-1"></div>
+            <div class="star star-2"></div>
+            <div class="star star-3"></div>
+            <div class="star star-4"></div>
+            <div class="star star-5"></div>
+            <div class="nebula nebula-1"></div>
+            <div class="nebula nebula-2"></div>
+            <div class="nebula nebula-3"></div>
+        </div>
+        <div class="splash-content">
+            <div class="logo-container">
+                <div class="cosmic-ring ring-1"></div>
+                <div class="cosmic-ring ring-2"></div>
+                <div class="cosmic-ring ring-3"></div>
+                <div class="app-logo">🌌</div>
+            </div>
+            <h1 class="splash-title">TerraNebular</h1>
+            <p class="splash-subtitle">Initializing spatial intelligence network...</p>
+            <div class="loading-progress">
+                <div class="progress-bar"></div>
+                <div class="progress-glow"></div>
+            </div>
+        </div>
+    </div>
+
     <!-- ArcGIS JavaScript API -->
     <script src="https://js.arcgis.com/4.28/"></script>
     
     <script>
+    // =============================================================================
+    // BACKEND INTEGRATION CONFIGURATION
+    // =============================================================================
+    
+    const API_BASE_URL = 'http://localhost:3001/api';
+    
+    // Session management
+    let sessionId = generateSessionId();
+    
+    function generateSessionId() {
+        return 'web_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+    }
+
+    // =============================================================================
+    // BACKEND API FUNCTIONS
+    // =============================================================================
+
+    async function checkBackendHealth() {
+        try {
+            const response = await fetch(`${API_BASE_URL}/health`);
+            const data = await response.json();
+            return data.status === 'healthy';
+        } catch (error) {
+            console.error('Backend health check failed:', error);
+            return false;
+        }
+    }
+
+    async function fetchZoningForLocation(lat, lng) {
+        try {
+            updateStatus('loading', 'Querying spatial database...');
+            
+            const response = await fetch(`${API_BASE_URL}/zoning/location?lat=${lat}&lng=${lng}`);
+            
+            if (!response.ok) {
+                throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+            }
+            
+            const data = await response.json();
+            
+            if (data.success && data.data && data.data.zoneData) {
+                return {
+                    zoneName: data.data.zoneData.zone_name,
+                    properties: data.data.zoneData,
+                    source: 'backend_database',
+                    distance: data.data.zoneData.distance ? `${Math.round(data.data.zoneData.distance)}m` : null,
+                    area: data.data.zoneData.area ? `${Math.round(data.data.zoneData.area)} m²` : null
+                };
+            } else {
+                return null;
+            }
+        } catch (error) {
+            console.error('Error fetching zoning data:', error);
+            updateStatus('error', 'Database query failed');
+            return null;
+        }
+    }
+
+    async function askClaudeAI(question, lat, lng) {
+        try {
+            updateStatus('loading', 'Consulting TerraNebular AI...');
+            
+            const response = await fetch(`${API_BASE_URL}/ai/question`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    question: question,
+                    lat: lat,
+                    lng: lng,
+                    sessionId: sessionId
+                })
+            });
+
+            if (!response.ok) {
+                throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+            }
+
+            const data = await response.json();
+            
+            if (data.success && data.data) {
+                return {
+                    response: data.data.response,
+                    metadata: data.data.metadata,
+                    cached: data.data.cached || false
+                };
+            } else {
+                throw new Error(data.error || 'Unknown API error');
+            }
+        } catch (error) {
+            console.error('Error calling AI API:', error);
+            updateStatus('error', 'AI consultation failed');
+            
+            // Fallback response
+            return {
+                response: `❌ TerraNebular AI is temporarily offline.\n\nPlease try again or contact City of Kigali directly:\n📞 +250 788 000 000\n🌐 kigalicity.gov.rw\n\nError: ${error.message}`,
+                metadata: { fallback: true, error: error.message },
+                cached: false
+            };
+        }
+    }
+
+    // =============================================================================
+    // APPLICATION STATE
+    // =============================================================================
+    
     let currentLocation = null;
     let currentZoning = null;
     let view = null;
-    let zoningFeatures = [];
-    let spatialIndex = null;
     let conversationHistory = [];
-
-    // Enhanced Zone Details with Complete Official Kigali Regulations
-    const KIGALI_ZONING_REGULATIONS = {
-        'C1-Mixed use zone': {
-            description: 'Zone established to create high flexibility in the mix of uses and ensure continuity in ground level commercial activities',
-            permitted: [
-                'Commercial/Retail', 'Restaurants and Recreational activities', 'Office use above 1st floor',
-                'Co-working spaces', 'Residential', 'Home Occupation'
-            ],
-            prohibited: [
-                'Large scale commercial complex', 'Industrial Uses', 'Major Infrastructure Installations'
-            ],
-            conditional: [
-                'Public Facilities', 'Transportation Terminals', 'Hotels', 'Petrol stations',
-                'Garages and Car Repair - Grade E as per RBS', 'Car Wash Services'
-            ],
-            minLotSize: '500 m²',
-            maxHeight: 'G+4 maximum (Additional floors may be authorised along BRT, Wetland Front)',
-            maxFAR: '1.6 maximum',
-            coverage: '60% maximum',
-            landscaping: '10% minimum'
-        },
-        'C3-City commercial zone': {
-            description: 'Zone established to meet most retail, commercial and services needs for larger community',
-            permitted: [
-                'Developments allowed in C1 zone', 'Shopping centres', 'Offices', 'Hotels',
-                'Apartments', 'Leisure and entertainment centres', 'Galleries', 'Education Institutions',
-                'Coworking spaces'
-            ],
-            prohibited: [
-                'Major Industrial Uses', 'Major Infrastructure Installations'
-            ],
-            conditional: [
-                'Public Facilities', 'Petrol stations', 'Transport Interchange',
-                'Garages and Car Repair - Grade E as per RBS', 'Car Wash Services'
-            ],
-            minLotSize: '1,000 m²',
-            maxHeight: 'G+10 maximum',
-            maxFAR: '2.4 maximum',
-            coverage: '70% maximum',
-            landscaping: '10% minimum'
-        },
-        'R1-Low density residential zone': {
-            description: 'Intended for villa and bungalow typology and complementary public facilities',
-            permitted: [
-                'Single family houses', 'Home Occupation'
-            ],
-            prohibited: [
-                'Industrial uses', 'Major infrastructure'
-            ],
-            conditional: [
-                'Uses as per R1A regulations', 'Apartments exceeding G + 2', 'Semi-Detached',
-                'Multifamily Houses', 'Restaurants, Guest houses, B&B, Hotels',
-                'Public facilities when suggested by Public Facilities Overlay',
-                'Commercial Retail Facilities when allowed by O-C2 Overlay',
-                'Accessory Residential Units'
-            ],
-            minLotSize: 'Max 500 m² as per URBAN PLANNING CODE',
-            maxHeight: 'G+1+P (Penthouse)',
-            maxFAR: '0.5 maximum',
-            coverage: '40% maximum',
-            landscaping: '20% minimum'
-        },
-        'R1A-Low density residential densification zone': {
-            description: 'Residential zone for semidetached houses, single family townhouses, multifamily Houses, and low-rise developments',
-            permitted: [
-                'Single family houses (all types)', 'Semi-detached houses', 'Multifamily Houses',
-                'Townhouses', 'Row houses', 'Home Occupation', 'Accessory Residential Units'
-            ],
-            prohibited: [
-                'Residential exceeding G + 2', 'Industrial uses', 'Major infrastructure'
-            ],
-            conditional: [
-                'Restaurants, Hotels, Guest houses, B&B',
-                'Public facilities as per Public Facilities overlay (Section 7.1)',
-                'Commercial retail, office facilities when allowed by O-C2 Overlay (Section 6.2.2)'
-            ],
-            ancillary: [
-                'Car parking garage', 'Store and Service rooms', 'Guard House'
-            ],
-            minLotSize: 'Max. 300 m²',
-            maxHeight: 'G+2',
-            maxFAR: '1.0 maximum',
-            coverage: '50% maximum',
-            landscaping: '20% minimum'
-        },
-        'R1B-Rural residential zone': {
-            description: 'Residential zone offering compact developments in rural areas as part of the farming community',
-            permitted: [
-                'Single family Houses', 'Row housing',
-                'Multifamily residential (4 in 1, 8 in 1, etc) as per IDP model Villages',
-                'Low-rise apartments', 'Home Occupation', 'Accessory Residential Units'
-            ],
-            prohibited: [
-                'Industrial uses', 'Major infrastructure'
-            ],
-            conditional: [
-                'Restaurants', 'Guest house',
-                'Public facilities, when allowed by public facilities overlay (Section 7.1)',
-                'Commercial retail, office facilities when allowed by O-C2 Overlay (Section 6.2.2)',
-                'Micro - Enterprise'
-            ],
-            ancillary: [
-                'Car parking garage', 'Outdoor kitchen', 'Store rooms'
-            ],
-            minLotSize: 'Max 100 m² for Row Housing or Single-Family Units',
-            maxHeight: 'G + 1 for single family houses, G+2 for all other typologies',
-            maxFAR: '1.2 maximum',
-            coverage: '60% maximum',
-            landscaping: 'N/A'
-        },
-        'R2-Medium density residential - Improvement zone': {
-            description: 'Planned for upgradation of unplanned settlements or redevelopment of urban renewal areas',
-            permitted: [
-                'Row housing', 'Low Rise apartments', 'Home Occupation', 'Accessory Residential Units'
-            ],
-            prohibited: [
-                'Major Industrial uses', 'Major infrastructure', 'Single Family Residential Developments'
-            ],
-            conditional: [
-                'Restaurants', 'Hotels (incl. its ancillary uses), Guest house, B&B',
-                'Public facilities, when allowed by public facilities overlay (Section 7.1)',
-                'Commercial retail, office when allowed by O-C2 Overlay (Section 6.2.2)',
-                'Micro Enterprise'
-            ],
-            ancillary: [
-                'Store and Services rooms'
-            ],
-            minLotSize: 'Rowhouses: Max 200 m²',
-            maxHeight: 'G+3',
-            maxFAR: '1.4 maximum',
-            coverage: '60% maximum',
-            landscaping: '20% minimum',
-            specialNote: 'CoK at its discretion may accept affordable level of building and infrastructure provision standards for upgrading'
-        },
-        'R3-Medium density residential - Expansion zone': {
-            description: 'Established to allow intensification and redevelopment of peri-urban and green field areas',
-            permitted: [
-                'Single family Residential', 'Rowhouses', 'Low-rise apartments', 'Multifamily Houses',
-                'Accessory Residential units', 'Home Occupation'
-            ],
-            prohibited: [
-                'Industrial uses', 'Major infrastructure',
-                'Any development that does not meet affordability criteria'
-            ],
-            conditional: [
-                'Restaurants', 'Hotels/Guest houses', 'Public facilities when allowed by overlay',
-                'Commercial retail, office, when allowed by O-C2 Overlay', 'Micro Enterprise'
-            ],
-            minLotSize: 'Max 100m² for incremental Single-Family Housing, Max 150 m² for Row housing',
-            maxHeight: 'G+2',
-            maxFAR: '1.2 maximum',
-            coverage: '60% maximum',
-            landscaping: '20% minimum'
-        },
-        'R4-High density residential zone': {
-            description: 'Established to create well planned medium-rise housing and apartment complexes',
-            permitted: [
-                'High density residential', 'Home Occupation', 'R2 typologies in case plot size is less than 750 m²'
-            ],
-            prohibited: [
-                'Industrial uses', 'Major infrastructure'
-            ],
-            conditional: [
-                'Restaurants', 'Hotels, Guest house, B&B', 'Public facilities when allowed by overlay',
-                'Commercial retail, office, Micro-Enterprise when allowed by O-C2 Overlay',
-                'Micro - Enterprise'
-            ],
-            minLotSize: '750 m²',
-            maxHeight: 'G+4 (apartments) maximum',
-            maxFAR: '1.8 maximum',
-            coverage: '50% maximum',
-            landscaping: '20% minimum'
-        },
-        'I1-Light industrial zone': {
-            description: 'Specialised land areas for clean and light industrial environment that could blend with surrounding residential area',
-            permitted: [
-                'Agricultural processing plants', 'Industrial Bakeries', 'Building material and lumber storage',
-                'Cabinetmaking and carpenter workshops', 'Petrol stations', 'Food processing',
-                'Light manufacturing and assembly', 'Car wash', 'Machine shops',
-                'Automotive repair shops', 'Wholesale and warehousing', 'Dry cleaning/laundry service',
-                'Business Parks, Science Parks'
-            ],
-            prohibited: [
-                'Residential Uses not related to other activities present on site',
-                'Major Infrastructure Installations'
-            ],
-            conditional: [
-                'Railroad yards and freight stations', 'Trucking yard or terminal',
-                'Concrete or stone products manufacturing plants', 'Grain milling',
-                'Higher Education Institutions', 'Co-working spaces and incubators',
-                'Treatment of wastewater', 'Religious Facilities', 'Residential at service of other uses',
-                'Grocery shop and small retail', 'Restaurants and food outlets', 'Hotels, B&B, Guesthouses',
-                'Commercial Uses'
-            ],
-            minLotSize: '250 m²',
-            maxHeight: '10.00 m',
-            maxFAR: '1.2 maximum',
-            coverage: '60% maximum',
-            landscaping: '10% minimum'
-        },
-        'I2-General industrial zone': {
-            description: 'Specialised land areas strategically located close to expressways for easy access for heavy vehicles',
-            permitted: [
-                'All uses allowed in I1 – Light Industrial Zone', 'Batching and mixing plants, asphalt, cement, and concrete',
-                'Manufacturing', 'Brewing or distilling of liquor', 'Building wreckers and house mover storage yards',
-                'Foundries', 'Manufacture of paper products', 'Storage of oil, gasoline or petroleum products',
-                'Structural steel fabrication'
-            ],
-            prohibited: [
-                'Residential Uses', 'Major Infrastructure Installations'
-            ],
-            conditional: [
-                'All uses conditionally allowed in I1 – Light Industrial Zone',
-                'Heavy salvage, junk, and auto wrecking yards', 'Electric power generating plants',
-                'Slaughterhouses', 'Workers Accommodation', 'Grocery shop', 'Restaurants'
-            ],
-            minLotSize: '1,000 m²',
-            maxHeight: 'N/A',
-            maxFAR: 'N/A',
-            coverage: '60% maximum',
-            landscaping: '10% minimum',
-            buffer: 'General Industries: 100m from nearest residential areas, Special Industries: 500m from nearest residential areas'
-        },
-        'PF1-Education and research facilities': {
-            description: 'Educational institutions and research centers',
-            permitted: [
-                'All types of educational institutes', 'Research facilities'
-            ],
-            prohibited: [
-                'Industrial uses and warehouses', 'Major commercial uses',
-                'Public utility maintenance facilities with outdoor storage', 'Cemeteries/crematoriums'
-            ],
-            conditional: [
-                'Canteens', 'Small commercial and retail use', 'Health centres and pharmacy',
-                'Accommodations for teachers, workers', 'Hostels/Dormitories/Residences'
-            ],
-            minLotSize: 'N/A',
-            maxHeight: 'N/A',
-            coverage: 'N/A',
-            landscaping: 'N/A'
-        },
-        'PF2-Health facilities': {
-            description: 'Healthcare and medical facilities',
-            permitted: [
-                'All types of health facilities', 'Pharmacy'
-            ],
-            prohibited: [
-                'Industrial uses and warehouses', 'Major commercial uses',
-                'Public utility maintenance facilities with outdoor storage', 'Cemeteries/crematoriums'
-            ],
-            conditional: [
-                'Restaurants', 'Small commercial and retail use', 'Accommodations for health workers'
-            ],
-            minLotSize: 'N/A',
-            landscaping: '20% minimum'
-        },
-        'A1-Agriculture zone': {
-            description: 'Strives to protect the viability of agriculture and prevent farmland conversion to non-farm uses',
-            permitted: [
-                'Crop farming', 'Agro-forestry', 'Livestock farming', 'Green houses', 'Bee Keeping', 'Fish farming'
-            ],
-            prohibited: [
-                'All types of industrial uses not linked to Agro-Processing uses',
-                'All types of residential uses not linked to farming activities',
-                'All types of commercial uses not linked to temporary farm store',
-                'All types of public facilities'
-            ],
-            conditional: [
-                'Supporting Agricultural uses', 'Temporary Farm store', 'Infrastructure',
-                'Rural Villages for agricultural plots larger than 5 ha after land assembly has been conducted',
-                'Single family Houses on agricultural plots larger than 1 ha provided they are linked to farming activities',
-                'Small scale Agro-processing facilities on agricultural land not less than 0.5 ha'
-            ],
-            ancillary: [
-                'Storage barns', 'Parking', 'Store for agricultural equipment, cattle sheds'
-            ],
-            minLotSize: 'N/A',
-            maxHeight: 'G (Ground floor only)',
-            maxFAR: 'Single Family Houses: 0.01 up to 150 m² for plots above 1 ha, Agro-processing facilities: 0.02 up to 200 m² for plots above 0.5 Ha',
-            coverage: 'N/A',
-            landscaping: 'N/A'
-        },
-        'P1-Parks and open spaces zone': {
-            description: 'Established to provide recreational and leisure facilities in areas with unique features',
-            permitted: [
-                'Botanical gardens, arboretums, and conservatories',
-                'Outdoor recreational facilities such as hiking and bicycle trails',
-                'Greens and commons, sitting areas and picnic areas',
-                'Park related public facilities such as public toilet/changing room'
-            ],
-            prohibited: [
-                'All types of industrial uses', 'All types of residential uses',
-                'Commercial uses exceeding prescribed limits', 'All types of major public facilities',
-                'Major infrastructure installations'
-            ],
-            conditional: [
-                'Restaurants, kiosks, art and souvenirs shops and other commercial structures not exceeding 0.05 FAR up to 150 m²'
-            ],
-            minLotSize: 'N/A',
-            maxHeight: 'G+1 maximum',
-            maxFAR: '0.05 up to 150 m²',
-            coverage: 'N/A',
-            landscaping: 'N/A'
-        },
-        'T-Transportation zone': {
-            description: 'Identify and locate major transport related areas including public transport services',
-            permitted: [
-                'All transport infrastructure', 'BRT stations and Terminals',
-                'Parking area', 'Holding depots'
-            ],
-            prohibited: [
-                'Major industrial uses', 'Major residential uses'
-            ],
-            conditional: [
-                'Motor repair garage', 'Commercial Uses if developed with Transport Terminals',
-                'Service station', 'Commercial and office spaces',
-                'Hotels and Restaurants', 'Workers accommodation'
-            ],
-            minLotSize: 'N/A',
-            maxHeight: 'N/A',
-            maxFAR: 'N/A',
-            coverage: 'N/A',
-            landscaping: 'N/A'
-        },
-        'P3C-Steep slopes (> 30%) zone': {
-            description: 'Hillsides and steep slopes prone to natural hazards that need protection from unsustainable encroachment',
-            permitted: [
-                'Forests', 'Agro-Forestry', 'Bee Keeping', 'Silviculture'
-            ],
-            prohibited: [
-                'All types of developments except those conditionally allowed by Slope Overlay between 30-50% slope'
-            ],
-            conditional: [
-                'Limited development on slopes 30-50% with detailed geotechnical assessment',
-                'Strategic tourism developments with substantial community benefits',
-                'Developments designed following highest environmental standards with EIA clearance',
-                'Nature restoration projects'
-            ],
-            minLotSize: 'N/A',
-            maxHeight: 'N/A - Subject to slope analysis and geotechnical assessment',
-            coverage: 'N/A - Determined by slope stability requirements',
-            landscaping: 'Maximum preservation of existing vegetation required',
-            specialRequirements: [
-                'Geotechnical evaluation mandatory',
-                'Environmental Impact Assessment required',
-                'Grading plan showing feasibility required',
-                'Drainage management plan required',
-                'Erosion control plan required',
-                'Buffer distance of 300m from nearest residential areas for certain activities'
-            ]
-        }
-    };
+    let backendConnected = false;
 
     // Zone color mapping
     const ZONE_COLORS = {
@@ -987,64 +1148,217 @@
         'WR-Waterbody zone': '#87CEEB'
     };
 
-    // Enhanced building types with more keywords
-    const buildingTypes = {
-        'restaurant': ['restaurant', 'eatery', 'diner', 'cafe', 'food outlet', 'bistro', 'kitchen'],
-        'hotel': ['hotel', 'lodge', 'guest house', 'accommodation', 'motel', 'inn', 'hostel'],
-        'house': ['house', 'home', 'residence', 'dwelling', 'villa', 'bungalow', 'cottage'],
-        'shop': ['shop', 'store', 'retail', 'boutique', 'market', 'grocery', 'supermarket'],
-        'apartment': ['apartment', 'flat', 'condo', 'residential building', 'multi-family', 'high-rise'],
-        'office': ['office', 'workspace', 'business center', 'co-working', 'commercial office'],
-        'warehouse': ['warehouse', 'storage', 'depot', 'distribution center', 'logistics'],
-        'factory': ['factory', 'manufacturing', 'industry', 'plant', 'production'],
-        'shopping center': ['shopping center', 'mall', 'plaza', 'commercial center'],
-        'nightclub': ['nightclub', 'club', 'disco', 'bar', 'lounge'],
-        'supermarket': ['supermarket', 'grocery', 'market', 'food store'],
-        'school': ['school', 'education', 'university', 'college', 'academy', 'institute'],
-        'hospital': ['hospital', 'clinic', 'medical', 'health center', 'healthcare'],
-        'farm': ['farm', 'agriculture', 'farming', 'ranch', 'plantation'],
-        'greenhouse': ['greenhouse', 'agricultural structure', 'hydroponics'],
-        'parking': ['parking', 'garage', 'car park', 'parking lot'],
-        'transport': ['transport', 'terminal', 'station', 'transit hub'],
-        'petrol station': ['petrol station', 'gas station', 'fuel station', 'service station'],
-        'garage': ['garage', 'auto repair', 'car repair', 'mechanic']
-    };
+    // =============================================================================
+    // INITIALIZATION
+    // =============================================================================
 
-    // Use current location functionality
+    document.addEventListener('DOMContentLoaded', function() {
+        // Initialize splash screen
+        setTimeout(() => {
+            document.getElementById('splashScreen').style.display = 'none';
+        }, 4000);
+        
+        initializeApp();
+        setupPanelResize();
+    });
+
+    async function initializeApp() {
+        updateStatus('loading', 'Connecting to TerraNebular network...');
+        
+        // Check backend connection
+        backendConnected = await checkBackendHealth();
+        
+        if (backendConnected) {
+            updateStatus('ready', 'Connected to spatial intelligence');
+            console.log('✅ Backend connected successfully');
+        } else {
+            updateStatus('error', 'Unable to connect to backend');
+            console.error('❌ Backend connection failed');
+        }
+        
+        // Initialize map
+        require([
+            "esri/Map",
+            "esri/views/MapView",
+            "esri/Graphic",
+            "esri/geometry/Point"
+        ], function(Map, MapView, Graphic, Point) {
+            
+            const map = new Map({
+                basemap: "hybrid"
+            });
+            
+            view = new MapView({
+                container: "viewDiv",
+                map: map,
+                center: [30.0619, -1.9441],
+                zoom: 13,
+                ui: {
+                    components: ["attribution"]
+                }
+            });
+            
+            view.on("click", handleMapClick);
+            view.popup.autoOpenEnabled = false;
+            
+            view.when(() => {
+                if (backendConnected) {
+                    updateStatus('ready', '8,172 Kigali zones available');
+                } else {
+                    updateStatus('error', 'Map ready, backend offline');
+                }
+            });
+        });
+        
+        // Setup chat interface
+        const chatInput = document.getElementById('chatInput');
+        chatInput.addEventListener('input', autoResizeTextarea);
+        chatInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                sendMessage();
+            }
+        });
+    }
+
+    // =============================================================================
+    // ENHANCED UI FUNCTIONS
+    // =============================================================================
+
+    async function typewriterEffect(element, text, speed = 30) {
+        return new Promise((resolve) => {
+            element.innerHTML = '';
+            element.classList.add('typing');
+            
+            let i = 0;
+            const timer = setInterval(() => {
+                if (i < text.length) {
+                    element.innerHTML += text.charAt(i);
+                    i++;
+                } else {
+                    element.classList.remove('typing');
+                    clearInterval(timer);
+                    resolve();
+                }
+            }, speed);
+        });
+    }
+
+    function addCosmicSparkles(element) {
+        for (let i = 0; i < 3; i++) {
+            setTimeout(() => {
+                const sparkle = document.createElement('div');
+                sparkle.style.cssText = `
+                    position: absolute;
+                    width: 4px;
+                    height: 4px;
+                    background: var(--nebular-stellar-gold);
+                    border-radius: 50%;
+                    top: ${Math.random() * 100}%;
+                    left: ${Math.random() * 100}%;
+                    animation: stardust 1s ease-out forwards;
+                    pointer-events: none;
+                    z-index: 10;
+                `;
+                
+                element.style.position = 'relative';
+                element.appendChild(sparkle);
+                
+                setTimeout(() => {
+                    if (sparkle.parentNode) {
+                        sparkle.parentNode.removeChild(sparkle);
+                    }
+                }, 1000);
+            }, i * 200);
+        }
+    }
+
+    // =============================================================================
+    // MAP INTERACTION
+    // =============================================================================
+
+    async function handleMapClick(event) {
+        if (!backendConnected) {
+            showOfflineMessage();
+            return;
+        }
+        
+        currentLocation = event.mapPoint;
+        const lat = event.mapPoint.latitude;
+        const lng = event.mapPoint.longitude;
+        
+        // Add visual pin
+        addLocationPin(event.mapPoint);
+        
+        // Query backend for zoning data
+        const zoningResult = await fetchZoningForLocation(lat, lng);
+        
+        if (zoningResult) {
+            currentZoning = zoningResult;
+            displayLocationInfo(zoningResult);
+            updateStatus('ready', `Found: ${zoningResult.zoneName}`);
+        } else {
+            showNoDataMessage();
+            updateStatus('ready', 'No zoning data found');
+        }
+    }
+
+    function addLocationPin(point) {
+        require(["esri/Graphic", "esri/geometry/Point"], function(Graphic, Point) {
+            view.graphics.removeAll();
+            
+            const pinSymbol = {
+                type: "simple-marker",
+                color: [236, 72, 153, 0.9],
+                size: 12,
+                outline: {
+                    color: [255, 255, 255],
+                    width: 2
+                }
+            };
+            
+            const pinGraphic = new Graphic({
+                geometry: point,
+                symbol: pinSymbol
+            });
+            
+            view.graphics.add(pinGraphic);
+        });
+    }
+
+    // =============================================================================
+    // LOCATION SERVICES
+    // =============================================================================
+
     function useCurrentLocation() {
         const btn = document.getElementById('useLocationBtn');
         
         if (!navigator.geolocation) {
-            alert('🛸 Your device cannot detect cosmic coordinates');
+            alert('Your device cannot detect location coordinates');
             return;
         }
         
-        // Show loading state
         btn.disabled = true;
         btn.innerHTML = '🛰️ Scanning...';
         updateStatus('loading', 'Getting your location...');
         
         navigator.geolocation.getCurrentPosition(
-            // Success callback
-            function(position) {
+            async function(position) {
                 const lat = position.coords.latitude;
                 const lng = position.coords.longitude;
                 
-                // Check if location is in Kigali area (rough bounds)
                 if (lat < -2.2 || lat > -1.7 || lng < 29.8 || lng > 30.3) {
                     btn.disabled = false;
                     btn.innerHTML = '📍 Use My Location';
                     updateStatus('ready', 'Location outside Kigali area');
-                    alert('🚀 Your cosmic coordinates are outside the Kigali development galaxy.\n\nTerraNebular is currently optimized for Kigali\'s zoning universe.');
+                    alert('Your location is outside the Kigali area.\n\nTerraNebular is currently optimized for Kigali\'s zoning data.');
                     return;
                 }
                 
-                // Center map on user location
                 if (view) {
                     view.center = [lng, lat];
                     view.zoom = 16;
                     
-                    // Create a point and simulate click
                     require(["esri/geometry/Point"], function(Point) {
                         const userPoint = new Point({
                             longitude: lng,
@@ -1052,21 +1366,17 @@
                             spatialReference: view.spatialReference
                         });
                         
-                        // Simulate map click at user location
                         handleMapClick({ mapPoint: userPoint });
                     });
                 }
                 
                 btn.disabled = false;
                 btn.innerHTML = '✨ Location Found';
-                updateStatus('ready', 'Analyzing your location...');
                 
-                // Reset button text after 3 seconds
                 setTimeout(() => {
                     btn.innerHTML = '📍 Use My Location';
                 }, 3000);
             },
-            // Error callback
             function(error) {
                 btn.disabled = false;
                 btn.innerHTML = '📍 Use My Location';
@@ -1074,25 +1384,24 @@
                 let errorMessage = '';
                 switch(error.code) {
                     case error.PERMISSION_DENIED:
-                        errorMessage = '📡 TerraNebular needs access to your cosmic coordinates.\n\nPlease allow location access and try again.';
+                        errorMessage = 'TerraNebular needs access to your location.\n\nPlease allow location access and try again.';
                         updateStatus('ready', 'Location permission denied');
                         break;
                     case error.POSITION_UNAVAILABLE:
-                        errorMessage = '🛸 Unable to detect your cosmic position.\n\nPlease check your GPS/internet connection.';
+                        errorMessage = 'Unable to detect your position.\n\nPlease check your GPS/internet connection.';
                         updateStatus('ready', 'Location unavailable');
                         break;
                     case error.TIMEOUT:
-                        errorMessage = '⏰ Cosmic location scan timed out.\n\nPlease try again.';
+                        errorMessage = 'Location scan timed out.\n\nPlease try again.';
                         updateStatus('ready', 'Location timeout');
                         break;
                     default:
-                        errorMessage = '❌ Unknown cosmic navigation error.\n\nPlease try tapping on the map instead.';
+                        errorMessage = 'Unknown location error.\n\nPlease try clicking on the map instead.';
                         updateStatus('ready', 'Location error');
                         break;
                 }
                 alert(errorMessage);
             },
-            // Options
             {
                 enableHighAccuracy: true,
                 timeout: 10000,
@@ -1101,11 +1410,216 @@
         );
     }
 
-    document.addEventListener('DOMContentLoaded', function() {
-        initializeApp();
-        checkCachedData();
-        setupPanelResize();
-    });
+    // =============================================================================
+    // CHAT INTERFACE
+    // =============================================================================
+
+    async function sendMessage() {
+        const input = document.getElementById('chatInput');
+        const question = input.value.trim();
+        
+        if (!question || !currentZoning || !currentLocation) {
+            if (!backendConnected) {
+                showOfflineMessage();
+                return;
+            }
+            if (!currentZoning) {
+                alert('Please select a location on the map first.');
+                return;
+            }
+            return;
+        }
+        
+        const sendBtn = document.getElementById('sendBtn');
+        const aiResponse = document.getElementById('aiResponse');
+        const chatContainer = document.getElementById('chatContainer');
+        
+        sendBtn.disabled = true;
+        sendBtn.innerHTML = '⏳';
+        
+        aiResponse.innerHTML = 'TerraNebular AI is analyzing your question...';
+        aiResponse.className = 'ai-response';
+        chatContainer.classList.add('show');
+        
+        input.value = '';
+        input.style.height = 'auto';
+        
+        try {
+            const result = await askClaudeAI(
+                question, 
+                currentLocation.latitude, 
+                currentLocation.longitude
+            );
+            
+            await typewriterEffect(aiResponse, result.response);
+            
+            let responseClass = 'ai-response';
+            if (result.response.includes('YES') && result.response.includes('PERMITTED')) {
+                responseClass += ' response-success';
+            } else if (result.response.includes('NO') && result.response.includes('PROHIBITED')) {
+                responseClass += ' response-error';
+            } else if (result.response.includes('MAYBE') || result.response.includes('CONDITIONAL')) {
+                responseClass += ' response-warning';
+            }
+            
+            aiResponse.className = responseClass;
+            
+            if (result.cached) {
+                const cacheIndicator = document.createElement('div');
+                cacheIndicator.style.cssText = 'font-size: 11px; opacity: 0.7; margin-top: 8px; font-style: italic;';
+                cacheIndicator.textContent = '⚡ Retrieved from cache';
+                aiResponse.appendChild(cacheIndicator);
+            }
+            
+            conversationHistory.push({ question, response: result.response });
+            if (conversationHistory.length > 10) {
+                conversationHistory.shift();
+            }
+            
+        } catch (error) {
+            console.error('Chat error:', error);
+            await typewriterEffect(aiResponse, `❌ Sorry, I couldn't process your question right now.\n\nError: ${error.message}\n\nPlease try again or contact City of Kigali directly.`);
+            aiResponse.className = 'ai-response response-error';
+        }
+        
+        sendBtn.disabled = false;
+        sendBtn.innerHTML = '➤';
+        
+        if (!chatContainer.querySelector('.quick-actions')) {
+            addQuickActionButtons();
+        }
+    }
+
+    function addQuickActionButtons() {
+        const chatContainer = document.getElementById('chatContainer');
+        const quickActions = document.createElement('div');
+        quickActions.className = 'quick-actions';
+        
+        const actions = [
+            { text: 'Can I build a restaurant?', question: 'Can I build a restaurant here?' },
+            { text: 'Max height?', question: 'What is the maximum height allowed?' },
+            { text: 'Investment potential?', question: 'What is the investment potential of this location?' },
+            { text: 'Permit process?', question: 'What is the process to get building permits?' }
+        ];
+
+        actions.forEach(action => {
+            const button = document.createElement('button');
+            button.className = 'location-btn';
+            button.textContent = action.text;
+            button.onclick = () => askQuestion(action.question);
+            quickActions.appendChild(button);
+        });
+
+        chatContainer.insertBefore(quickActions, chatContainer.querySelector('.ai-response'));
+    }
+
+    function askQuestion(question) {
+        const chatInput = document.getElementById('chatInput');
+        chatInput.value = question;
+        autoResizeTextarea();
+        sendMessage();
+    }
+
+    function autoResizeTextarea() {
+        const textarea = document.getElementById('chatInput');
+        textarea.style.height = 'auto';
+        textarea.style.height = `${Math.min(textarea.scrollHeight, 100)}px`;
+    }
+
+    // =============================================================================
+    // DISPLAY FUNCTIONS
+    // =============================================================================
+
+    function displayLocationInfo(zoning) {
+        const zoneName = zoning.zoneName;
+        
+        document.getElementById('zoneName').textContent = zoneName;
+        
+        const description = zoning.properties?.phase || 
+                          `${zoning.properties?.level_1} - ${zoning.properties?.level_2}` ||
+                          'Development zone per Kigali master plan';
+        
+        document.getElementById('zoneDescription').textContent = description;
+        
+        const colorIndicator = document.getElementById('zoneColorIndicator');
+        const zoneColor = ZONE_COLORS[zoneName] || '#999999';
+        colorIndicator.style.background = zoneColor;
+        colorIndicator.style.boxShadow = `0 0 20px ${zoneColor}40`;
+        
+        addCosmicSparkles(colorIndicator);
+        
+        const locationHeader = document.getElementById('locationHeader');
+        locationHeader.style.display = 'flex';
+        locationHeader.style.animation = 'fadeInUp 0.6s ease-out';
+        
+        const chatContainer = document.getElementById('chatContainer');
+        const aiResponse = document.getElementById('aiResponse');
+        
+        let welcomeMessage = `Welcome to TerraNebular - your spatial intelligence assistant.\n\n📍 Selected Location: ${zoneName}\n\n${description}`;
+
+        if (zoning.properties?.phase) {
+            welcomeMessage += `\n🗓️ Implementation Phase: ${zoning.properties.phase}`;
+        }
+        if (zoning.properties?.year_of_implementation) {
+            welcomeMessage += `\n📅 Implementation Year: ${zoning.properties.year_of_implementation}`;
+        }
+        if (zoning.distance) {
+            welcomeMessage += `\n📏 Distance from zone center: ${zoning.distance}`;
+        }
+        if (zoning.area) {
+            welcomeMessage += `\n📐 Zone area: ${zoning.area}`;
+        }
+
+        welcomeMessage += `\n\n✨ Ask me anything about development regulations, building permissions, investment potential, or permit processes for this location.`;
+        
+        typewriterEffect(aiResponse, welcomeMessage).then(() => {
+            aiResponse.className = 'ai-response response-success';
+        });
+        
+        chatContainer.classList.add('show');
+        
+        if (!chatContainer.querySelector('.quick-actions')) {
+            setTimeout(() => addQuickActionButtons(), 1000);
+        }
+    }
+
+    function showNoDataMessage() {
+        const chatContainer = document.getElementById('chatContainer');
+        const aiResponse = document.getElementById('aiResponse');
+        
+        const message = `No zoning data found for this location.\n\nThis could mean:\n• The location is outside the mapped zoning areas\n• The coordinates fall between zone boundaries\n• Network connectivity issues\n\nPlease try:\n• Selecting a different location within Kigali\n• Checking your internet connection\n• Contacting City of Kigali for the latest zoning information\n\n📞 City of Kigali Planning: +250 788 000 000\n🌐 More info: kigalicity.gov.rw`;
+        
+        typewriterEffect(aiResponse, message).then(() => {
+            aiResponse.className = 'ai-response response-warning';
+        });
+        
+        chatContainer.classList.add('show');
+    }
+
+    function showOfflineMessage() {
+        const chatContainer = document.getElementById('chatContainer');
+        const aiResponse = document.getElementById('aiResponse');
+        
+        const message = `TerraNebular backend is currently offline.\n\nPlease:\n• Check your internet connection\n• Ensure the backend server is running on localhost:3001\n• Contact the system administrator\n\nWhile offline, you can still explore the map, but spatial queries and AI assistance are unavailable.\n\n📞 For urgent zoning questions, contact City of Kigali directly:\n+250 788 000 000`;
+        
+        typewriterEffect(aiResponse, message).then(() => {
+            aiResponse.className = 'ai-response response-error';
+        });
+        
+        chatContainer.classList.add('show');
+    }
+
+    function updateStatus(status, text) {
+        const dot = document.getElementById('statusDot');
+        const statusText = document.getElementById('statusText');
+        
+        dot.className = `status-dot ${status}`;
+        statusText.textContent = text;
+    }
+
+    // =============================================================================
+    // PANEL RESIZE FUNCTIONALITY
+    // =============================================================================
 
     function setupPanelResize() {
         const panel = document.getElementById('leftPanel');
@@ -1123,13 +1637,11 @@
             if (!isResizing) return;
             
             if (window.innerWidth > 768) {
-                // Desktop - horizontal resize
                 const newWidth = e.clientX;
                 if (newWidth >= 300 && newWidth <= 600) {
                     panel.style.width = newWidth + 'px';
                 }
             } else {
-                // Mobile - vertical resize
                 const newHeight = e.clientY;
                 if (newHeight >= 250 && newHeight <= window.innerHeight * 0.7) {
                     panel.style.height = newHeight + 'px';
@@ -1143,7 +1655,6 @@
             document.removeEventListener('mouseup', stopResize);
         }
 
-        // Touch support for mobile
         resizeHandle.addEventListener('touchstart', (e) => {
             isResizing = true;
             document.addEventListener('touchmove', handleTouchResize);
@@ -1169,954 +1680,7 @@
             document.removeEventListener('touchend', stopTouchResize);
         }
     }
-
-    function initializeApp() {
-        updateStatus('loading', 'Initializing map...');
-        
-        require([
-            "esri/Map",
-            "esri/views/MapView",
-            "esri/Graphic",
-            "esri/geometry/Point"
-        ], function(Map, MapView, Graphic, Point) {
-            
-            const map = new Map({
-                basemap: "hybrid"  // Keep satellite imagery for better context
-            });
-            
-            view = new MapView({
-                container: "viewDiv",
-                map: map,
-                center: [30.0619, -1.9441],
-                zoom: 13,
-                ui: {
-                    components: ["attribution"]
-                }
-            });
-            
-            view.on("click", handleMapClick);
-            view.popup.autoOpenEnabled = false;
-            
-            view.when(() => {
-                updateStatus('ready', 'Map ready');
-            });
-        });
-        
-        document.getElementById('fileUpload').addEventListener('change', handleFileUpload);
-        
-        const chatInput = document.getElementById('chatInput');
-        chatInput.addEventListener('input', autoResizeTextarea);
-        chatInput.addEventListener('keypress', function(e) {
-            if (e.key === 'Enter' && !e.shiftKey) {
-                e.preventDefault();
-                sendMessage();
-            }
-        });
-    }
-
-    // Auto-resize textarea
-    function autoResizeTextarea() {
-        const textarea = document.getElementById('chatInput');
-        textarea.style.height = 'auto';
-        textarea.style.height = `${Math.min(textarea.scrollHeight, 100)}px`;
-    }
-
-    // Question type detection
-    function detectQuestionType(question) {
-        const lowerQuestion = question.toLowerCase();
-        
-        if (lowerQuestion.includes('can i build') || lowerQuestion.includes('is it allowed') || 
-            lowerQuestion.includes('permitted') || lowerQuestion.includes('prohibited')) {
-            return 'permission';
-        }
-        if (lowerQuestion.includes('height') || lowerQuestion.includes('how tall') || 
-            lowerQuestion.includes('maximum height')) {
-            return 'height';
-        }
-        if (lowerQuestion.includes('lot size') || lowerQuestion.includes('land size') || 
-            lowerQuestion.includes('minimum size')) {
-            return 'lot_size';
-        }
-        if (lowerQuestion.includes('coverage') || lowerQuestion.includes('building coverage')) {
-            return 'coverage';
-        }
-        if (lowerQuestion.includes('investment') || lowerQuestion.includes('potential') || 
-            lowerQuestion.includes('opportunity') || lowerQuestion.includes('profitable')) {
-            return 'investment';
-        }
-        if (lowerQuestion.includes('compare') || lowerQuestion.includes('difference') || 
-            lowerQuestion.includes('vs')) {
-            return 'comparison';
-        }
-        if (lowerQuestion.includes('process') || lowerQuestion.includes('how to') || 
-            lowerQuestion.includes('steps') || lowerQuestion.includes('apply')) {
-            return 'process';
-        }
-        return 'general';
-    }
-
-    // Extract building type from question
-    function extractBuildingType(question) {
-        const lowerQuestion = question.toLowerCase();
-        for (const [type, keywords] of Object.entries(buildingTypes)) {
-            for (const keyword of keywords) {
-                if (lowerQuestion.includes(keyword)) {
-                    return type;
-                }
-            }
-        }
-        return null;
-    }
-
-    // Generate investment potential analysis
-    function generateInvestmentAnalysis(zoneName, regulations) {
-        const investmentFactors = {
-            'C1-Mixed use zone': {
-                score: 8,
-                pros: ['High flexibility for mixed uses', 'Strong commercial potential', 'Good accessibility'],
-                cons: ['Higher land costs', 'Strict design regulations'],
-                recommendation: 'Ideal for commercial ventures like restaurants or co-working spaces.'
-            },
-            'C3-City commercial zone': {
-                score: 9,
-                pros: ['Prime location for retail and offices', 'High foot traffic', 'Infrastructure support'],
-                cons: ['High competition', 'Higher development costs'],
-                recommendation: 'Perfect for large-scale commercial projects like shopping centers.'
-            },
-            'R1-Low density residential zone': {
-                score: 6,
-                pros: ['Quiet residential appeal', 'Lower density promotes exclusivity', 'Stable demand'],
-                cons: ['Limited commercial use', 'Lower ROI for large projects'],
-                recommendation: 'Suitable for luxury villas or small-scale residential projects.'
-            },
-            'R1A-Low density residential densification zone': {
-                score: 7,
-                pros: ['Supports diverse residential types', 'Good for small-scale developments', 'Growing demand'],
-                cons: ['Limited commercial potential', 'Moderate development restrictions'],
-                recommendation: 'Great for townhouses or small apartment complexes.'
-            },
-            'R1B-Rural residential zone': {
-                score: 5,
-                pros: ['Affordable land prices', 'Supports rural development', 'Flexible for small communities'],
-                cons: ['Limited infrastructure', 'Restricted to rural settings'],
-                recommendation: 'Ideal for rural housing or small-scale farming communities.'
-            },
-            'R2-Medium density residential - Improvement zone': {
-                score: 7,
-                pros: ['Supports urban renewal', 'Moderate density allows growth', 'Community-focused'],
-                cons: ['Upgrading challenges', 'Regulatory flexibility needed'],
-                recommendation: 'Suitable for redeveloping unplanned settlements.'
-            },
-            'R3-Medium density residential - Expansion zone': {
-                score: 7,
-                pros: ['Ideal for peri-urban growth', 'Supports affordable housing', 'Flexible regulations'],
-                cons: ['Infrastructure may lag', 'Affordability criteria apply'],
-                recommendation: 'Good for expanding residential areas with moderate density.'
-            },
-            'R4-High density residential zone': {
-                score: 8,
-                pros: ['High density maximizes land use', 'Strong rental market', 'Urban connectivity'],
-                cons: ['Higher construction costs', 'Strict regulations'],
-                recommendation: 'Perfect for apartment complexes in urban centers.'
-            },
-            'I1-Light industrial zone': {
-                score: 6,
-                pros: ['Supports clean industries', 'Blends with residential areas', 'Diverse permitted uses'],
-                cons: ['Limited residential use', 'Moderate investment returns'],
-                recommendation: 'Suitable for small-scale industrial or business parks.'
-            },
-            'I2-General industrial zone': {
-                score: 5,
-                pros: ['Ideal for heavy industries', 'Good transport access', 'Large plot sizes'],
-                cons: ['Restricted residential use', 'Environmental regulations'],
-                recommendation: 'Best for large-scale manufacturing or logistics.'
-            },
-            'PF1-Education and research facilities': {
-                score: 7,
-                pros: ['Stable demand for education', 'Supports community development', 'Long-term investment'],
-                cons: ['Limited commercial use', 'High initial costs'],
-                recommendation: 'Ideal for schools or research institutions.'
-            },
-            'PF2-Health facilities': {
-                score: 7,
-                pros: ['High community impact', 'Stable healthcare demand', 'Government support'],
-                cons: ['Specialized regulations', 'High setup costs'],
-                recommendation: 'Suitable for clinics or hospitals.'
-            },
-            'A1-Agriculture zone': {
-                score: 4,
-                pros: ['Low land costs', 'Supports food security', 'Sustainable practices'],
-                cons: ['Limited development potential', 'Restricted to agricultural use'],
-                recommendation: 'Best for farming or agro-processing ventures.'
-            },
-            'P1-Parks and open spaces zone': {
-                score: 5,
-                pros: ['Enhances community value', 'Low maintenance costs', 'Eco-friendly'],
-                cons: ['Limited revenue potential', 'Restricted development'],
-                recommendation: 'Ideal for recreational or eco-tourism projects.'
-            },
-            'T-Transportation zone': {
-                score: 6,
-                pros: ['Critical infrastructure support', 'High connectivity', 'Strategic location'],
-                cons: ['Limited non-transport uses', 'Regulatory complexity'],
-                recommendation: 'Suitable for transport-related developments like terminals.'
-            },
-            'P3C-Steep slopes (> 30%) zone': {
-                score: 3,
-                pros: ['Unique environmental appeal', 'Potential for eco-tourism', 'Low competition'],
-                cons: ['Strict environmental regulations', 'High development costs'],
-                recommendation: 'Best for conservation or specialized tourism projects.'
-            },
-            'default': {
-                score: 5,
-                pros: ['Standard zoning regulations', 'Potential for specific uses'],
-                cons: ['Limited information available', 'May require additional permits'],
-                recommendation: 'Consult City of Kigali for detailed investment analysis.'
-            }
-        };
-
-        const factors = investmentFactors[zoneName] || investmentFactors['default'];
-        
-        return `📈 Investment Potential for ${zoneName}
-
-Score: ${factors.score}/10
-
-✅ Pros:
-${factors.pros.map(p => `• ${p}`).join('\n')}
-
-❌ Cons:
-${factors.cons.map(p => `• ${p}`).join('\n')}
-
-💡 Recommendation: ${factors.recommendation}
-
-📞 Contact City of Kigali for market studies and feasibility analysis.`;
-    }
-
-    // Compare two zones
-    function compareZones(zone1, zone2) {
-        const reg1 = KIGALI_ZONING_REGULATIONS[zone1] || { description: 'Unknown', maxHeight: 'N/A', coverage: 'N/A' };
-        const reg2 = KIGALI_ZONING_REGULATIONS[zone2] || { description: 'Unknown', maxHeight: 'N/A', coverage: 'N/A' };
-        
-        return `🆚 Zone Comparison: ${zone1} vs ${zone2}
-
-${zone1}:
-• Description: ${reg1.description}
-• Max Height: ${reg1.maxHeight || 'N/A'}
-• Coverage: ${reg1.coverage || 'N/A'}
-• Permitted Uses: ${reg1.permitted ? reg1.permitted.slice(0, 3).join(', ') : 'N/A'}
-
-${zone2}:
-• Description: ${reg2.description}
-• Max Height: ${reg2.maxHeight || 'N/A'}
-• Coverage: ${reg2.coverage || 'N/A'}
-• Permitted Uses: ${reg2.permitted ? reg2.permitted.slice(0, 3).join(', ') : 'N/A'}
-
-💡 Tip: Choose based on your project needs and consult City of Kigali for detailed regulations.`;
-    }
-
-    // Generate procedural guidance
-    function generateProcessGuidance() {
-        return `📋 Development Process in Kigali
-
-1. Verify Zoning: Confirm zoning regulations using TerraNebular.
-2. Feasibility Study: Conduct market and technical feasibility analysis.
-3. Submit Plans: Prepare architectural and engineering plans.
-4. Apply for Permits: Submit to City of Kigali Planning Office.
-5. Environmental Assessment: Complete EIA if required.
-6. Community Consultation: Engage stakeholders if needed.
-7. Construction: Follow approved plans and regulations.
-8. Inspection: Schedule inspections during and after construction.
-
-📞 Contact: City of Kigali Planning Office for assistance.
-🌐 More info: https://www.kigalicity.gov.rw/services/planning-and-construction`;
-    }
-
-    // Enhanced response generation with all the original smart logic
-    function generateSmartResponse(question, zoning) {
-        const zoneName = zoning.zoneName;
-        const regulations = KIGALI_ZONING_REGULATIONS[zoneName] || {
-            description: 'Development zone per master plan',
-            permitted: ['Check regulations'],
-            prohibited: ['Check regulations'],
-            conditional: ['Check regulations'],
-            maxHeight: 'Check regulations',
-            minLotSize: 'Check regulations',
-            coverage: 'Check regulations'
-        };
-        const questionType = detectQuestionType(question);
-        const buildingType = extractBuildingType(question);
-
-        // Store question in conversation history
-        conversationHistory.push({ question, zoneName });
-        if (conversationHistory.length > 5) {
-            conversationHistory.shift(); // Keep only last 5 for context
-        }
-
-        // Handle different question types
-        switch (questionType) {
-            case 'permission':
-                if (!buildingType) {
-                    return `📍 Zone: ${zoneName}
-
-What you can build here:
-✅ PERMITTED: ${regulations.permitted.slice(0, 5).join(', ')}
-❌ PROHIBITED: ${regulations.prohibited.slice(0, 3).join(', ')}
-⚠️ CONDITIONAL: ${regulations.conditional.slice(0, 3).join(', ')}
-
-📏 Max Height: ${regulations.maxHeight}
-📐 Min Lot Size: ${regulations.minLotSize}
-🏗️ Max Coverage: ${regulations.coverage}
-
-💡 Specify a building type (e.g., restaurant, house) for detailed guidance.`;
-                }
-
-                const isPermitted = regulations.permitted.some(item => 
-                    item.toLowerCase().includes(buildingType) || 
-                    buildingType.includes(item.toLowerCase().split(' ')[0])
-                );
-                const isProhibited = regulations.prohibited.some(item => 
-                    item.toLowerCase().includes(buildingType) || 
-                    buildingType.includes(item.toLowerCase().split(' ')[0])
-                );
-                const isConditional = regulations.conditional.some(item => 
-                    item.toLowerCase().includes(buildingType) || 
-                    buildingType.includes(item.toLowerCase().split(' ')[0])
-                );
-
-                if (isPermitted) {
-                    return `✅ YES - ${buildingType.toUpperCase()} IS PERMITTED
-
-Zone: ${zoneName}
-Status: FULLY ALLOWED
-
-📋 Requirements:
-• Min lot size: ${regulations.minLotSize}
-• Max height: ${regulations.maxHeight}
-• Max coverage: ${regulations.coverage}
-
-🚀 You can proceed with your ${buildingType} project!
-
-⚖️ Still need: Building permit from City of Kigali`;
-                }
-                if (isProhibited) {
-                    return `❌ NO - ${buildingType.toUpperCase()} IS PROHIBITED
-
-Zone: ${zoneName}
-Status: NOT ALLOWED
-
-🚫 Prohibited uses include:
-${regulations.prohibited.slice(0, 4).map(item => `• ${item}`).join('\n')}
-
-💡 Consider these zones instead:
-${getSuggestedZones(buildingType).join(', ')}
-
-📞 Contact City of Kigali for alternative options.`;
-                }
-                if (isConditional) {
-                    return `⚠️ MAYBE - ${buildingType.toUpperCase()} NEEDS APPROVAL
-
-Zone: ${zoneName}
-Status: CONDITIONAL USE
-
-📋 Conditional uses in this zone:
-${regulations.conditional.map(item => `• ${item}`).join('\n')}
-
-✅ Next steps:
-1. Apply for conditional use permit
-2. Submit detailed plans to City of Kigali
-3. Meet all specific requirements
-4. Get community consultation if required
-
-📞 Contact: City of Kigali Planning Office`;
-                }
-
-                return `❓ ${buildingType.toUpperCase()} - CHECK WITH AUTHORITIES
-
-Zone: ${zoneName}
-
-✅ PERMITTED: ${regulations.permitted.slice(0, 3).join(', ')}
-❌ PROHIBITED: ${regulations.prohibited.slice(0, 3).join(', ')}
-⚠️ CONDITIONAL: ${regulations.conditional.slice(0, 3).join(', ')}
-
-📞 Contact City of Kigali Planning Office for clarification.`;
-
-            case 'height':
-                return `📏 Maximum Height in ${zoneName}
-
-Maximum Height: ${regulations.maxHeight}
-
-📋 Details:
-• Description: ${regulations.description}
-• Coverage: ${regulations.coverage}
-• Additional Notes: ${regulations.specialNote || 'Follow City of Kigali building codes.'}
-
-📞 Contact City of Kigali for height variance requests.`;
-
-            case 'lot_size':
-                return `📐 Minimum Lot Size in ${zoneName}
-
-Minimum Lot Size: ${regulations.minLotSize}
-
-📋 Details:
-• Description: ${regulations.description}
-• Coverage: ${regulations.coverage}
-• Additional Notes: ${regulations.specialNote || 'Consult City of Kigali for lot subdivision rules.'}
-
-📞 Contact City of Kigali for lot size clarifications.`;
-
-            case 'coverage':
-                return `🏗️ Building Coverage in ${zoneName}
-
-Maximum Coverage: ${regulations.coverage}
-
-📋 Details:
-• Description: ${regulations.description}
-• Min Lot Size: ${regulations.minLotSize}
-• Additional Notes: ${regulations.specialNote || 'Ensure compliance with landscaping requirements.'}
-
-📞 Contact City of Kigali for coverage regulations.`;
-
-            case 'investment':
-                return generateInvestmentAnalysis(zoneName, regulations);
-
-            case 'comparison':
-                const otherZoneMatch = question.match(/compare.*?(C1|C3|R1|R1A|R1B|R2|R3|R4|I1|I2|PF1|PF2|A1|P1|T|P3C)/i);
-                const otherZone = otherZoneMatch ? `${otherZoneMatch[1]}-` + 
-                    Object.keys(KIGALI_ZONING_REGULATIONS).find(z => z.startsWith(otherZoneMatch[1])) : null;
-                
-                if (otherZone) {
-                    return compareZones(zoneName, otherZone);
-                }
-                return `🆚 Comparison Request
-
-Please specify another zone to compare with ${zoneName} (e.g., "Compare with C3-City commercial zone").
-
-💡 Available zones:
-${Object.keys(KIGALI_ZONING_REGULATIONS).slice(0, 5).join(', ')}...`;
-
-            case 'process':
-                return generateProcessGuidance();
-
-            default:
-                // Check for follow-up questions based on history
-                if (conversationHistory.length > 1) {
-                    const prevQuestion = conversationHistory[conversationHistory.length - 2].question.toLowerCase();
-                    if (prevQuestion.includes('build') && question.toLowerCase().includes('more details')) {
-                        return `📋 Additional Details for ${zoneName}
-
-Zone Description: ${regulations.description}
-
-✅ Permitted Uses:
-${regulations.permitted.map(p => `• ${p}`).join('\n')}
-
-❌ Prohibited Uses:
-${regulations.prohibited.map(p => `• ${p}`).join('\n')}
-
-⚠️ Conditional Uses:
-${regulations.conditional.map(p => `• ${p}`).join('\n')}
-
-📏 Regulations:
-• Max Height: ${regulations.maxHeight}
-• Min Lot Size: ${regulations.minLotSize}
-• Max Coverage: ${regulations.coverage}
-• Landscaping: ${regulations.landscaping || 'N/A'}
-
-📞 Contact City of Kigali for full regulatory details.`;
-                    }
-                }
-
-                return `🌌 General Information for ${zoneName}
-
-Description: ${regulations.description}
-
-✅ PERMITTED: ${regulations.permitted.slice(0, 5).join(', ')}
-❌ PROHIBITED: ${regulations.prohibited.slice(0, 3).join(', ')}
-⚠️ CONDITIONAL: ${regulations.conditional.slice(0, 3).join(', ')}
-
-📏 Key Regulations:
-• Max Height: ${regulations.maxHeight}
-• Min Lot Size: ${regulations.minLotSize}
-• Max Coverage: ${regulations.coverage}
-
-💡 Ask specific questions like:
-• Can I build a restaurant here?
-• What's the maximum height?
-• What's the investment potential?
-
-📞 Contact City of Kigali for detailed guidance.`;
-        }
-    }
-
-    // Suggest alternative zones for a building type
-    function getSuggestedZones(buildingType) {
-        const suggestions = {
-            'restaurant': ['C1-Mixed use zone', 'C3-City commercial zone', 'R2-Medium density residential - Improvement zone'],
-            'hotel': ['C1-Mixed use zone', 'C3-City commercial zone', 'R4-High density residential zone'],
-            'house': ['R1-Low density residential zone', 'R2-Medium density residential - Improvement zone', 'R3-Medium density residential - Expansion zone'],
-            'shop': ['C1-Mixed use zone', 'C3-City commercial zone'],
-            'apartment': ['R2-Medium density residential - Improvement zone', 'R3-Medium density residential - Expansion zone', 'R4-High density residential zone'],
-            'office': ['C1-Mixed use zone', 'C3-City commercial zone', 'I1-Light industrial zone'],
-            'warehouse': ['I1-Light industrial zone', 'I2-General industrial zone'],
-            'factory': ['I1-Light industrial zone', 'I2-General industrial zone'],
-            'shopping center': ['C3-City commercial zone'],
-            'nightclub': ['C1-Mixed use zone', 'C3-City commercial zone'],
-            'supermarket': ['C3-City commercial zone'],
-            'school': ['PF1-Education and research facilities'],
-            'hospital': ['PF2-Health facilities'],
-            'farm': ['A1-Agriculture zone'],
-            'greenhouse': ['A1-Agriculture zone'],
-            'parking': ['T-Transportation zone', 'C1-Mixed use zone'],
-            'transport': ['T-Transportation zone'],
-            'petrol station': ['I1-Light industrial zone', 'C1-Mixed use zone'],
-            'garage': ['I1-Light industrial zone']
-        };
-        
-        return suggestions[buildingType] || ['C1-Mixed use zone', 'C3-City commercial zone'];
-    }
-
-    // Quick action buttons for common questions
-    function addQuickActionButtons() {
-        const chatContainer = document.getElementById('chatContainer');
-        const quickActions = document.createElement('div');
-        quickActions.className = 'quick-actions';
-        
-        const actions = [
-            { text: 'Can I build a restaurant?', question: 'Can I build a restaurant here?' },
-            { text: 'Max height?', question: 'What is the maximum height?' },
-            { text: 'Investment potential?', question: 'What is the investment potential?' },
-            { text: 'Permit process?', question: 'What is the process to get a permit?' }
-        ];
-
-        actions.forEach(action => {
-            const button = document.createElement('button');
-            button.className = 'location-btn';
-            button.textContent = action.text;
-            button.onclick = () => askQuestion(action.question);
-            quickActions.appendChild(button);
-        });
-
-        chatContainer.insertBefore(quickActions, chatContainer.querySelector('.ai-response'));
-    }
-
-    // Simulate asking a question
-    function askQuestion(question) {
-        const chatInput = document.getElementById('chatInput');
-        chatInput.value = question;
-        autoResizeTextarea();
-        sendMessage();
-    }
-
-    // Update sendMessage to include quick action buttons
-    function sendMessage() {
-        const input = document.getElementById('chatInput');
-        const question = input.value.trim();
-        
-        if (!question || !currentZoning) return;
-        
-        const sendBtn = document.getElementById('sendBtn');
-        const aiResponse = document.getElementById('aiResponse');
-        const chatContainer = document.getElementById('chatContainer');
-        
-        sendBtn.disabled = true;
-        sendBtn.innerHTML = '⏳';
-        
-        aiResponse.innerHTML = '🌌 Analyzing cosmic development patterns...';
-        aiResponse.className = 'ai-response';
-        chatContainer.classList.add('show');
-        
-        input.value = '';
-        input.style.height = 'auto';
-        
-        setTimeout(() => {
-            const response = generateSmartResponse(question, currentZoning);
-            
-            let responseClass = 'ai-response';
-            if (response.includes('✅ YES')) {
-                responseClass += ' response-success';
-            } else if (response.includes('❌ NO')) {
-                responseClass += ' response-error';
-            } else if (response.includes('⚠️ MAYBE')) {
-                responseClass += ' response-warning';
-            }
-            
-            aiResponse.innerHTML = response;
-            aiResponse.className = responseClass;
-            
-            sendBtn.disabled = false;
-            sendBtn.innerHTML = '➤';
-            
-            // Add quick action buttons after first response
-            if (!chatContainer.querySelector('.quick-actions')) {
-                addQuickActionButtons();
-            }
-        }, 1000);
-    }
-
-    // Update displayLocationInfo to initialize chat with quick actions
-    function displayLocationInfo(zoning) {
-        const zoneName = zoning.zoneName;
-        const regulations = KIGALI_ZONING_REGULATIONS[zoneName] || {
-            description: 'Development zone per master plan',
-            maxHeight: 'Check regulations',
-            coverage: 'Per regulations'
-        };
-        
-        document.getElementById('zoneName').textContent = zoneName;
-        document.getElementById('zoneDescription').textContent = regulations.description;
-        
-        const colorIndicator = document.getElementById('zoneColorIndicator');
-        const zoneColor = ZONE_COLORS[zoneName] || '#999999';
-        colorIndicator.style.background = zoneColor;
-        
-        document.getElementById('locationHeader').style.display = 'flex';
-        
-        const chatContainer = document.getElementById('chatContainer');
-        const aiResponse = document.getElementById('aiResponse');
-        
-        aiResponse.innerHTML = `🌌 Welcome to TerraNebular - where development dreams take shape.
-
-📍 You've selected: ${zoneName}
-
-✨ I'm your intelligent assistant for navigating Kigali's zoning regulations, building requirements, and development opportunities. What would you like to explore?`;
-        aiResponse.className = 'ai-response response-success';
-        chatContainer.classList.add('show');
-        
-        // Add quick action buttons
-        if (!chatContainer.querySelector('.quick-actions')) {
-            addQuickActionButtons();
-        }
-    }
-
-    // Add location pin on map
-    function addLocationPin(point) {
-        require(["esri/Graphic", "esri/geometry/Point"], function(Graphic, Point) {
-            view.graphics.removeAll();
-            
-            const pinSymbol = {
-                type: "simple-marker",
-                color: [236, 72, 153, 0.9],
-                size: 12,
-                outline: {
-                    color: [255, 255, 255],
-                    width: 2
-                }
-            };
-            
-            const pinGraphic = new Graphic({
-                geometry: point,
-                symbol: pinSymbol
-            });
-            
-            view.graphics.add(pinGraphic);
-        });
-    }
-
-    // Show no data message
-    function showNoDataMessage() {
-        const chatContainer = document.getElementById('chatContainer');
-        const aiResponse = document.getElementById('aiResponse');
-        
-        aiResponse.innerHTML = `🌌 No zoning data found for this location.
-
-Please try another location or load zoning data using the banner above.`;
-        aiResponse.className = 'ai-response response-error';
-        chatContainer.classList.add('show');
-    }
-
-    // Cache management functions
-    const CACHE_KEY = 'kigali_zoning_data';
-    const CACHE_VERSION = '1.0';
-
-    function checkCachedData() {
-        try {
-            const cached = localStorage.getItem(CACHE_KEY);
-            if (cached) {
-                const data = JSON.parse(cached);
-                if (data.version === CACHE_VERSION && data.features) {
-                    console.log('📦 Found cached zoning data');
-                    loadCachedData(data);
-                    return;
-                }
-            }
-        } catch (error) {
-            console.warn('Cache check failed:', error);
-        }
-        
-        showDataBanner();
-    }
-
-    function loadCachedData(data) {
-        updateStatus('loading', 'Loading cached data...');
-        
-        setTimeout(() => {
-            zoningFeatures = data.features;
-            spatialIndex = new Map(data.index);
-            
-            updateStatus('ready', `${zoningFeatures.length} zones loaded`);
-            showDataBanner(true);
-            
-            console.log('✅ Cached data loaded successfully');
-        }, 500);
-    }
-
-    function showDataBanner(loaded = false) {
-        const banner = document.getElementById('dataBanner');
-        
-        if (loaded) {
-            banner.innerHTML = '✨ Cosmic zoning data loaded successfully';
-            banner.classList.add('loaded');
-            banner.onclick = null;
-            
-            setTimeout(() => {
-                banner.style.display = 'none';
-            }, 3000);
-        } else {
-            banner.innerHTML = '🌌 Tap to load cosmic zoning data';
-            banner.classList.remove('loaded');
-            banner.onclick = loadDataFile;
-            banner.style.display = 'block';
-        }
-    }
-
-    function updateStatus(status, text) {
-        const dot = document.getElementById('statusDot');
-        const statusText = document.getElementById('statusText');
-        
-        dot.className = `status-dot ${status}`;
-        
-        // Add cosmic flair to status messages
-        const cosmicMessages = {
-            'loading': '🌌 Initializing cosmic sensors...',
-            'ready': '✨ Ready to explore the development universe',
-            'Location outside Kigali area': '🚀 Signal detected outside Kigali galaxy',
-            'Location permission denied': '📡 Cosmic location access denied',
-            'Location unavailable': '🛸 Unable to detect cosmic coordinates',
-            'Location timeout': '⏰ Cosmic location scan timed out',
-            'Location error': '❌ Cosmic navigation error',
-            'Getting your location...': '🛰️ Scanning your cosmic coordinates...',
-            'Analyzing your location...': '🔍 Analyzing development potential...'
-        };
-        
-        statusText.textContent = cosmicMessages[text] || text;
-    }
-
-    function loadDataFile() {
-        document.getElementById('fileUpload').click();
-    }
-
-    async function handleFileUpload(event) {
-        const file = event.target.files[0];
-        if (!file) return;
-        
-        showLoading(true, 'Loading zoning data...');
-        
-        try {
-            const text = await file.text();
-            const data = JSON.parse(text);
-            
-            await processZoningData(data);
-            cacheZoningData();
-            
-            showLoading(false);
-            showDataBanner(true);
-            updateStatus('ready', `${zoningFeatures.length} zones loaded`);
-            
-        } catch (error) {
-            showLoading(false);
-            alert('❌ Error loading file: ' + error.message);
-        }
-    }
-
-    async function processZoningData(data) {
-        let features = [];
-        
-        if (data.type === 'FeatureCollection') {
-            features = data.features;
-        } else if (Array.isArray(data)) {
-            features = data;
-        } else if (data.features) {
-            features = data.features;
-        }
-        
-        if (!features || features.length === 0) {
-            throw new Error('No features found in JSON file');
-        }
-        
-        zoningFeatures = [];
-        spatialIndex = new Map();
-        
-        for (let i = 0; i < features.length; i++) {
-            const feature = features[i];
-            const props = feature.properties || feature.attributes || feature;
-            const zoneName = extractZoneName(props);
-            
-            if (zoneName) {
-                const processedFeature = {
-                    id: i,
-                    zoneName: zoneName,
-                    properties: props,
-                    bounds: calculateBounds(feature.geometry)
-                };
-                
-                zoningFeatures.push(processedFeature);
-                
-                if (processedFeature.bounds) {
-                    const gridKey = Math.floor(processedFeature.bounds.centerLat * 1000) + ',' + 
-                                   Math.floor(processedFeature.bounds.centerLng * 1000);
-                    if (!spatialIndex.has(gridKey)) {
-                        spatialIndex.set(gridKey, []);
-                    }
-                    spatialIndex.get(gridKey).push(processedFeature);
-                }
-            }
-        }
-    }
-
-    function cacheZoningData() {
-        try {
-            const cacheData = {
-                version: CACHE_VERSION,
-                timestamp: Date.now(),
-                features: zoningFeatures,
-                index: Array.from(spatialIndex.entries())
-            };
-            
-            localStorage.setItem(CACHE_KEY, JSON.stringify(cacheData));
-            console.log('💾 Zoning data cached successfully');
-        } catch (error) {
-            console.warn('Failed to cache data:', error);
-        }
-    }
-
-    function extractZoneName(properties) {
-        const possibleFields = [
-            'New_Zoning', 'new_zoning', 'Zone_Code', 'zone_code',
-            'zoning', 'ZONING', 'zone_name', 'type'
-        ];
-        
-        for (const field of possibleFields) {
-            if (properties[field] && typeof properties[field] === 'string') {
-                return properties[field].trim();
-            }
-        }
-        return null;
-    }
-
-    function calculateBounds(geometry) {
-        if (!geometry || !geometry.coordinates) return null;
-        
-        try {
-            let minLng = Infinity, maxLng = -Infinity;
-            let minLat = Infinity, maxLat = -Infinity;
-            
-            const processCoordinates = (coords) => {
-                if (typeof coords[0] === 'number') {
-                    minLng = Math.min(minLng, coords[0]);
-                    maxLng = Math.max(maxLng, coords[0]);
-                    minLat = Math.min(minLat, coords[1]);
-                    maxLat = Math.max(maxLat, coords[1]);
-                } else {
-                    coords.forEach(processCoordinates);
-                }
-            };
-            
-            processCoordinates(geometry.coordinates);
-            
-            return {
-                minLng, maxLng, minLat, maxLat,
-                centerLng: (minLng + maxLng) / 2,
-                centerLat: (minLat + maxLat) / 2
-            };
-        } catch (error) {
-            return null;
-        }
-    }
-
-    function showLoading(show, text = 'Loading...') {
-        const overlay = document.getElementById('loadingOverlay');
-        const loadingText = document.getElementById('loadingText');
-        
-        if (show) {
-            loadingText.textContent = text;
-            overlay.classList.add('show');
-        } else {
-            overlay.classList.remove('show');
-        }
-    }
-
-    async function handleMapClick(event) {
-        if (zoningFeatures.length === 0) {
-            showDataBanner();
-            return;
-        }
-        
-        currentLocation = event.mapPoint;
-        const zoningResult = queryZoningData(event.mapPoint);
-        
-        if (zoningResult) {
-            currentZoning = zoningResult;
-            displayLocationInfo(zoningResult);
-            addLocationPin(event.mapPoint);
-        } else {
-            showNoDataMessage();
-        }
-    }
-
-    function queryZoningData(point) {
-        const lat = point.latitude;
-        const lng = point.longitude;
-        
-        const gridKey = Math.floor(lat * 1000) + ',' + Math.floor(lng * 1000);
-        const nearbyFeatures = spatialIndex.get(gridKey) || [];
-        
-        for (let i = -1; i <= 1; i++) {
-            for (let j = -1; j <= 1; j++) {
-                if (i === 0 && j === 0) continue;
-                const nearbyKey = (Math.floor(lat * 1000) + i) + ',' + (Math.floor(lng * 1000) + j);
-                const features = spatialIndex.get(nearbyKey) || [];
-                nearbyFeatures.push(...features);
-            }
-        }
-        
-        for (const feature of nearbyFeatures) {
-            if (feature.bounds && 
-                lat >= feature.bounds.minLat && lat <= feature.bounds.maxLat &&
-                lng >= feature.bounds.minLng && lng <= feature.bounds.maxLng) {
-                
-                return {
-                    zoneName: feature.zoneName,
-                    properties: feature.properties,
-                    source: 'official',
-                    featureId: feature.id
-                };
-            }
-        }
-        
-        let nearest = null;
-        let minDistance = Infinity;
-        
-        for (const feature of zoningFeatures.slice(0, 500)) {
-            if (!feature.bounds) continue;
-            
-            const distance = Math.sqrt(
-                Math.pow(lat - feature.bounds.centerLat, 2) + 
-                Math.pow(lng - feature.bounds.centerLng, 2)
-            );
-            
-            if (distance < minDistance && distance < 0.005) {
-                minDistance = distance;
-                nearest = {
-                    zoneName: feature.zoneName,
-                    properties: feature.properties,
-                    source: 'approximate',
-                    distance: (distance * 111).toFixed(1),
-                    featureId: feature.id
-                };
-            }
-        }
-        
-        return nearest;
-    }
-</script>
+    
+    </script>
 </body>
 </html>
