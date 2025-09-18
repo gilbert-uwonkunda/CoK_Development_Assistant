@@ -1530,58 +1530,48 @@
     // DISPLAY FUNCTIONS
     // =============================================================================
 
-    function displayLocationInfo(zoning) {
-        const zoneName = zoning.zoneName;
-        
-        document.getElementById('zoneName').textContent = zoneName;
-        
-        const description = zoning.properties?.phase || 
-                          `${zoning.properties?.level_1} - ${zoning.properties?.level_2}` ||
-                          'Development zone per Kigali master plan';
-        
-        document.getElementById('zoneDescription').textContent = description;
-        
-        const colorIndicator = document.getElementById('zoneColorIndicator');
-        const zoneColor = ZONE_COLORS[zoneName] || '#999999';
-        colorIndicator.style.background = zoneColor;
-        colorIndicator.style.boxShadow = `0 0 20px ${zoneColor}40`;
-        
-        addCosmicSparkles(colorIndicator);
-        
-        const locationHeader = document.getElementById('locationHeader');
-        locationHeader.style.display = 'flex';
-        locationHeader.style.animation = 'fadeInUp 0.6s ease-out';
-        
-        const chatContainer = document.getElementById('chatContainer');
-        const aiResponse = document.getElementById('aiResponse');
-        
-        let welcomeMessage = `Welcome to TerraNebular - your spatial intelligence assistant.\n\n📍 Selected Location: ${zoneName}\n\n${description}`;
+   function displayLocationInfo(zoning) {
+    const zoneName = zoning.zoneName;
+    
+    document.getElementById('zoneName').textContent = zoneName;
+    
+    const description = zoning.properties?.phase || 
+                      `${zoning.properties?.level_1} - ${zoning.properties?.level_2}` ||
+                      'Development zone per Kigali master plan';
+    
+    document.getElementById('zoneDescription').textContent = description;
+    
+    const colorIndicator = document.getElementById('zoneColorIndicator');
+    const zoneColor = ZONE_COLORS[zoneName] || '#999999';
+    colorIndicator.style.background = zoneColor;
+    colorIndicator.style.boxShadow = `0 0 20px ${zoneColor}40`;
+    
+    addCosmicSparkles(colorIndicator);
+    
+    const locationHeader = document.getElementById('locationHeader');
+    locationHeader.style.display = 'flex';
+    locationHeader.style.animation = 'fadeInUp 0.6s ease-out';
+    
+    const chatContainer = document.getElementById('chatContainer');
+    const aiResponse = document.getElementById('aiResponse');
+    
+    // Simplified welcome message - remove the detailed property information
+    let welcomeMessage = `Welcome to TerraNebular - your spatial intelligence assistant.
 
-        if (zoning.properties?.phase) {
-            welcomeMessage += `\n🗓️ Implementation Phase: ${zoning.properties.phase}`;
-        }
-        if (zoning.properties?.year_of_implementation) {
-            welcomeMessage += `\n📅 Implementation Year: ${zoning.properties.year_of_implementation}`;
-        }
-        if (zoning.distance) {
-            welcomeMessage += `\n📏 Distance from zone center: ${zoning.distance}`;
-        }
-        if (zoning.area) {
-            welcomeMessage += `\n📐 Zone area: ${zoning.area}`;
-        }
+📍 You have selected: ${zoneName}
 
-        welcomeMessage += `\n\n✨ Ask me anything about development regulations, building permissions, investment potential, or permit processes for this location.`;
-        
-        typewriterEffect(aiResponse, welcomeMessage).then(() => {
-            aiResponse.className = 'ai-response response-success';
-        });
-        
-        chatContainer.classList.add('show');
-        
-        if (!chatContainer.querySelector('.quick-actions')) {
-            setTimeout(() => addQuickActionButtons(), 1000);
-        }
+✨ Ask me anything about development regulations, building permissions, investment potential, or permit processes for this location.`;
+    
+    typewriterEffect(aiResponse, welcomeMessage).then(() => {
+        aiResponse.className = 'ai-response response-success';
+    });
+    
+    chatContainer.classList.add('show');
+    
+    if (!chatContainer.querySelector('.quick-actions')) {
+        setTimeout(() => addQuickActionButtons(), 1000);
     }
+}
 
     function showNoDataMessage() {
         const chatContainer = document.getElementById('chatContainer');
@@ -1684,3 +1674,4 @@
     </script>
 </body>
 </html>
+
