@@ -1,0 +1,161 @@
+// scripts/ingestPDFs.js
+const fs = require('fs');
+const pdf = require('pdf-parse');
+const { pool } = require('../src/config/database');
+require('dotenv').config();
+
+async function ingestKigaliMasterPlan(pdfPath) {
+    console.log('Reading Kigali Master Plan PDF...');
+    
+    try {
+        const dataBuffer = fs.readFileSync(pdfPath);
+        const pdfData = await pdf(dataBuffer);
+        
+        const zones = ['R1', 'R1A', 'R1B', 'R2', 'R3', 'R4', 'C1', 'C2', 'C3', 'I1', 'I2', 'I3', 'P1', 'P2', 'P3'];
+        
+        for (const zone of zones) {
+            const zoneRegex = new RegExp(`${zone}[\\s\\S]*?(?=(?:R\\d|C\\d|I\\d|P\\d|$))`, 'i');
+            const match = pdfData.text.match(zoneRegex);
+            
+            if (match) {
+                const content = match[0].substring(0, 3000);
+                
+                await pool.query(`
+                    INSERT INTO regulation_documents (zone_code, document_type, title, content, source_file)
+                    VALUES ($1, $2, $3, $4, $5)
+                    ON CONFLICT DO NOTHING
+                `, [
+                    zone,
+                    'zoning_regulation',
+                    `${zone} Zone Regulations`,
+                    content,
+                    'Kigali_Master_Plan_2050.pdf'
+                ]);
+                
+                console.log(`✓ Ingested ${zone} zone regulations`);
+            } else {
+                console.log(`⚠ No content found for ${zone} zone`);
+            }
+        }
+        
+        console.log('Kigali Master Plan ingestion complete\n');
+        
+    } catch (error) {
+        console.error('Error ingesting Kigali Master Plan:', error.message);
+        throw error;
+    }
+}
+
+async function ingestRFAGuidelines(pdfPath) {
+    console.log('Reading RFA Tree Guidelines PDF...');
+    
+    try {
+        const dataBuffer = fs.readFileSync(pdfPath);
+        const pdfData = await pdf(dataBuffer);
+        
+        const sections = [
+            { 
+                name: 'Roadside Trees', 
+                pattern: /ROADSIDE URBAN TREES[\s\S]*?(?=\d\.\d|\n\n\n)/,
+                maxChars: 3000
+            },
+            { 
+                name: 'Residential Gardens', 
+                pattern: /GARDENING ON URBAN RESIDENTIAL ZONES[\s\S]*?(?=\d\.\d|\n\n\n)/,
+                maxChars: 3500
+            },
+            { 
+                name: 'Tree Species', 
+                pattern: /APPENDIXES:[\s\S]*$/,
+                maxChars: 8000
+            }
+        ];
+        
+        for (const section of sections) {
+            const match = pdfData.text.match(section.pattern);
+            
+            if (match) {
+                const content = match[0].substring(0, section.maxChars);
+                
+                await pool.query(`
+                    INSERT INTO regulation_documents (zone_code, document_type, title, content, section_name, source_file)
+                    VALUES ($1, $2, $3, $4, $5, $6)
+                `, [
+                    null,
+                    'tree_guidelines',
+                    'RFA Urban Tree Guidelines',
+                    content,
+                    section.name,
+                    'RFA_Guidelines_2025.pdf'
+                ]);
+                
+                console.log(`✓ Ingested ${section.name} section`);
+            } else {
+                console.log(`⚠ Section not found: ${section.name}`);
+            }
+        }
+        
+        console.log('RFA Guidelines ingestion complete\n');
+        
+    } catch (error) {
+        console.error('Error ingesting RFA Guidelines:', error.message);
+        throw error;
+    }
+}
+
+async function runIngestion() {
+    console.log('\n========================================');
+    console.log('TERRANEBULAR PDF INGESTION');
+    console.log('========================================\n');
+    
+    try {
+        const kigaliPDF = './data/Kigali_Master_Plan_2050.pdf';
+        const rfaPDF = './data/RFA_Guidelines_2025.pdf';
+        
+        if (!fs.existsSync(kigaliPDF)) {
+            console.warn(`⚠ Warning: ${kigaliPDF} not found. Skipping Kigali Master Plan.`);
+        } else {
+            await ingestKigaliMasterPlan(kigaliPDF);
+        }
+        
+        if (!fs.existsSync(rfaPDF)) {
+            console.warn(`⚠ Warning: ${rfaPDF} not found. Skipping RFA Guidelines.`);
+        } else {
+            await ingestRFAGuidelines(rfaPDF);
+        }
+        
+        const result = await pool.query('SELECT COUNT(*) as count FROM regulation_documents');
+        console.log(`Total documents in database: ${result.rows[0].count}`);
+        
+        console.log('\n========================================');
+        console.log('INGESTION COMPLETED SUCCESSFULLY');
+        console.log('========================================\n');
+        
+        await pool.end();
+        process.exit(0);
+        
+    } catch (error) {
+        console.error('\n========================================');
+        console.error('INGESTION FAILED');
+        console.error('========================================');
+        console.error('Error:', error.message);
+        console.error('\nTroubleshooting:');
+        console.error('1. Ensure PDFs are in ./data/ folder');
+        console.error('2. Check database connection in .env file');
+        console.error('3. Verify regulation_documents table exists');
+        console.error('========================================\n');
+        
+        await pool.end();
+        process.exit(1);
+    }
+}
+
+if (require.main === module) {
+    runIngestion();
+}
+
+module.exports = { 
+    ingestKigaliMasterPlan, 
+    ingestRFAGuidelines,
+    runIngestion
+};

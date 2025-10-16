@@ -1,0 +1,117 @@
+{
+  "zone_code": "R1",
+  "zone_name": "Low Density Residential Zone",
+  "description": "The Low-Density Residential Zone (R1) is intended for villa and bungalow typology and complementary public facilities as needed. R1 Zones are limited in the City of Kigali to existing consolidated areas with the objective of limiting low-density urban development and encouraging compact development.",
+  
+  "permitted_uses": [
+    "Single family houses",
+    "Home Occupation"
+  ],
+  
+  "prohibited_uses": [
+    "Industrial uses",
+    "Major infrastructure"
+  ],
+  
+  "conditional_uses": [
+    "Uses as per R1A regulations",
+    "Apartments exceeding G + 2",
+    "Semi-Detached",
+    "Multifamily Houses",
+    "Restaurants",
+    "Guest houses",
+    "B&B",
+    "Hotels",
+    "Public facilities when suggested by Public Facilities Overlay",
+    "Commercial Retail Facilities when allowed by O-C2 Overlay",
+    "Accessory Residential Units"
+  ],
+  
+  "ancillary_uses": [
+    "Car parking garage",
+    "Store and Service rooms",
+    "Guard House"
+  ],
+  
+  "lot_requirements": {
+    "max_size_m2": 500,
+    "min_size_m2": 300,
+    "notes": "Plots less than 300 m2 shall follow R1A regulations. Existing developments on plots larger than 500 m2 can retain their use."
+  },
+  
+  "coverage": {
+    "max_building_coverage": 0.40,
+    "min_landscape_coverage": 0.20,
+    "max_far": 0.5
+  },
+  
+  "density": {
+    "single_use": {
+      "min": 10,
+      "max": 15,
+      "unit": "Du/Ha"
+    },
+    "mixed_use": {
+      "min": 7,
+      "max": 10,
+      "unit": "Du/Ha"
+    }
+  },
+  
+  "building": {
+    "max_floors": "G+1+P",
+    "max_floors_ancillary": "G",
+    "roof_pitch_max": 30,
+    "roof_restrictions": "No reflective metal roofing shall be allowed, and roof colours should blend with the surrounding landscape",
+    "building_forms": [
+      "Detached",
+      "Semi Detached"
+    ]
+  },
+  
+  "setbacks": {
+    "front_principal_min": 3.0,
+    "front_secondary_min": 3.0,
+    "side_min": 2.0,
+    "rear_min": 2.0,
+    "unit": "m"
+  },
+  
+  "development_strategies": [
+    "Individual plot development",
+    "Land subdivision",
+    "Estate development - No gated estates allowed on developments of more than 1 ha"
+  ],
+  
+  "circulation": {
+    "pedestrian_requirements": "N/A",
+    "transit_spacing": "N/A"
+  },
+  
+  "signage": {
+    "permitted": [
+      "One sign located on the fencing wall along the front setback",
+      "Maximum 35cm height x 35cm width"
+    ],
+    "prohibited": [],
+    "location_notes": "Protrusion of the signage must be contained within plot boundary"
+  },
+  
+  "parking": {
+    "villas_min": 1.0,
+    "villas_max": 2.0,
+    "unit": "spaces per unit",
+    "notes": "For properties within 500m of BRT, minimum requirements may be waived"
+  },
+  
+  "special_notes": [
+    "In all R1 Zones, R1A regulations are permitted",
+    "Refer to O-C2 overlay plan and Public Facilities Overlay Plan for guidance on location of commercial and public facilities"
+  ],
+  
+  "reference": {
+    "table_number": "6.1",
+    "page_start": 47,
+    "page_end": 49
+  }
+}

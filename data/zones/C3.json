@@ -1,0 +1,111 @@
+{
+  "zone_code": "C3",
+  "zone_name": "City Commercial Zone",
+  "description": "The City Commercial Zone (C3) is a Zone established to meet most of the retail, commercial and services needs for the larger community, and may include offices and entertainment activities.",
+  
+  "permitted_uses": [
+    "Developments allowed in the C1 zone",
+    "Shopping centres",
+    "Offices",
+    "Hotels",
+    "Apartments",
+    "Leisure and entertainment centres",
+    "Galleries",
+    "Education Institutions",
+    "Coworking spaces"
+  ],
+  
+  "prohibited_uses": [
+    "Major Industrial Uses",
+    "Major Infrastructure Installations"
+  ],
+  
+  "conditional_uses": [
+    "Public Facilities",
+    "Petrol stations",
+    "Transport Interchange",
+    "Garages and Car Repair - Grade E",
+    "Car Wash Services"
+  ],
+  
+  "ancillary_uses": [
+    "Electrical substation",
+    "Refuse area"
+  ],
+  
+  "lot_requirements": {
+    "min_size_m2": 1000,
+    "notes": "Plots with size below 1000 m2 can follow C1 regulations"
+  },
+  
+  "coverage": {
+    "max_building_coverage": 0.70,
+    "min_landscape_coverage": 0.10,
+    "max_far": 2.4
+  },
+  
+  "building": {
+    "max_floors": "G+10",
+    "max_floors_ancillary": "G",
+    "floor_heights": {
+      "ground_floor_max": 5.0,
+      "other_floors_max": 4.0,
+      "unit": "m"
+    },
+    "building_forms": [
+      "Free standing",
+      "Attached",
+      "Semi-detached"
+    ]
+  },
+  
+  "setbacks": {
+    "front_principal_min": 3.0,
+    "front_secondary_min": 5.0,
+    "side_min": 5.0,
+    "rear_min": 7.0,
+    "unit": "m"
+  },
+  
+  "development_strategies": [
+    "Individual Plot",
+    "Land Pooling",
+    "Downzone to C1"
+  ],
+  
+  "circulation": {
+    "pedestrian_requirements": "All attached and semi-detached buildings facing main commercial roads/BRT/wetland front/green corridors shall provide a continuous well designed and universally accessible arcade of no less than 5m. No parking allowed in front setback.",
+    "transit_spacing": "Bus stops at 300-500m intervals"
+  },
+  
+  "signage": {
+    "permitted": [
+      "One building identification sign on tower",
+      "Wall signage: max 9 m²",
+      "Window signage: max 2.5 m²",
+      "Awning signage: min 2.5m clearance, max 2.5 m²",
+      "Free standing signage: max 1.5m height"
+    ],
+    "prohibited": [
+      "Roof mounted signs",
+      "Offsite signage"
+    ]
+  },
+  
+  "parking": {
+    "restaurants_min": 0.75,
+    "restaurants_max": 1.0,
+    "shops_min": 0.75,
+    "shops_max": 1.0,
+    "offices_min": 0.75,
+    "offices_max": 1.0,
+    "unit": "spaces per 150m² GFA",
+    "notes": "Within 500m of BRT, minimum may be waived"
+  },
+  
+  "reference": {
+    "table_number": "6.9",
+    "page_start": 83,
+    "page_end": 87
+  }
+}
