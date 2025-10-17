@@ -519,6 +519,7 @@
         .app-logo {
             font-size: 48px;
             display: block;
+            animation: stellarFloat 3s ease-in-out infinite;
         }
 
         .splash-title {
@@ -691,6 +692,81 @@
             100% { transform: rotate(360deg); }
         }
 
+        @keyframes stellarFloat {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+
+        @keyframes typewriterCursor {
+            0%, 50% { opacity: 1; }
+            51%, 100% { opacity: 0; }
+        }
+
+        /* Thinking animation */
+        .thinking-indicator {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 12px 16px;
+            font-size: 14px;
+            color: var(--nebular-cosmic-purple);
+            font-weight: 600;
+        }
+
+        .thinking-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--nebular-cosmic-purple);
+            animation: thinking 1.4s infinite;
+        }
+
+        .thinking-dot:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+
+        .thinking-dot:nth-child(3) {
+            animation-delay: 0.4s;
+        }
+
+        @keyframes thinking {
+            0%, 60%, 100% { opacity: 0.3; transform: translateY(0); }
+            30% { opacity: 1; transform: translateY(-10px); }
+        }
+
+        /* Typing indicator */
+        .typing-indicator {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            padding: 12px 16px;
+        }
+
+        .typing-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--nebular-cosmic-purple);
+            animation: typing 1.4s infinite;
+        }
+
+        .typing-dot:nth-child(1) {
+            animation-delay: 0s;
+        }
+
+        .typing-dot:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+
+        .typing-dot:nth-child(3) {
+            animation-delay: 0.4s;
+        }
+
+        @keyframes typing {
+            0%, 60%, 100% { opacity: 0.3; transform: translateY(0); }
+            30% { opacity: 1; transform: translateY(-10px); }
+        }
+
         /* Mobile Responsiveness */
         @media (max-width: 1024px) {
             #leftPanel {
@@ -777,7 +853,7 @@
             </div>
             
             <div class="panel-content">
-                <div class="location-header" id="locationHeader" style="display: none;">
+
                     <div class="zone-color-indicator" id="zoneColorIndicator"></div>
                     <div class="zone-info">
                         <h3 class="zone-name" id="zoneName">Select a location</h3>
@@ -1232,6 +1308,13 @@
         input.style.height = 'auto';
         chatMessages.scrollTop = chatMessages.scrollHeight;
         
+        // Show thinking indicator
+        const thinkingContainer = document.createElement('div');
+        thinkingContainer.className = 'thinking-indicator';
+        thinkingContainer.innerHTML = 'TerraNebular Thinking<div class="thinking-dot"></div><div class="thinking-dot"></div><div class="thinking-dot"></div>';
+        chatMessages.appendChild(thinkingContainer);
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+        
         try {
             const result = await askClaudeAI(
                 question, 
@@ -1239,7 +1322,20 @@
                 currentLocation.longitude
             );
             
-            // Add AI response
+            // Remove thinking indicator
+            thinkingContainer.remove();
+            
+            // Add typing indicator first
+            const typingContainer = document.createElement('div');
+            typingContainer.className = 'typing-indicator';
+            typingContainer.innerHTML = '<div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div>';
+            chatMessages.appendChild(typingContainer);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+            
+            // Typewriter effect
+            await typewriterEffect(typingContainer, result.response);
+            
+            // Replace typing container with actual message
             const aiMsg = document.createElement('div');
             aiMsg.className = 'ai-response';
             aiMsg.textContent = result.response;
@@ -1253,7 +1349,7 @@
                 aiMsg.className += ' response-warning';
             }
             
-            chatMessages.appendChild(aiMsg);
+            typingContainer.replaceWith(aiMsg);
             chatMessages.scrollTop = chatMessages.scrollHeight;
             
             conversationHistory.push({ question, response: result.response });
@@ -1263,6 +1359,7 @@
             
         } catch (error) {
             console.error('Chat error:', error);
+            thinkingContainer.remove();
             const errMsg = document.createElement('div');
             errMsg.className = 'ai-response response-error';
             errMsg.textContent = 'Error processing your question. Please try again.';
@@ -1271,9 +1368,26 @@
         
         sendBtn.disabled = false;
         
-        if (chatMessages.children.length === 2) {
+        if (chatMessages.children.length === 3) {
             addQuickActionButtons();
         }
+    }
+
+    async function typewriterEffect(element, text, speed = 20) {
+        return new Promise((resolve) => {
+            element.innerHTML = '';
+            let i = 0;
+            
+            const timer = setInterval(() => {
+                if (i < text.length) {
+                    element.innerHTML += text.charAt(i);
+                    i++;
+                } else {
+                    clearInterval(timer);
+                    resolve();
+                }
+            }, speed);
+        });
     }
 
     function addQuickActionButtons() {
