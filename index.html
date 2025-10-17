@@ -314,12 +314,6 @@
             z-index: -1;
         }
         
-        .ai-response.typing::after {
-            content: '█';
-            animation: blink 1s infinite;
-            color: var(--nebular-cosmic-purple);
-        }
-        
         .chat-input-container {
             display: flex;
             gap: 10px;
@@ -381,6 +375,7 @@
             color: var(--nebular-space-blue);
             box-shadow: none;
             transform: none;
+            cursor: not-allowed;
         }
 
         /* Quick Actions */
@@ -823,11 +818,6 @@
             }
         }
 
-        @keyframes blink {
-            0%, 50% { opacity: 1; }
-            51%, 100% { opacity: 0; }
-        }
-
         @keyframes cosmicSpin {
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
@@ -1143,7 +1133,7 @@
     
     <script>
     // =============================================================================
-    // SPLASH SCREEN CONTROL - DEFINE FIRST
+    // GLOBAL STATE VARIABLES
     // =============================================================================
 
     let currentLocation = null;
@@ -1151,9 +1141,18 @@
     let view = null;
     let conversationHistory = [];
     let backendConnected = false;
+    let sessionId = generateSessionId();
+
+    // =============================================================================
+    // SPLASH SCREEN & APPLICATION ENTRY
+    // =============================================================================
+
+    function generateSessionId() {
+        return 'web_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+    }
 
     function enterApplication() {
-        console.log('Enter button clicked');
+        console.log('✨ Enter button clicked - Starting TerraNebular');
         const splash = document.getElementById('persistentSplash');
         const appContainer = document.getElementById('appContainer');
         
@@ -1162,11 +1161,9 @@
             return;
         }
         
-        console.log('Hiding splash screen and showing app');
         splash.classList.add('hidden');
         appContainer.style.display = 'flex';
         
-        // Trigger map initialization after display
         setTimeout(() => {
             console.log('Initializing map and panel');
             if (view === null) {
@@ -1176,25 +1173,43 @@
         }, 100);
     }
 
-    // Make sure button is clickable when page loads
-    document.addEventListener('DOMContentLoaded', function() {
-        console.log('DOM Content Loaded');
-        const enterBtn = document.getElementById('enterBtn');
-        if (enterBtn) {
-            enterBtn.addEventListener('click', enterApplication);
-            console.log('Enter button event listener attached');
-        }
-        console.log('TerraNebular initialized - waiting for user to enter application');
-    });
-    
+    // =============================================================================
+    // BACKEND API CONFIGURATION
+    // =============================================================================
+
     const API_BASE_URL = 'https://cok-development-assistant.onrender.com/api';
-    
-    // Session management
-    let sessionId = generateSessionId();
-    
-    function generateSessionId() {
-        return 'web_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
-    }
+
+    const ZONE_COLORS = {
+        'A1-Agriculture zone': '#90EE90',
+        'C1-Mixed use zone': '#FFB6C1',
+        'C3-City commercial zone': '#CD5626',
+        'I1-Light industrial zone': '#DDA0DD',
+        'I2-General industrial zone': '#9370DB',
+        'I3-Mining/ Extraction/Quarry': '#8B4513',
+        'P1-Parks and open spaces zone': '#32CD32',
+        'P2-Sport and Eco tourism zone': '#00FA9A',
+        'P3B-Forest zone': '#006400',
+        'P3C-Steep slopes (> 30%) zone': '#2E8B57',
+        'PA-Public Administration zone': '#87CEEB',
+        'PF1-Education and research facilities': '#4169E1',
+        'PF2-Health facilities': '#0000FF',
+        'PF3-Religious facilities': '#191970',
+        'PF4-Cultural/ memorial sites': '#6495ED',
+        'PF5-Cemetery/ crematoria': '#B0C4DE',
+        'R1-Low density residential zone': '#FFFFE0',
+        'R1A-Low density residential densification zone': '#FFFACD',
+        'R1B-Rural residential zone': '#F0E68C',
+        'R2-Medium density residential - Improvement zone': '#F59E0B',
+        'R3-Medium density residential - Expansion zone': '#FF7F50',
+        'R4-High density residential zone': '#FF6347',
+        'T-Transportation zone': '#A9A9A9',
+        'U-Utility zone': '#D3D3D3',
+        'W2 - Rehabilitation': '#98FB98',
+        'W3 - Sustainable Exploitation': '#90EE90',
+        'W4 - Conservation': '#8FBC8F',
+        'W5 - Recreational': '#87CEEB',
+        'WR-Waterbody zone': '#87CEEB'
+    };
 
     // =============================================================================
     // BACKEND API FUNCTIONS
@@ -1277,7 +1292,6 @@
             console.error('Error calling AI API:', error);
             updateStatus('error', 'AI consultation failed');
             
-            // Fallback response
             return {
                 response: `❌ TerraNebular AI is temporarily offline.\n\nPlease try again or contact City of Kigali directly:\n📞 +250 788 000 000\n🌐 kigalicity.gov.rw\n\nError: ${error.message}`,
                 metadata: { fallback: true, error: error.message },
@@ -1287,62 +1301,12 @@
     }
 
     // =============================================================================
-    // APPLICATION STATE
+    // APPLICATION INITIALIZATION
     // =============================================================================
-    
-    let currentLocation = null;
-    let currentZoning = null;
-    let view = null;
-    let conversationHistory = [];
-    let backendConnected = false;
-
-    // Zone color mapping
-    const ZONE_COLORS = {
-        'A1-Agriculture zone': '#90EE90',
-        'C1-Mixed use zone': '#FFB6C1',
-        'C3-City commercial zone': '#CD5626',
-        'I1-Light industrial zone': '#DDA0DD',
-        'I2-General industrial zone': '#9370DB',
-        'I3-Mining/ Extraction/Quarry': '#8B4513',
-        'P1-Parks and open spaces zone': '#32CD32',
-        'P2-Sport and Eco tourism zone': '#00FA9A',
-        'P3B-Forest zone': '#006400',
-        'P3C-Steep slopes (> 30%) zone': '#2E8B57',
-        'PA-Public Administration zone': '#87CEEB',
-        'PF1-Education and research facilities': '#4169E1',
-        'PF2-Health facilities': '#0000FF',
-        'PF3-Religious facilities': '#191970',
-        'PF4-Cultural/ memorial sites': '#6495ED',
-        'PF5-Cemetery/ crematoria': '#B0C4DE',
-        'R1-Low density residential zone': '#FFFFE0',
-        'R1A-Low density residential densification zone': '#FFFACD',
-        'R1B-Rural residential zone': '#F0E68C',
-        'R2-Medium density residential - Improvement zone': '#F59E0B',
-        'R3-Medium density residential - Expansion zone': '#FF7F50',
-        'R4-High density residential zone': '#FF6347',
-        'T-Transportation zone': '#A9A9A9',
-        'U-Utility zone': '#D3D3D3',
-        'W2 - Rehabilitation': '#98FB98',
-        'W3 - Sustainable Exploitation': '#90EE90',
-        'W4 - Conservation': '#8FBC8F',
-        'W5 - Recreational': '#87CEEB',
-        'WR-Waterbody zone': '#87CEEB'
-    };
-
-    // =============================================================================
-    // INITIALIZATION
-    // =============================================================================
-
-    document.addEventListener('DOMContentLoaded', function() {
-        // Splash screen is shown by default, app is hidden
-        // User must click "Enter Application" to proceed
-        console.log('TerraNebular initialized - waiting for user to enter application');
-    });
 
     async function initializeApp() {
         updateStatus('loading', 'Connecting to TerraNebular network...');
         
-        // Check backend connection
         backendConnected = await checkBackendHealth();
         
         if (backendConnected) {
@@ -1353,7 +1317,6 @@
             console.error('❌ Backend connection failed');
         }
         
-        // Initialize map
         require([
             "esri/Map",
             "esri/views/MapView",
@@ -1387,7 +1350,6 @@
             });
         });
         
-        // Setup chat interface
         const chatInput = document.getElementById('chatInput');
         chatInput.addEventListener('input', autoResizeTextarea);
         chatInput.addEventListener('keypress', function(e) {
@@ -1399,13 +1361,12 @@
     }
 
     // =============================================================================
-    // ENHANCED UI FUNCTIONS
+    // UI/UX FUNCTIONS
     // =============================================================================
 
     async function typewriterEffect(element, text, speed = 30) {
         return new Promise((resolve) => {
             element.innerHTML = '';
-            element.classList.add('typing');
             
             let i = 0;
             const timer = setInterval(() => {
@@ -1413,7 +1374,6 @@
                     element.innerHTML += text.charAt(i);
                     i++;
                 } else {
-                    element.classList.remove('typing');
                     clearInterval(timer);
                     resolve();
                 }
@@ -1450,6 +1410,14 @@
         }
     }
 
+    function updateStatus(status, text) {
+        const dot = document.getElementById('statusDot');
+        const statusText = document.getElementById('statusText');
+        
+        dot.className = `status-dot ${status}`;
+        statusText.textContent = text;
+    }
+
     // =============================================================================
     // MAP INTERACTION
     // =============================================================================
@@ -1464,10 +1432,8 @@
         const lat = event.mapPoint.latitude;
         const lng = event.mapPoint.longitude;
         
-        // Add visual pin
         addLocationPin(event.mapPoint);
         
-        // Query backend for zoning data
         const zoningResult = await fetchZoningForLocation(lat, lng);
         
         if (zoningResult) {
@@ -1704,7 +1670,7 @@
     }
 
     // =============================================================================
-    // DISPLAY FUNCTIONS
+    // DISPLAY & MESSAGE FUNCTIONS
     // =============================================================================
 
     function displayLocationInfo(zoning) {
@@ -1753,7 +1719,20 @@
         const chatContainer = document.getElementById('chatContainer');
         const aiResponse = document.getElementById('aiResponse');
         
-        const message = `No zoning data found for this location.\n\nThis could mean:\n• The location is outside the mapped zoning areas\n• The coordinates fall between zone boundaries\n• Network connectivity issues\n\nPlease try:\n• Selecting a different location within Kigali\n• Checking your internet connection\n• Contacting City of Kigali for the latest zoning information\n\n📞 City of Kigali Planning: +250 788 000 000\n🌐 More info: kigalicity.gov.rw`;
+        const message = `No zoning data found for this location.
+
+This could mean:
+• The location is outside the mapped zoning areas
+• The coordinates fall between zone boundaries
+• Network connectivity issues
+
+Please try:
+• Selecting a different location within Kigali
+• Checking your internet connection
+• Contacting City of Kigali for the latest zoning information
+
+📞 City of Kigali Planning: +250 788 000 000
+🌐 More info: kigalicity.gov.rw`;
         
         typewriterEffect(aiResponse, message).then(() => {
             aiResponse.className = 'ai-response response-warning';
@@ -1766,21 +1745,23 @@
         const chatContainer = document.getElementById('chatContainer');
         const aiResponse = document.getElementById('aiResponse');
         
-        const message = `TerraNebular backend is currently offline.\n\nPlease:\n• Check your internet connection\n• Ensure the backend server is running on localhost:3001\n• Contact the system administrator\n\nWhile offline, you can still explore the map, but spatial queries and AI assistance are unavailable.\n\n📞 For urgent zoning questions, contact City of Kigali directly:\n+250 788 000 000`;
+        const message = `TerraNebular backend is currently offline.
+
+Please:
+• Check your internet connection
+• Ensure the backend server is running on localhost:3001
+• Contact the system administrator
+
+While offline, you can still explore the map, but spatial queries and AI assistance are unavailable.
+
+📞 For urgent zoning questions, contact City of Kigali directly:
++250 788 000 000`;
         
         typewriterEffect(aiResponse, message).then(() => {
             aiResponse.className = 'ai-response response-error';
         });
         
         chatContainer.classList.add('show');
-    }
-
-    function updateStatus(status, text) {
-        const dot = document.getElementById('statusDot');
-        const statusText = document.getElementById('statusText');
-        
-        dot.className = `status-dot ${status}`;
-        statusText.textContent = text;
     }
 
     // =============================================================================
@@ -1847,5 +1828,24 @@
         }
     }
 
-    // Initialize panel resize after app loads
-    window.addEventListener('load', setupPanelResize);
+    // =============================================================================
+    // ERROR HANDLING & DEBUGGING
+    // =============================================================================
+
+    window.addEventListener('error', function(e) {
+        console.error('Global error:', e.error);
+    });
+
+    window.addEventListener('unhandledrejection', function(e) {
+        console.error('Unhandled promise rejection:', e.reason);
+    });
+
+    // =============================================================================
+    // INITIALIZATION
+    // =============================================================================
+
+    console.log('🌌 TerraNebular loaded and ready');
+    console.log('Session ID:', sessionId);
+    </script>
+</body>
+</html>
