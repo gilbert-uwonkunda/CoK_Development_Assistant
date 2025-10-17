@@ -1,873 +1,510 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>🌌 TerraNebular</title>
-    
     <!-- ArcGIS CSS -->
     <link rel="stylesheet" href="https://js.arcgis.com/4.28/esri/themes/light/main.css">
-    
-    <style>
-        /* TerraNebular Cosmic Color Palette */
-        :root {
-            --nebular-deep-blue: #0F172A;
-            --nebular-space-blue: #1E3A8A;
-            --nebular-cosmic-purple: #6366F1;
-            --nebular-stellar-gold: #F59E0B;
-            --nebular-plasma-pink: #EC4899;
-            --nebular-void-black: #000000;
-            --nebular-stardust: #E2E8F0;
-            --nebular-aurora-green: #10B981;
-            --nebular-comet-white: #F8FAFC;
-            --nebular-meteor-orange: #F97316;
-        }
-        
-        * {
-            box-sizing: border-box;
-            -webkit-tap-highlight-color: transparent;
-        }
-        
-        body {
-            margin: 0;
-            padding: 0;
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: linear-gradient(135deg, var(--nebular-deep-blue) 0%, var(--nebular-space-blue) 50%, var(--nebular-cosmic-purple) 100%);
-            background-size: 400% 400%;
-            animation: nebulaShift 20s ease-in-out infinite;
-            overflow: hidden;
-            height: 100vh;
-            display: flex;
-            position: relative;
-        }
-
-        body::before {
-            content: '';
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: 
-                radial-gradient(2px 2px at 20px 30px, rgba(255, 255, 255, 0.15), transparent),
-                radial-gradient(2px 2px at 40px 70px, rgba(245, 158, 11, 0.1), transparent),
-                radial-gradient(1px 1px at 90px 40px, rgba(99, 102, 241, 0.15), transparent),
-                radial-gradient(1px 1px at 130px 80px, rgba(236, 72, 153, 0.1), transparent),
-                radial-gradient(2px 2px at 160px 30px, rgba(16, 185, 129, 0.08), transparent);
-            background-repeat: repeat;
-            background-size: 200px 100px;
-            animation: stardust 12s ease-in-out infinite;
-            pointer-events: none;
-            z-index: 1;
-        }
-
-        .app-container {
-            display: flex;
-            width: 100%;
-            height: 100vh;
-            position: relative;
-            z-index: 2;
-            gap: 0;
-        }
-
-        #leftPanel {
-            width: 550px;
-            min-width: 400px;
-            max-width: 700px;
-            background: linear-gradient(135deg, var(--nebular-comet-white) 0%, var(--nebular-stardust) 100%);
-            box-shadow: 4px 0 32px rgba(15, 23, 42, 0.2);
-            z-index: 100;
-            display: flex;
-            flex-direction: column;
-            transition: width 0.3s ease;
-            overflow: hidden;
-        }
-
-        .panel-header {
-            background: linear-gradient(135deg, var(--nebular-deep-blue) 0%, var(--nebular-space-blue) 50%, var(--nebular-cosmic-purple) 100%);
-            color: var(--nebular-comet-white);
-            padding: 20px;
-            flex-shrink: 0;
-        }
-
-        .header-top {
-            display: flex;
-            align-items: center;
-            gap: 16px;
-            margin-bottom: 16px;
-        }
-
-        .orbital-rings {
-            position: relative;
-            width: 70px;
-            height: 70px;
-            flex-shrink: 0;
-        }
-
-        .ring {
-            position: absolute;
-            border: 2px solid;
-            border-radius: 50%;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            animation: orbitalRotate linear infinite;
-        }
-
-        .ring-1 { 
-            width: 70px; 
-            height: 70px; 
-            border-color: var(--nebular-cosmic-purple);
-            animation-duration: 20s;
-        }
-
-        .ring-2 { 
-            width: 52px; 
-            height: 52px; 
-            border-color: var(--nebular-plasma-pink);
-            animation-duration: 15s;
-            animation-direction: reverse;
-        }
-
-        .ring-3 { 
-            width: 34px; 
-            height: 34px; 
-            border-color: var(--nebular-stellar-gold);
-            animation-duration: 12s;
-        }
-
-        .ring-4 {
-            width: 16px;
-            height: 16px;
-            border-color: var(--nebular-aurora-green);
-            animation-duration: 10s;
-            animation-direction: reverse;
-        }
-
-        .app-title {
-            font-size: 22px;
-            font-weight: 700;
-            margin: 0;
-            line-height: 1.2;
-        }
-
-        .header-controls {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            gap: 12px;
-        }
-        
-        .location-btn {
-            background: linear-gradient(135deg, var(--nebular-stellar-gold) 0%, var(--nebular-meteor-orange) 100%);
-            color: var(--nebular-comet-white);
-            border: none;
-            padding: 8px 14px;
-            border-radius: 20px;
-            font-size: 12px;
-            font-weight: 600;
-            cursor: pointer;
-            box-shadow: 0 2px 12px rgba(245, 158, 11, 0.4);
-            transition: all 0.3s ease;
-            white-space: nowrap;
-            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .location-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(245, 158, 11, 0.6);
-        }
-        
-        .location-btn:active {
-            transform: translateY(0);
-        }
-        
-        .location-btn:disabled {
-            background: var(--nebular-stardust);
-            color: var(--nebular-deep-blue);
-            cursor: not-allowed;
-            transform: none;
-            box-shadow: none;
-        }
-        
-        .status-indicator {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            font-size: 11px;
-        }
-        
-        .status-dot {
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            background: var(--nebular-stellar-gold);
-            animation: cosmicPulse 2s infinite;
-            box-shadow: 0 0 6px rgba(245, 158, 11, 0.6);
-        }
-        
-        .status-dot.ready {
-            background: var(--nebular-aurora-green);
-            animation: none;
-            box-shadow: 0 0 6px rgba(16, 185, 129, 0.6);
-        }
-
-        .status-dot.error {
-            background: var(--nebular-plasma-pink);
-            animation: none;
-            box-shadow: 0 0 6px rgba(236, 72, 153, 0.6);
-        }
-
-        .panel-content {
-            flex: 1;
-            overflow-y: auto;
-            padding: 20px;
-            display: flex;
-            flex-direction: column;
-        }
-
-        .location-header {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            margin-bottom: 20px;
-            padding: 16px;
-            background: linear-gradient(135deg, var(--nebular-stardust) 0%, var(--nebular-comet-white) 100%);
-            border-radius: 12px;
-            box-shadow: 0 2px 12px rgba(15, 23, 42, 0.1);
-        }
-        
-        .zone-info {
-            flex: 1;
-        }
-        
-        .zone-name {
-            font-size: 16px;
-            font-weight: 600;
-            color: var(--nebular-deep-blue);
-            margin: 0 0 4px 0;
-            line-height: 1.3;
-        }
-        
-        .zone-description {
-            font-size: 13px;
-            color: var(--nebular-space-blue);
-            margin: 0;
-            line-height: 1.4;
-        }
-        
-        .zone-color-indicator {
-            width: 24px;
-            height: 24px;
-            border-radius: 8px;
-            border: 2px solid var(--nebular-comet-white);
-            box-shadow: 0 2px 8px rgba(15, 23, 42, 0.2);
-            flex-shrink: 0;
-        }
-
-        .chat-container {
-            background: linear-gradient(135deg, var(--nebular-stardust) 0%, var(--nebular-comet-white) 100%);
-            border-radius: 12px;
-            padding: 16px;
-            display: none;
-            box-shadow: inset 0 1px 3px rgba(15, 23, 42, 0.1);
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-        }
-        
-        .chat-container.show {
-            display: flex;
-        }
-        
-        .chat-messages {
-            flex: 1;
-            overflow-y: auto;
-            margin-bottom: 16px;
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-        }
-        
-        .message {
-            padding: 12px 16px;
-            border-radius: 12px;
-            border-left: 4px solid;
-            font-size: 14px;
-            line-height: 1.6;
-            white-space: pre-wrap;
-            box-shadow: 0 2px 12px rgba(15, 23, 42, 0.08);
-            word-wrap: break-word;
-        }
-
-        .user-message {
-            border-left-color: var(--nebular-cosmic-purple);
-            background: linear-gradient(135deg, #EFF6FF 0%, #F0F9FF 100%);
-            color: var(--nebular-deep-blue);
-            align-self: flex-end;
-            max-width: 85%;
-        }
-
-        .ai-message {
-            border-left-color: var(--nebular-cosmic-purple);
-            background: linear-gradient(135deg, var(--nebular-comet-white) 0%, var(--nebular-stardust) 100%);
-            color: var(--nebular-deep-blue);
-        }
-
-        .thinking-indicator {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            padding: 12px 16px;
-            font-size: 13px;
-            color: var(--nebular-cosmic-purple);
-            font-weight: 600;
-        }
-
-        .thinking-dot {
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            background: var(--nebular-cosmic-purple);
-            animation: thinking 1.4s infinite;
-        }
-
-        .thinking-dot:nth-child(2) {
-            animation-delay: 0.2s;
-        }
-
-        .thinking-dot:nth-child(3) {
-            animation-delay: 0.4s;
-        }
-
-        @keyframes thinking {
-            0%, 60%, 100% { opacity: 0.3; transform: translateY(0); }
-            30% { opacity: 1; transform: translateY(-8px); }
-        }
-
-        .chat-input-container {
-            display: flex;
-            gap: 10px;
-            align-items: flex-end;
-            margin-top: auto;
-        }
-        
-        .chat-input {
-            flex: 1;
-            padding: 12px 16px;
-            border: 2px solid var(--nebular-stardust);
-            border-radius: 24px;
-            font-size: 14px;
-            resize: none;
-            min-height: 44px;
-            max-height: 120px;
-            outline: none;
-            transition: all 0.3s ease;
-            background: var(--nebular-comet-white);
-            color: var(--nebular-deep-blue);
-            font-family: inherit;
-        }
-        
-        .chat-input:focus {
-            border-color: var(--nebular-cosmic-purple);
-            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
-        }
-        
-        .send-btn {
-            background: linear-gradient(135deg, var(--nebular-cosmic-purple) 0%, var(--nebular-plasma-pink) 100%);
-            color: var(--nebular-comet-white);
-            border: none;
-            width: 44px;
-            height: 44px;
-            border-radius: 22px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.3s ease;
-            box-shadow: 0 2px 12px rgba(99, 102, 241, 0.4);
-            flex-shrink: 0;
-            font-size: 18px;
-        }
-        
-        .send-btn:hover {
-            transform: translateY(-1px);
-            box-shadow: 0 4px 16px rgba(99, 102, 241, 0.6);
-        }
-        
-        .send-btn:active {
-            transform: scale(0.95);
-        }
-        
-        .send-btn:disabled {
-            background: var(--nebular-stardust);
-            color: var(--nebular-space-blue);
-            box-shadow: none;
-            transform: none;
-            cursor: not-allowed;
-        }
-
-        #mapContainer {
-            flex: 1;
-            position: relative;
-            background: var(--nebular-deep-blue);
-        }
-        
-        #viewDiv {
-            height: 100%;
-            width: 100%;
-        }
-
-        .loading-overlay {
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: linear-gradient(135deg, rgba(15, 23, 42, 0.95) 0%, rgba(30, 58, 138, 0.95) 100%);
-            display: none;
-            align-items: center;
-            justify-content: center;
-            z-index: 200;
-            flex-direction: column;
-            gap: 20px;
-            backdrop-filter: blur(10px);
-        }
-        
-        .loading-overlay.show {
-            display: flex;
-        }
-        
-        .loading-spinner {
-            width: 50px;
-            height: 50px;
-            border: 4px solid rgba(226, 232, 240, 0.3);
-            border-top: 4px solid var(--nebular-cosmic-purple);
-            border-right: 4px solid var(--nebular-plasma-pink);
-            border-radius: 50%;
-            animation: cosmicSpin 1s linear infinite;
-        }
-        
-        .loading-text {
-            color: var(--nebular-comet-white);
-            font-weight: 600;
-            text-align: center;
-            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
-        }
-
-        .resize-handle {
-            position: absolute;
-            right: 0;
-            top: 0;
-            bottom: 0;
-            width: 4px;
-            background: transparent;
-            cursor: ew-resize;
-            z-index: 101;
-        }
-
-        .resize-handle:hover {
-            background: rgba(99, 102, 241, 0.3);
-        }
-
-        /* SPLASH SCREEN - ENHANCED */
-        .persistent-splash {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(135deg, var(--nebular-void-black) 0%, var(--nebular-deep-blue) 30%, var(--nebular-space-blue) 70%, var(--nebular-cosmic-purple) 100%);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 9999;
-            overflow-y: auto;
-        }
-
-        .persistent-splash.hidden {
-            display: none;
-        }
-
-        .splash-content-wrapper {
-            position: relative;
-            z-index: 10;
-            max-width: 900px;
-            width: 90%;
-            animation: fadeInUp 0.8s ease-out;
-            display: flex;
-            flex-direction: column;
-            gap: 40px;
-        }
-
-        .splash-header {
-            text-align: center;
-        }
-
-        .splash-logo-container {
-            position: relative;
-            display: inline-block;
-            width: 200px;
-            height: 200px;
-            margin: 0 auto 30px;
-        }
-
-        .splash-ring {
-            position: absolute;
-            border: 3px solid;
-            border-radius: 50%;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            animation: orbitalRotate linear infinite;
-        }
-
-        .splash-ring-1 { 
-            width: 200px; 
-            height: 200px; 
-            border-color: var(--nebular-cosmic-purple);
-            animation-duration: 20s;
-        }
-
-        .splash-ring-2 { 
-            width: 150px; 
-            height: 150px; 
-            border-color: var(--nebular-plasma-pink);
-            animation-duration: 15s;
-            animation-direction: reverse;
-        }
-
-        .splash-ring-3 { 
-            width: 100px; 
-            height: 100px; 
-            border-color: var(--nebular-stellar-gold);
-            animation-duration: 12s;
-        }
-
-        .splash-ring-4 {
-            width: 50px;
-            height: 50px;
-            border-color: var(--nebular-aurora-green);
-            animation-duration: 10s;
-            animation-direction: reverse;
-        }
-
-        .splash-title {
-            font-size: 48px;
-            font-weight: 700;
-            color: var(--nebular-comet-white);
-            margin: 0 0 12px 0;
-            text-shadow: 0 0 20px rgba(99, 102, 241, 0.5);
-        }
-
-        .splash-subtitle {
-            font-size: 16px;
-            color: var(--nebular-stardust);
-            margin: 0 0 24px 0;
-            opacity: 0.9;
-            font-style: italic;
-        }
-
-        .splash-description {
-            font-size: 15px;
-            color: var(--nebular-stardust);
-            line-height: 1.6;
-            margin-bottom: 30px;
-            max-width: 700px;
-            margin-left: auto;
-            margin-right: auto;
-        }
-
-        .features-section {
-            background: rgba(30, 58, 138, 0.3);
-            border: 1px solid rgba(99, 102, 241, 0.3);
-            border-radius: 16px;
-            padding: 30px;
-            backdrop-filter: blur(10px);
-            margin-bottom: 30px;
-        }
-
-        .section-title {
-            text-align: center;
-            color: var(--nebular-comet-white);
-            font-size: 18px;
-            margin: 0 0 20px 0;
-            font-weight: 600;
-        }
-
-        .features-list {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 20px;
-        }
-
-        .feature-item {
-            text-align: center;
-            padding: 20px;
-            border-radius: 12px;
-            background: rgba(15, 23, 42, 0.4);
-            border: 1px solid rgba(99, 102, 241, 0.2);
-            transition: all 0.3s ease;
-        }
-
-        .feature-item:hover {
-            background: rgba(15, 23, 42, 0.6);
-            border-color: rgba(99, 102, 241, 0.5);
-            transform: translateY(-4px);
-        }
-
-        .feature-number {
-            width: 40px;
-            height: 40px;
-            background: linear-gradient(135deg, var(--nebular-cosmic-purple) 0%, var(--nebular-plasma-pink) 100%);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 700;
-            color: var(--nebular-comet-white);
-            margin: 0 auto 12px;
-            font-size: 18px;
-        }
-
-        .feature-title {
-            font-size: 14px;
-            font-weight: 600;
-            color: var(--nebular-comet-white);
-            margin: 0 0 6px 0;
-        }
-
-        .feature-description {
-            font-size: 12px;
-            color: var(--nebular-stardust);
-            margin: 0;
-            line-height: 1.4;
-        }
-
-        .enter-btn {
-            background: linear-gradient(135deg, var(--nebular-stellar-gold) 0%, var(--nebular-meteor-orange) 100%);
-            color: var(--nebular-comet-white);
-            border: none;
-            padding: 16px 50px;
-            border-radius: 50px;
-            font-size: 16px;
-            font-weight: 600;
-            cursor: pointer;
-            box-shadow: 0 4px 20px rgba(245, 158, 11, 0.4);
-            transition: all 0.3s ease;
-            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
-            position: relative;
-            overflow: hidden;
-            align-self: center;
-        }
-
-        .enter-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 24px rgba(245, 158, 11, 0.6);
-        }
-
-        .enter-btn:active {
-            transform: translateY(0);
-        }
-
-        /* ANIMATIONS */
-        @keyframes orbitalRotate {
-            from { transform: translate(-50%, -50%) rotate(0deg); }
-            to { transform: translate(-50%, -50%) rotate(360deg); }
-        }
-
-        @keyframes cosmicPulse {
-            0%, 100% { opacity: 1; transform: scale(1); }
-            50% { opacity: 0.6; transform: scale(1.1); }
-        }
-
-        @keyframes nebulaShift {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
-        }
-
-        @keyframes stardust {
-            0%, 100% { opacity: 0.15; transform: scale(0.8); }
-            50% { opacity: 0.4; transform: scale(1.2); }
-        }
-
-        @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        @keyframes cosmicSpin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
-        /* RESPONSIVE */
-        @media (max-width: 1024px) {
-            #leftPanel {
-                width: 480px;
-                min-width: 350px;
-            }
-        }
-
-        @media (max-width: 768px) {
-            .app-container {
-                flex-direction: column;
-            }
-
-            #leftPanel {
-                width: 100%;
-                max-width: none;
-                height: 45vh;
-                min-height: 300px;
-            }
-
-            #mapContainer {
-                height: 55vh;
-            }
-
-            .resize-handle {
-                right: 0;
-                left: 0;
-                bottom: 0;
-                top: auto;
-                width: auto;
-                height: 4px;
-                cursor: ns-resize;
-            }
-        }
-
-        @media (max-width: 480px) {
-            #leftPanel {
-                height: 40vh;
-            }
-
-            #mapContainer {
-                height: 60vh;
-            }
-
-            .app-title {
-                font-size: 16px;
-            }
-            
-            .chat-input {
-                font-size: 13px;
-            }
-
-            .splash-title {
-                font-size: 32px;
-            }
-
-            .features-list {
-                grid-template-columns: 1fr;
-            }
-        }
-    </style>
+    <!-- Tailwind CSS via CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'nebular-deep-blue': '#0F172A',
+                        'nebular-space-blue': '#1E3A8A',
+                        'nebular-cosmic-purple': '#6366F1',
+                        'nebular-stellar-gold': '#F59E0B',
+                        'nebular-plasma-pink': '#EC4899',
+                        'nebular-void-black': '#000000',
+                        'nebular-stardust': '#E2E8F0',
+                        'nebular-aurora-green': '#10B981',
+                        'nebular-comet-white': '#F8FAFC',
+                        'nebular-meteor-orange': '#F97316',
+                    },
+                    animation: {
+                        'nebula-shift': 'nebulaShift 20s ease-in-out infinite',
+                        'stardust': 'stardust 12s ease-in-out infinite',
+                        'cosmic-pulse': 'cosmicPulse 2s infinite',
+                        'cosmic-spin': 'cosmicSpin 1s linear infinite',
+                        'galaxy-rotate': 'galaxyRotate linear infinite',
+                        'fade-in-up': 'fadeInUp 0.8s ease-out',
+                        'thinking': 'thinking 1.4s infinite',
+                        'typing': 'typing 1.4s infinite',
+                    },
+                    keyframes: {
+                        nebulaShift: {
+                            '0%': { backgroundPosition: '0% 50%' },
+                            '50%': { backgroundPosition: '100% 50%' },
+                            '100%': { backgroundPosition: '0% 50%' },
+                        },
+                        stardust: {
+                            '0%, 100%': { opacity: '0.15', transform: 'scale(0.8)' },
+                            '50%': { opacity: '0.4', transform: 'scale(1.2)' },
+                        },
+                        cosmicPulse: {
+                            '0%, 100%': { opacity: '1', transform: 'scale(1)' },
+                            '50%': { opacity: '0.6', transform: 'scale(1.1)' },
+                        },
+                        cosmicSpin: {
+                            '0%': { transform: 'rotate(0deg)' },
+                            '100%': { transform: 'rotate(360deg)' },
+                        },
+                        galaxyRotate: {
+                            'from': { transform: 'translate(-50%, -50%) rotate(0deg)' },
+                            'to': { transform: 'translate(-50%, -50%) rotate(360deg)' },
+                        },
+                        fadeInUp: {
+                            'from': { opacity: '0', transform: 'translateY(20px)' },
+                            'to': { opacity: '1', transform: 'translateY(0)' },
+                        },
+                        thinking: {
+                            '0%, 60%, 100%': { opacity: '0.3', transform: 'translateY(0)' },
+                            '30%': { opacity: '1', transform: 'translateY(-10px)' },
+                        },
+                        typing: {
+                            '0%, 60%, 100%': { opacity: '0.3', transform: 'translateY(0)' },
+                            '30%': { opacity: '1', transform: 'translateY(-10px)' },
+                        },
+                    },
+                },
+            },
+        };
+    </script>
 </head>
-<body>    
-    <div class="app-container" id="appContainer" style="display: none;">
-        <!-- Left Panel -->
-        <div id="leftPanel">
-            <div class="resize-handle"></div>
-            
-            <div class="panel-header">
-                <div class="header-top">
-                    <div class="orbital-rings">
-                        <div class="ring ring-1"></div>
-                        <div class="ring ring-2"></div>
-                        <div class="ring ring-3"></div>
-                        <div class="ring ring-4"></div>
-                    </div>
-                    <h1 class="app-title">TerraNebular</h1>
+<body class="bg-gradient-to-br from-nebular-deep-blue via-nebular-space-blue to-nebular-cosmic-purple overflow-hidden h-screen flex relative before:content-[''] before:fixed before:inset-0 before:bg-[radial-gradient(2px_2px_at_20px_30px,rgba(255,255,255,0.15),transparent),radial-gradient(2px_2px_at_40px_70px,rgba(245,158,11,0.1),transparent),radial-gradient(1px_1px_at_90px_40px,rgba(99,102,241,0.15),transparent),radial-gradient(1px_1px_at_130px_80px,rgba(236,72,153,0.1),transparent),radial-gradient(2px_2px_at_160px_30px,rgba(16,185,129,0.08),transparent)] before:bg-repeat before:bg-[length:200px_100px] before:animate-stardust before:pointer-events-none before:z-1">
+    <div id="root"></div>
+
+    <!-- React and dependencies -->
+    <script src="https://cdn.jsdelivr.net/npm/react@18.2.0/umd/react.production.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/react-dom@18.2.0/umd/react-dom.production.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@babel/standalone@7.22.9/babel.min.js"></script>
+    <script src="https://js.arcgis.com/4.28/"></script>
+
+    <script type="text/babel">
+        const { useState, useEffect, useRef } = React;
+
+        const ZONE_COLORS = {
+            'A1-Agriculture zone': '#90EE90',
+            'C1-Mixed use zone': '#FFB6C1',
+            'C3-City commercial zone': '#CD5626',
+            'I1-Light industrial zone': '#DDA0DD',
+            'I2-General industrial zone': '#9370DB',
+            'I3-Mining/ Extraction/Quarry': '#8B4513',
+            'P1-Parks and open spaces zone': '#32CD32',
+            'P2-Sport and Eco tourism zone': '#00FA9A',
+            'P3B-Forest zone': '#006400',
+            'P3C-Steep slopes (> 30%) zone': '#2E8B57',
+            'PA-Public Administration zone': '#87CEEB',
+            'PF1-Education and research facilities': '#4169E1',
+            'PF2-Health facilities': '#0000FF',
+            'PF3-Religious facilities': '#191970',
+            'PF4-Cultural/ memorial sites': '#6495ED',
+            'PF5-Cemetery/ crematoria': '#B0C4DE',
+            'R1-Low density residential zone': '#FFFFE0',
+            'R1A-Low density residential densification zone': '#FFFACD',
+            'R1B-Rural residential zone': '#F0E68C',
+            'R2-Medium density residential - Improvement zone': '#F59E0B',
+            'R3-Medium density residential - Expansion zone': '#FF7F50',
+            'R4-High density residential zone': '#FF6347',
+            'T-Transportation zone': '#A9A9A9',
+            'U-Utility zone': '#D3D3D3',
+            'W2 - Rehabilitation': '#98FB98',
+            'W3 - Sustainable Exploitation': '#90EE90',
+            'W4 - Conservation': '#8FBC8F',
+            'W5 - Recreational': '#87CEEB',
+            'WR-Waterbody zone': '#87CEEB'
+        };
+
+        const API_BASE_URL = 'https://cok-development-assistant.onrender.com/api';
+
+        const CosmicRings = ({ size = 160, ringCount = 4 }) => {
+            const ringStyles = [
+                { size: 'w-40 h-40', color: 'border-nebular-cosmic-purple', duration: '20s' },
+                { size: 'w-32 h-32', color: 'border-nebular-plasma-pink', duration: '15s', reverse: true },
+                { size: 'w-24 h-24', color: 'border-nebular-stellar-gold', duration: '12s' },
+                { size: 'w-16 h-16', color: 'border-nebular-aurora-green', duration: '10s', reverse: true },
+            ];
+
+            return (
+                <div className={`relative ${size === 160 ? 'w-40 h-40' : 'w-12 h-12'} mx-auto`}>
+                    {Array.from({ length: ringCount }).map((_, i) => (
+                        <div
+                            key={i}
+                            className={`absolute border-2 rounded-full top-1/2 left-1/2 ${ringStyles[i].size} ${ringStyles[i].color} animate-galaxy-rotate ${ringStyles[i].reverse ? 'animate-[galaxyRotate_reverse]' : ''}`}
+                            style={{ animationDuration: ringStyles[i].duration, transform: 'translate(-50%, -50%) rotate(45deg)' }}
+                        />
+                    ))}
                 </div>
-                
-                <div class="header-controls">
-                    <button class="location-btn" id="useLocationBtn" onclick="useCurrentLocation()">
-                        Use My Location
-                    </button>
-                    <div class="status-indicator">
-                        <div class="status-dot" id="statusDot"></div>
-                        <span id="statusText">Loading...</span>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="panel-content">
-                <div class="location-header" id="locationHeader" style="display: none;">
-                    <div class="zone-color-indicator" id="zoneColorIndicator"></div>
-                    <div class="zone-info">
-                        <h3 class="zone-name" id="zoneName">Select a location</h3>
-                        <p class="zone-description" id="zoneDescription">Click anywhere on the map</p>
-                    </div>
-                </div>
-                
-                <div class="chat-container" id="chatContainer">
-                    <div class="chat-messages" id="chatMessages"></div>
-                    <div class="chat-input-container">
-                        <textarea class="chat-input" id="chatInput" 
-                                  placeholder="Ask TerraNebular..." 
-                                  rows="1"></textarea>
-                        <button class="send-btn" id="sendBtn" onclick="sendMessage()">
-                            ➤
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
-        
-        <!-- Map Container -->
-        <div id="mapContainer">
-            <div class="loading-overlay" id="loadingOverlay">
-                <div class="loading-spinner"></div>
-                <div class="loading-text" id="loadingText">Loading zoning data...</div>
-            </div>
-            <div id="viewDiv"></div>
-        </div>
+            );
+        };
+
+        const App = () => {
+            const [isSplashVisible, setIsSplashVisible] = useState(true);
+            const [currentLocation, setCurrentLocation] = useState(null);
+            const [currentZoning, setCurrentZoning] = useState(null);
+            const [conversationHistory, setConversationHistory] = useState([]);
+            const [backendConnected, setBackendConnected] = useState(false);
+            const [status, setStatus] = useState({ type: 'loading', text: 'Connecting...' });
+            const [chatInput, setChatInput] = useState('');
+            const viewRef = useRef(null);
+            const chatMessagesRef = useRef(null);
+            const panelRef = useRef(null);
+
+            useEffect(() => {
+                checkBackendHealth();
+                if (!isSplashVisible) {
+                    initializeMap();
+                    setupPanelResize();
+                }
+            }, [isSplashVisible]);
+
+            const checkBackendHealth = async () => {
+                try {
+                    const response = await fetch(`${API_BASE_URL}/health`);
+                    const data = await response.json();
+                    setBackendConnected(data.status === 'healthy');
+                    setStatus({ type: 'ready', text: 'Connected' });
+                } catch (error) {
+                    setBackendConnected(false);
+                    setStatus({ type: 'error', text: 'Backend offline' });
+                }
+            };
+
+            const initializeMap = () => {
+                require(["esri/Map", "esri/views/MapView"], (Map, MapView) => {
+                    const map = new Map({ basemap: "hybrid" });
+                    viewRef.current = new MapView({
+                        container: "viewDiv",
+                        map,
+                        center: [30.0619, -1.9441],
+                        zoom: 13,
+                        ui: { components: ["attribution"] },
+                    });
+                    viewRef.current.on("click", handleMapClick);
+                    viewRef.current.popup.autoOpenEnabled = false;
+                    viewRef.current.when(() => {
+                        if (backendConnected) setStatus({ type: 'ready', text: 'Ready' });
+                    });
+                });
+            };
+
+            const handleMapClick = async (event) => {
+                if (!backendConnected) {
+                    showOfflineMessage();
+                    return;
+                }
+                const point = event.mapPoint;
+                setCurrentLocation(point);
+                const zoningResult = await fetchZoningForLocation(point.latitude, point.longitude);
+                if (zoningResult) {
+                    setCurrentZoning(zoningResult);
+                    setStatus({ type: 'ready', text: `Found: ${zoningResult.zoneName}` });
+                    addLocationPin(point);
+                } else {
+                    showNoDataMessage();
+                }
+            };
+
+            const fetchZoningForLocation = async (lat, lng) => {
+                setStatus({ type: 'loading', text: 'Querying spatial database...' });
+                try {
+                    const response = await fetch(`${API_BASE_URL}/zoning/location?lat=${lat}&lng=${lng}`);
+                    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+                    const data = await response.json();
+                    if (data.success && data.data && data.data.zoneData) {
+                        return {
+                            zoneName: data.data.zoneData.zone_name,
+                            properties: data.data.zoneData,
+                            source: 'backend_database',
+                        };
+                    }
+                    return null;
+                } catch (error) {
+                    setStatus({ type: 'error', text: 'Database query failed' });
+                    return null;
+                }
+            };
+
+            const addLocationPin = (point) => {
+                require(["esri/Graphic"], (Graphic) => {
+                    viewRef.current.graphics.removeAll();
+                    const pinGraphic = new Graphic({
+                        geometry: point,
+                        symbol: {
+                            type: "simple-marker",
+                            color: [236, 72, 153, 0.9],
+                            size: 12,
+                            outline: { color: [255, 255, 255], width: 2 },
+                        },
+                    });
+                    viewRef.current.graphics.add(pinGraphic);
+                });
+            };
+
+            const useCurrentLocation = () => {
+                if (!navigator.geolocation) {
+                    alert('Location services not available');
+                    return;
+                }
+                setStatus({ type: 'loading', text: 'Getting location...' });
+                navigator.geolocation.getCurrentPosition(
+                    async (position) => {
+                        const { latitude, longitude } = position.coords;
+                        if (latitude < -2.2 || latitude > -1.7 || longitude < 29.8 || longitude > 30.3) {
+                            alert('Location is outside Kigali area');
+                            setStatus({ type: 'error', text: 'Invalid location' });
+                            return;
+                        }
+                        require(["esri/geometry/Point"], (Point) => {
+                            const userPoint = new Point({
+                                longitude,
+                                latitude,
+                                spatialReference: viewRef.current.spatialReference,
+                            });
+                            viewRef.current.center = [longitude, latitude];
+                            viewRef.current.zoom = 16;
+                            handleMapClick({ mapPoint: userPoint });
+                        });
+                    },
+                    () => {
+                        alert('Location access denied or unavailable');
+                        setStatus({ type: 'error', text: 'Locationdirector: Location access denied' });
+                    }
+                );
+            };
+
+            const sendMessage = async () => {
+                if (!chatInput.trim() || !currentZoning || !currentLocation) {
+                    if (!currentZoning || !currentLocation) alert('Please select a location first');
+                    return;
+                }
+                const question = chatInput.trim();
+                setConversationHistory([...conversationHistory, { role: 'user', content: question }]);
+                setChatInput('');
+                const thinkingMessage = { role: 'thinking', content: 'TerraNebular Thinking...' };
+                setConversationHistory([...conversationHistory, thinkingMessage]);
+                try {
+                    const result = await askClaudeAI(question, currentLocation.latitude, currentLocation.longitude);
+                    setConversationHistory([...conversationHistory.slice(0, -1), { role: 'ai', content: result.response, type: getResponseType(result.response) }]);
+                } catch (error) {
+                    setConversationHistory([...conversationHistory.slice(0, -1), { role: 'ai', content: 'Error processing your question. Please try again.', type: 'error' }]);
+                }
+                chatMessagesRef.current.scrollTop = chatMessagesRef.current.scrollHeight;
+            };
+
+            const askClaudeAI = async (question, lat, lng) => {
+                try {
+                    const response = await fetch(`${API_BASE_URL}/ai/question`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ question, lat, lng, sessionId: Date.now() + '_' + Math.random().toString(36).substr(2, 9) }),
+                    });
+                    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+                    const data = await response.json();
+                    if (data.success && data.data) return data.data;
+                    throw new Error(data.error || 'Unknown error');
+                } catch (error) {
+                    return { response: 'Unable to connect to AI right now. Please try again.', metadata: { fallback: true }, cached: false };
+                }
+            };
+
+            const getResponseType = (response) => {
+                if (response.includes('YES') || response.includes('PERMITTED')) return 'success';
+                if (response.includes('NO') || response.includes('PROHIBITED')) return 'error';
+                if (response.includes('MAYBE') || response.includes('CONDITIONAL')) return 'warning';
+                return 'normal';
+            };
+
+            const showNoDataMessage = () => {
+                setConversationHistory([{ role: 'ai', content: 'No zoning data found. Try clicking on a different location.', type: 'warning' }]);
+            };
+
+            const showOfflineMessage = () => {
+                setConversationHistory([{ role: 'ai', content: 'Connection offline. Check your internet or backend server status.', type: 'error' }]);
+            };
+
+            const setupPanelResize = () => {
+                const panel = panelRef.current;
+                const handle = panel.querySelector('.resize-handle');
+                let isResizing = false;
+
+                handle.addEventListener('mousedown', (e) => {
+                    isResizing = true;
+                    document.addEventListener('mousemove', handleResize);
+                    document.addEventListener('mouseup', stopResize);
+                    e.preventDefault();
+                });
+
+                function handleResize(e) {
+                    if (!isResizing) return;
+                    if (window.innerWidth > 768) {
+                        const newWidth = e.clientX;
+                        if (newWidth >= 400 && newWidth <= 800) {
+                            panel.style.width = `${newWidth}px`;
+                        }
+                    }
+                }
+
+                function stopResize() {
+                    isResizing = false;
+                    document.removeEventListener('mousemove', handleResize);
+                    document.removeEventListener('mouseup', stopResize);
+                }
+            };
+
+            const autoResizeTextarea = (e) => {
+                e.target.style.height = 'auto';
+                e.target.style.height = `${Math.min(e.target.scrollHeight, 120)}px`;
+            };
+
+            return (
+                <>
+                    {isSplashVisible ? (
+                        <div className="fixed inset-0 bg-gradient-to-br from-nebular-void-black via-nebular-deep-blue to-nebular-cosmic-purple flex items-center justify-center z-[9999] overflow-y-auto">
+                            <div className="splash-content-wrapper max-w-3xl w-[90%] flex flex-col gap-10 animate-fade-in-up">
+                                <div className="splash-header text-center">
+                                    <CosmicRings />
+                                    <h1 className="splash-title text-4xl font-bold text-nebular-comet-white mt-6 drop-shadow-[0_0_20px_rgba(99,102,241,0.5)]">TerraNebular</h1>
+                                    <p className="splash-subtitle text-base text-nebular-stardust italic opacity-90">Where Development Dreams Take Shape</p>
+                                </div>
+                                <p className="splash-description text-sm text-nebular-stardust leading-relaxed text-center">
+                                    Spatial intelligence platform for Kigali's urban development. Explore zoning regulations, get instant insights, and make informed development decisions with AI-powered analysis.
+                                </p>
+                                <div>
+                                    <h2 className="text-center text-lg text-nebular-comet-white mb-5">How to Use</h2>
+                                    <div className="features-grid grid grid-cols-[repeat(auto-fit,minmax(200px,1fr))] gap-5">
+                                        {[
+                                            { title: 'Click on the Map', desc: 'Choose a location in Kigali to view zoning details' },
+                                            { title: 'View Zone Details', desc: 'See zoning type and regulations in the panel' },
+                                            { title: 'Ask Questions', desc: 'Use AI for development and permit insights' },
+                                            { title: 'Make Decisions', desc: 'Plan with confidence using zoning data' },
+                                        ].map((feature, i) => (
+                                            <div key={i} className="feature-box bg-[rgba(30,58,138,0.4)] border border-[rgba(99,102,241,0.3)] rounded-xl p-5 text-center backdrop-blur-md hover:bg-[rgba(30,58,138,0.6)] hover:border-[rgba(99,102,241,0.6)] hover:-translate-y-1 transition-all">
+                                                <div className="feature-number w-10 h-10 bg-gradient-to-br from-nebular-cosmic-purple to-nebular-plasma-pink rounded-full flex items-center justify-center font-bold text-nebular-comet-white mx-auto mb-3">{i + 1}</div>
+                                                <h3 className="feature-title text-base font-semibold text-nebular-comet-white">{feature.title}</h3>
+                                                <p className="feature-description text-xs text-nebular-stardust">{feature.desc}</p>
+                                            </div>
+                                        ))}
+                                    </div>
+                                </div>
+                                <div>
+                                    <h2 className="text-center text-lg text-nebular-comet-white mb-5">Key Features</h2>
+                                    <div className="features-row grid grid-cols-[repeat(auto-fit,minmax(150px,1fr))] gap-4">
+                                        {['Interactive Zoning Map', 'AI-Powered Guidance', 'Real-time Data', 'Location Services'].map((name, i) => (
+                                            <div key={i} className="feature-badge bg-gradient-to-br from-[rgba(99,102,241,0.2)] to-[rgba(236,72,153,0.2)] border border-[rgba(99,102,241,0.4)] rounded-lg p-4 flex flex-col items-center justify-center min-h-[120px] backdrop-blur-md hover:bg-gradient-to-br hover:from-[rgba(99,102,241,0.3)] hover:to-[rgba(236,72,153,0.3)] hover:border-[rgba(99,102,241,0.8)] hover:-translate-y-1 transition-all">
+                                                <CosmicRings size={50} ringCount={3} />
+                                                <p className="feature-name text-sm font-semibold text-nebular-comet-white mt-3">{name}</p>
+                                            </div>
+                                        ))}
+                                    </div>
+                                </div>
+                                <div className="enter-btn-container flex justify-center gap-4 flex-wrap">
+                                    <button
+                                        className="enter-btn bg-gradient-to-br from-nebular-stellar-gold to-nebular-meteor-orange text-nebular-comet-white px-10 py-3 rounded-full font-semibold shadow-[0_4px_20px_rgba(245,158,11,0.4)] hover:shadow-[0_6px_24px_rgba(245,158,11,0.6)] hover:-translate-y-1 transition-all"
+                                        onClick={() => setIsSplashVisible(false)}
+                                    >
+                                        ✨ Enter TerraNebular
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    ) : (
+                        <div className="app-container flex w-full h-screen z-10 max-w-full">
+                            <div ref={panelRef} className="left-panel w-[550px] min-w-[400px] max-w-[700px] bg-gradient-to-br from-nebular-comet-white to-nebular-stardust shadow-[4px_0_32px_rgba(15,23,42,0.2)] flex flex-col transition-all duration-300 relative lg:w-[480px] lg:min-w-[350px] md:w-full md:h-[45vh] md:min-h-[300px] sm:h-[40vh]">
+                                <div className="resize-handle absolute right-0 top-0 bottom-0 w-1 bg-transparent hover:bg-[rgba(99,102,241,0.3)] cursor-ew-resize md:bottom-0 md:top-auto md:w-full md:h-1 md:cursor-ns-resize"></div>
+                               <div className="panel-header bg-gradient-to-br from-nebular-deep-blue via-nebular-space-blue to-nebular-cosmic-purple p-4 flex justify-between items-center">
+    <div className="flex items-center gap-3">
+        <CosmicRings size={50} ringCount={3} />
+        <h2 className="text-lg font-bold text-nebular-comet-white">TerraNebular</h2>
     </div>
-
-    <!-- SPLASH SCREEN -->
-    <div id="persistentSplash" class="persistent-splash">
-        <div class="splash-content-wrapper">
-            <div class="splash-header">
-                <div class="splash-logo-container">
-                    <div class="splash-ring splash-ring-1"></div>
-                    <div class="splash-ring splash-ring-2"></div>
-                    <div class="splash-ring splash-ring-3"></div>
-                    <div class="splash-ring splash-ring-4"></div>
+    <div className="status-indicator flex items-center gap-2">
+        <div className={`w-3 h-3 rounded-full animate-cosmic-pulse ${status.type === 'loading' ? 'bg-nebular-stellar-gold' : status.type === 'error' ? 'bg-nebular-plasma-pink' : 'bg-nebular-aurora-green'}`}></div>
+        <span className="text-sm text-nebular-stardust">{status.text}</span>
+    </div>
+</div>
+<div className="panel-content flex-1 flex flex-col overflow-hidden">
+    <div className="zoning-info p-4 border-b border-[rgba(99,102,241,0.2)]">
+        {currentZoning ? (
+            <div className="zoning-details">
+                <h3 className="text-base font-semibold text-nebular-comet-white mb-2">Current Location</h3>
+                <p className="text-sm text-nebular-stardust">
+                    <span className="font-medium">Zone:</span> {currentZoning.zoneName}
+                </p>
+                <p className="text-sm text-nebular-stardust">
+                    <span className="font-medium">Coordinates:</span> {currentLocation?.latitude.toFixed(4)}, {currentLocation?.longitude.toFixed(4)}
+                </p>
+                <div className="zone-color-indicator mt-2 flex items-center gap-2">
+                    <div className="w-4 h-4 rounded-full" style={{ backgroundColor: ZONE_COLORS[currentZoning.zoneName] || '#FFFFFF' }}></div>
+                    <span className="text-sm text-nebular-stardust">{currentZoning.zoneName}</span>
                 </div>
-                <h1 class="splash-title">TerraNebular</h1>
-                <p class="splash-subtitle">Where Development Dreams Take Shape</p>
             </div>
+        ) : (
+            <p className="text-sm text-nebular-stardust italic">Click on the map to select a location</p>
+        )}
+    </div>
+    <div ref={chatMessagesRef} className="chat-messages flex-1 overflow-y-auto p-4 space-y-4">
+        {conversationHistory.map((msg, index) => (
+            <div key={index} className={`message ${msg.role === 'user' ? 'ml-auto' : 'mr-auto'} max-w-[80%] relative`}>
+                {msg.role === 'thinking' ? (
+                    <div className="thinking-indicator flex gap-2 items-center text-nebular-stardust">
+                        <span className="inline-block w-2 h-2 rounded-full bg-nebular-cosmic-purple animate-thinking" style={{ animationDelay: '0s' }}></span>
+                        <span className="inline-block w-2 h-2 rounded-full bg-nebular-cosmic-purple animate-thinking" style={{ animationDelay: '0.2s' }}></span>
+                        <span className="inline-block w-2 h-2 rounded-full bg-nebular-cosmic-purple animate-thinking" style={{ animationDelay: '0.4s' }}></span>
+                        <span>{msg.content}</span>
+                    </div>
+                ) : (
+                    <div className={`p-3 rounded-lg text-sm ${msg.role === 'user' ? 'bg-gradient-to-br from-nebular-stellar-gold to-nebular-meteor-orange text-nebular-comet-white' : `bg-[rgba(30,58,138,0.4)] text-nebular-stardust border border-[rgba(99,102,241,0.3)] ${msg.type === 'success' ? 'border-nebular-aurora-green' : msg.type === 'error' ? 'border-nebular-plasma-pink' : msg.type === 'warning' ? 'border-nebular-stellar-gold' : ''}`}`}>
+                        {msg.content}
+                    </div>
+                )}
+            </div>
+        ))}
+    </div>
+    <div className="chat-input p-4 border-t border-[rgba(99,102,241,0.2)]">
+        <div className="flex gap-2">
+            <textarea
+                value={chatInput}
+                onChange={(e) => {
+                    setChatInput(e.target.value);
+                    autoResizeTextarea(e);
+                }}
+                onKeyPress={(e) => {
+                    if (e.key === 'Enter' && !e.shiftKey) {
+                        e.preventDefault();
+                        sendMessage();
+                    }
+                }}
+                placeholder="Ask about zoning or development..."
+                className="flex-1 bg-[rgba(30,58,138,0.2)] text-nebular-stardust border border-[rgba(99,102,241,0.3)] rounded-lg p-2 resize-none focus:outline-none focus:border-nebular-cosmic-purple text-sm"
+                rows="1"
+            ></textarea>
+            <button
+                onClick={sendMessage}
+                className="bg-gradient-to-br from-nebular-cosmic-purple to-nebular-plasma-pink text-nebular-comet-white px-4 py-2 rounded-lg hover:bg-gradient-to-br hover:from-nebular-plasma-pink hover:to-nebular-cosmic-purple transition-all disabled:opacity-50"
+                disabled={!chatInput.trim() || !backendConnected}
+            >
+                Send
+            </button>
+        </div>
+        <button
+            onClick={useCurrentLocation}
+            className="mt-2 w-full bg-gradient-to-br from-nebular-aurora-green to-nebular-space-blue text-nebular-comet-white py-2 rounded-lg hover:bg-gradient-to-br hover:from-nebular-space-blue hover:to-nebular-aurora-green transition-all"
+        >
+            Use My Location
+        </button>
+    </div>
+</div>
+<div id="viewDiv" className="map-container flex-1 h-full"></div>
+</div>
+)}
+</>
+);
+};
 
-            <p class="splash-description">
-                Spatial intelligence platform for Kigali's urban development. Explore zoning regulations, get instant insights, and make informed development decisions with AI-powered analysis.
-            </p>
-
-            <div class="features-section">
-                <h2 class="section-title">How to Use</h2>
-                <div class="features-list">
-                    <div class="feature-item">
-                        <div class="feature-number">1</div>
-                        <h3 class="feature-title">Click on the Map</h3>
-                        <p class="feature-description">Select any location in Kigali to view its zoning classification</p>
-                    </div>
-                    <div class="feature-item">
-                        <div class="feature-number">2</div>
-                        <h3 class="feature-title">View Zone Details</h3>
-                        <p class="feature-description">See zoning type and regulations in the left panel</p>
-                    </div>
-                    <div class="feature-item">
-                        <div class="feature-number">3</div>
-                        <h3 class="feature-title">Ask Questions</h3>
-                        <p class="feature-description">Use AI to answer questions about development, permits, and investment</p>
-                    </div>
-                    <div class="feature-item">
-                        <div class="feature
+ReactDOM.render(<App />, document.getElementById('root'));
+</script>
+</body>
+</html>
