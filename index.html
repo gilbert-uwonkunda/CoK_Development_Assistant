@@ -1,5 +1,3 @@
-
-
 <!DOCTYPE html>
 <html>
 <head>
@@ -43,7 +41,6 @@
             position: relative;
         }
 
-        /* Cosmic Background Particles */
         body::before {
             content: '';
             position: fixed;
@@ -64,468 +61,7 @@
             z-index: 1;
         }
 
-        /* Main Layout */
-        .app-container {
-            display: flex;
-            width: 100%;
-            height: 100vh;
-            position: relative;
-            z-index: 2;
-        }
-
-        /* Left Panel */
-        #leftPanel {
-            width: 400px;
-            min-width: 350px;
-            max-width: 500px;
-            background: linear-gradient(135deg, var(--nebular-comet-white) 0%, var(--nebular-stardust) 100%);
-            box-shadow: 4px 0 32px rgba(15, 23, 42, 0.2);
-            z-index: 100;
-            display: flex;
-            flex-direction: column;
-            transition: width 0.3s ease;
-            resize: horizontal;
-            overflow: hidden;
-        }
-
-        /* Panel Header */
-        .panel-header {
-            background: linear-gradient(135deg, var(--nebular-deep-blue) 0%, var(--nebular-space-blue) 50%, var(--nebular-cosmic-purple) 100%);
-            color: var(--nebular-comet-white);
-            padding: 20px;
-            flex-shrink: 0;
-        }
-
-        .app-title {
-            font-size: 20px;
-            font-weight: 700;
-            margin: 0 0 4px 0;
-            line-height: 1.2;
-        }
-        
-        .app-subtitle {
-            font-size: 13px;
-            opacity: 0.9;
-            margin: 0 0 16px 0;
-            line-height: 1.3;
-        }
-
-        .header-controls {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            gap: 12px;
-        }
-        
-        .location-btn {
-            background: linear-gradient(135deg, var(--nebular-stellar-gold) 0%, var(--nebular-meteor-orange) 100%);
-            color: var(--nebular-comet-white);
-            border: none;
-            padding: 8px 14px;
-            border-radius: 20px;
-            font-size: 12px;
-            font-weight: 600;
-            cursor: pointer;
-            box-shadow: 0 2px 12px rgba(245, 158, 11, 0.4);
-            transition: all 0.3s ease;
-            white-space: nowrap;
-            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
-            animation: quantumGlow 3s ease-in-out infinite;
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .location-btn::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
-            transition: left 0.6s;
-        }
-        
-        .location-btn:hover::before {
-            left: 100%;
-        }
-        
-        .location-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(245, 158, 11, 0.6);
-        }
-        
-        .location-btn:active {
-            transform: translateY(0);
-        }
-        
-        .location-btn:disabled {
-            background: var(--nebular-stardust);
-            color: var(--nebular-deep-blue);
-            cursor: not-allowed;
-            transform: none;
-            box-shadow: none;
-        }
-        
-        .status-indicator {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            font-size: 11px;
-        }
-        
-        .status-dot {
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            background: var(--nebular-stellar-gold);
-            animation: cosmicPulse 2s infinite;
-            box-shadow: 0 0 6px rgba(245, 158, 11, 0.6);
-        }
-        
-        .status-dot.ready {
-            background: var(--nebular-aurora-green);
-            animation: none;
-            box-shadow: 0 0 6px rgba(16, 185, 129, 0.6);
-        }
-
-        .status-dot.error {
-            background: var(--nebular-plasma-pink);
-            animation: none;
-            box-shadow: 0 0 6px rgba(236, 72, 153, 0.6);
-        }
-
-        /* Panel Content */
-        .panel-content {
-            flex: 1;
-            overflow-y: auto;
-            padding: 20px;
-        }
-
-        /* Data Banner */
-        .data-banner {
-            background: linear-gradient(135deg, var(--nebular-cosmic-purple) 0%, var(--nebular-plasma-pink) 100%);
-            color: var(--nebular-comet-white);
-            padding: 12px 16px;
-            border-radius: 12px;
-            font-size: 13px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 20px rgba(99, 102, 241, 0.4);
-            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
-            margin-bottom: 20px;
-            text-align: center;
-        }
-        
-        .data-banner.loaded {
-            background: linear-gradient(135deg, var(--nebular-aurora-green) 0%, var(--nebular-stellar-gold) 100%);
-            box-shadow: 0 4px 20px rgba(16, 185, 129, 0.4);
-        }
-
-        .data-banner:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 24px rgba(99, 102, 241, 0.6);
-        }
-
-        /* Location Info */
-        .location-header {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            margin-bottom: 20px;
-            padding: 16px;
-            background: linear-gradient(135deg, var(--nebular-stardust) 0%, var(--nebular-comet-white) 100%);
-            border-radius: 12px;
-            box-shadow: 0 2px 12px rgba(15, 23, 42, 0.1);
-        }
-        
-        .zone-info {
-            flex: 1;
-        }
-        
-        .zone-name {
-            font-size: 16px;
-            font-weight: 600;
-            color: var(--nebular-deep-blue);
-            margin: 0 0 4px 0;
-            line-height: 1.3;
-        }
-        
-        .zone-description {
-            font-size: 13px;
-            color: var(--nebular-space-blue);
-            margin: 0;
-            line-height: 1.4;
-        }
-        
-        .zone-color-indicator {
-            width: 24px;
-            height: 24px;
-            border-radius: 8px;
-            border: 2px solid var(--nebular-comet-white);
-            box-shadow: 0 2px 8px rgba(15, 23, 42, 0.2);
-            flex-shrink: 0;
-        }
-
-        /* Chat Interface */
-        .chat-container {
-            background: linear-gradient(135deg, var(--nebular-stardust) 0%, var(--nebular-comet-white) 100%);
-            border-radius: 12px;
-            padding: 16px;
-            margin-top: 8px;
-            display: none;
-            box-shadow: inset 0 1px 3px rgba(15, 23, 42, 0.1);
-        }
-        
-        .chat-container.show {
-            display: block;
-        }
-        
-        .ai-response {
-            background: linear-gradient(135deg, var(--nebular-comet-white) 0%, var(--nebular-stardust) 100%);
-            padding: 20px;
-            border-radius: 16px;
-            border-left: 4px solid var(--nebular-cosmic-purple);
-            font-size: 14px;
-            line-height: 1.7;
-            white-space: pre-wrap;
-            margin-bottom: 16px;
-            box-shadow: 0 4px 20px rgba(15, 23, 42, 0.1);
-            color: var(--nebular-deep-blue);
-            max-height: 400px;
-            overflow-y: auto;
-            position: relative;
-            animation: fadeInUp 0.6s ease-out;
-        }
-        
-        .ai-response::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            border-radius: 16px;
-            padding: 2px;
-            background: linear-gradient(45deg, var(--nebular-cosmic-purple), var(--nebular-plasma-pink), var(--nebular-stellar-gold));
-            mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-            mask-composite: exclude;
-            animation: galaxyRotate 10s linear infinite;
-            opacity: 0.3;
-            z-index: -1;
-        }
-        
-        .ai-response.typing::after {
-            content: '█';
-            animation: blink 1s infinite;
-            color: var(--nebular-cosmic-purple);
-        }
-        
-        .chat-input-container {
-            display: flex;
-            gap: 10px;
-            align-items: flex-end;
-        }
-        
-        .chat-input {
-            flex: 1;
-            padding: 12px 16px;
-            border: 2px solid var(--nebular-stardust);
-            border-radius: 24px;
-            font-size: 13px;
-            resize: none;
-            min-height: 44px;
-            max-height: 100px;
-            outline: none;
-            transition: all 0.3s ease;
-            background: var(--nebular-comet-white);
-            color: var(--nebular-deep-blue);
-        }
-        
-        .chat-input:focus {
-            border-color: var(--nebular-cosmic-purple);
-            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
-        }
-        
-        .chat-input::placeholder {
-            color: var(--nebular-space-blue);
-            font-style: italic;
-        }
-        
-        .send-btn {
-            background: linear-gradient(135deg, var(--nebular-cosmic-purple) 0%, var(--nebular-plasma-pink) 100%);
-            color: var(--nebular-comet-white);
-            border: none;
-            width: 44px;
-            height: 44px;
-            border-radius: 22px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.3s ease;
-            box-shadow: 0 2px 12px rgba(99, 102, 241, 0.4);
-            flex-shrink: 0;
-        }
-        
-        .send-btn:hover {
-            transform: translateY(-1px);
-            box-shadow: 0 4px 16px rgba(99, 102, 241, 0.6);
-        }
-        
-        .send-btn:active {
-            transform: scale(0.95);
-        }
-        
-        .send-btn:disabled {
-            background: var(--nebular-stardust);
-            color: var(--nebular-space-blue);
-            box-shadow: none;
-            transform: none;
-        }
-
-        /* Quick Actions */
-        .quick-actions {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 8px;
-            margin-bottom: 16px;
-        }
-        
-        .quick-actions .location-btn {
-            font-size: 11px;
-            padding: 6px 12px;
-            background: linear-gradient(135deg, var(--nebular-cosmic-purple) 0%, var(--nebular-plasma-pink) 100%);
-        }
-
-        /* Response States */
-        .response-success {
-            border-left-color: var(--nebular-aurora-green);
-            background: linear-gradient(135deg, #ECFDF5 0%, #F0FDF4 100%);
-            box-shadow: 0 0 25px rgba(16, 185, 129, 0.2);
-        }
-        
-        .response-success::before {
-            background: linear-gradient(45deg, var(--nebular-aurora-green), var(--nebular-stellar-gold), var(--nebular-aurora-green));
-        }
-        
-        .response-warning {
-            border-left-color: var(--nebular-stellar-gold);
-            background: linear-gradient(135deg, #FFFBEB 0%, #FEF3C7 100%);
-            box-shadow: 0 0 25px rgba(245, 158, 11, 0.2);
-        }
-        
-        .response-warning::before {
-            background: linear-gradient(45deg, var(--nebular-stellar-gold), var(--nebular-meteor-orange), var(--nebular-stellar-gold));
-        }
-        
-        .response-error {
-            border-left-color: var(--nebular-plasma-pink);
-            background: linear-gradient(135deg, #FDF2F8 0%, #FCE7F3 100%);
-            box-shadow: 0 0 25px rgba(236, 72, 153, 0.2);
-        }
-        
-        .response-error::before {
-            background: linear-gradient(45deg, var(--nebular-plasma-pink), var(--nebular-cosmic-purple), var(--nebular-plasma-pink));
-        }
-
-        /* Map Container */
-        #mapContainer {
-            flex: 1;
-            position: relative;
-            background: var(--nebular-deep-blue);
-        }
-        
-        #viewDiv {
-            height: 100%;
-            width: 100%;
-        }
-
-        /* Loading Overlay */
-        .loading-overlay {
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: linear-gradient(135deg, rgba(15, 23, 42, 0.95) 0%, rgba(30, 58, 138, 0.95) 100%);
-            display: none;
-            align-items: center;
-            justify-content: center;
-            z-index: 200;
-            flex-direction: column;
-            gap: 20px;
-            backdrop-filter: blur(10px);
-        }
-        
-        .loading-overlay.show {
-            display: flex;
-        }
-        
-        .loading-spinner {
-            width: 50px;
-            height: 50px;
-            border: 4px solid rgba(226, 232, 240, 0.3);
-            border-top: 4px solid var(--nebular-cosmic-purple);
-            border-right: 4px solid var(--nebular-plasma-pink);
-            border-radius: 50%;
-            animation: cosmicSpin 1s linear infinite;
-            position: relative;
-        }
-        
-        .loading-spinner::before {
-            content: '';
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            width: 20px;
-            height: 20px;
-            border: 2px solid var(--nebular-stellar-gold);
-            border-radius: 50%;
-            transform: translate(-50%, -50%);
-            animation: cosmicSpin 2s linear infinite reverse;
-        }
-        
-        .loading-spinner::after {
-            content: '';
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            width: 6px;
-            height: 6px;
-            background: var(--nebular-aurora-green);
-            border-radius: 50%;
-            transform: translate(-50%, -50%);
-            box-shadow: 0 0 10px var(--nebular-aurora-green);
-            animation: cosmicPulse 1.5s ease-in-out infinite;
-        }
-        
-        .loading-text {
-            color: var(--nebular-comet-white);
-            font-weight: 600;
-            text-align: center;
-            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
-            animation: stellarFloat 3s ease-in-out infinite;
-        }
-
-        /* Panel Resize Handle */
-        .resize-handle {
-            position: absolute;
-            right: 0;
-            top: 0;
-            bottom: 0;
-            width: 4px;
-            background: transparent;
-            cursor: ew-resize;
-            z-index: 101;
-        }
-
-        .resize-handle:hover {
-            background: rgba(99, 102, 241, 0.3);
-        }
-
-        /* Cosmic Splash Screen */
+        /* Splash Screen */
         .splash-screen {
             position: fixed;
             top: 0;
@@ -537,7 +73,14 @@
             align-items: center;
             justify-content: center;
             z-index: 9999;
-            animation: fadeOut 1s ease-in-out 3s forwards;
+            flex-direction: column;
+            gap: 40px;
+            overflow-y: auto;
+            padding: 20px;
+        }
+
+        .splash-screen.fade-out {
+            animation: fadeOut 0.8s ease-in-out forwards;
         }
 
         .cosmic-background {
@@ -547,6 +90,7 @@
             width: 100%;
             height: 100%;
             overflow: hidden;
+            z-index: 0;
         }
 
         .star {
@@ -556,45 +100,11 @@
             animation: stardust 4s ease-in-out infinite;
         }
 
-        .star-1 {
-            width: 2px;
-            height: 2px;
-            top: 20%;
-            left: 10%;
-            animation-delay: 0s;
-        }
-
-        .star-2 {
-            width: 3px;
-            height: 3px;
-            top: 40%;
-            left: 80%;
-            animation-delay: 1s;
-        }
-
-        .star-3 {
-            width: 1px;
-            height: 1px;
-            top: 70%;
-            left: 20%;
-            animation-delay: 2s;
-        }
-
-        .star-4 {
-            width: 2px;
-            height: 2px;
-            top: 15%;
-            left: 60%;
-            animation-delay: 0.5s;
-        }
-
-        .star-5 {
-            width: 1px;
-            height: 1px;
-            top: 80%;
-            left: 70%;
-            animation-delay: 1.5s;
-        }
+        .star-1 { width: 2px; height: 2px; top: 20%; left: 10%; }
+        .star-2 { width: 3px; height: 3px; top: 40%; left: 80%; animation-delay: 1s; }
+        .star-3 { width: 1px; height: 1px; top: 70%; left: 20%; animation-delay: 2s; }
+        .star-4 { width: 2px; height: 2px; top: 15%; left: 60%; animation-delay: 0.5s; }
+        .star-5 { width: 1px; height: 1px; top: 80%; left: 70%; animation-delay: 1.5s; }
 
         .nebula {
             position: absolute;
@@ -609,7 +119,6 @@
             background: radial-gradient(circle, rgba(99, 102, 241, 0.3) 0%, transparent 70%);
             top: 10%;
             left: 70%;
-            animation-delay: 0s;
         }
 
         .nebula-2 {
@@ -633,7 +142,9 @@
         .splash-content {
             text-align: center;
             z-index: 10;
-            animation: fadeInUp 1s ease-out;
+            animation: fadeInUp 0.8s ease-out;
+            max-width: 700px;
+            padding: 40px;
         }
 
         .logo-container {
@@ -681,7 +192,7 @@
         }
 
         .splash-title {
-            font-size: 36px;
+            font-size: 42px;
             font-weight: 700;
             color: var(--nebular-comet-white);
             margin: 0 0 16px 0;
@@ -690,59 +201,250 @@
         }
 
         .splash-subtitle {
-            font-size: 16px;
+            font-size: 18px;
             color: var(--nebular-stardust);
-            margin: 0 0 40px 0;
+            margin: 0 0 32px 0;
             opacity: 0.9;
+            font-style: italic;
         }
 
-        .loading-progress {
-            width: 200px;
-            height: 4px;
-            background: rgba(226, 232, 240, 0.2);
-            border-radius: 2px;
-            margin: 0 auto;
-            overflow: hidden;
+        .splash-description {
+            font-size: 15px;
+            color: var(--nebular-comet-white);
+            line-height: 1.8;
+            margin: 0 0 36px 0;
+            opacity: 0.95;
+        }
+
+        .how-it-works {
+            background: rgba(226, 232, 240, 0.1);
+            border: 1px solid rgba(226, 232, 240, 0.2);
+            border-radius: 16px;
+            padding: 28px;
+            backdrop-filter: blur(10px);
+            margin: 0 0 28px 0;
+            text-align: left;
+        }
+
+        .works-title {
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--nebular-comet-white);
+            margin: 0 0 20px 0;
+            text-align: center;
+        }
+
+        .step-item {
+            display: flex;
+            gap: 16px;
+            margin-bottom: 18px;
+            align-items: flex-start;
+        }
+
+        .step-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .step-number {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--nebular-cosmic-purple) 0%, var(--nebular-plasma-pink) 100%);
+            color: var(--nebular-comet-white);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            flex-shrink: 0;
+            box-shadow: 0 0 15px rgba(99, 102, 241, 0.4);
+        }
+
+        .step-content {
+            flex: 1;
+        }
+
+        .step-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--nebular-comet-white);
+            margin: 0 0 4px 0;
+        }
+
+        .step-text {
+            font-size: 13px;
+            color: var(--nebular-stardust);
+            line-height: 1.5;
+            margin: 0;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            margin: 28px 0;
+        }
+
+        .feature-item {
+            background: rgba(226, 232, 240, 0.1);
+            border: 1px solid rgba(226, 232, 240, 0.2);
+            border-radius: 12px;
+            padding: 16px;
+            backdrop-filter: blur(10px);
+            text-align: center;
+        }
+
+        .feature-icon {
+            font-size: 28px;
+            margin-bottom: 8px;
+            display: block;
+        }
+
+        .feature-text {
+            font-size: 13px;
+            color: var(--nebular-stardust);
+            line-height: 1.4;
+            margin: 0;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+            margin-top: 32px;
+            flex-wrap: wrap;
+        }
+
+        .enter-btn {
+            background: linear-gradient(135deg, var(--nebular-stellar-gold) 0%, var(--nebular-meteor-orange) 100%);
+            color: var(--nebular-comet-white);
+            border: none;
+            padding: 14px 32px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            box-shadow: 0 4px 20px rgba(245, 158, 11, 0.4);
+            transition: all 0.3s ease;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+            animation: quantumGlow 2s ease-in-out infinite;
             position: relative;
+            overflow: hidden;
         }
 
-        .progress-bar {
-            height: 100%;
-            background: linear-gradient(90deg, var(--nebular-cosmic-purple) 0%, var(--nebular-plasma-pink) 50%, var(--nebular-stellar-gold) 100%);
-            border-radius: 2px;
-            width: 0%;
-            animation: loadingProgress 3s ease-in-out forwards;
-        }
-
-        .progress-glow {
+        .enter-btn::before {
+            content: '';
             position: absolute;
-            top: -2px;
-            bottom: -2px;
-            left: 0;
-            width: 20px;
-            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.6), transparent);
-            border-radius: 4px;
-            animation: progressGlow 3s ease-in-out forwards;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transition: left 0.6s;
+        }
+
+        .enter-btn:hover::before {
+            left: 100%;
+        }
+
+        .enter-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 28px rgba(245, 158, 11, 0.6);
+        }
+
+        .enter-btn:active {
+            transform: translateY(0);
+        }
+
+        .skip-text {
+            font-size: 12px;
+            color: var(--nebular-stardust);
+            opacity: 0.7;
+            margin-top: 16px;
+        }
+
+        /* App Container (Hidden Initially) */
+        .app-container {
+            display: none;
+            width: 100%;
+            height: 100vh;
+            position: relative;
+            z-index: 2;
+            flex: 1;
+        }
+
+        .app-container.show {
+            display: flex;
+        }
+
+        #leftPanel {
+            width: 400px;
+            min-width: 350px;
+            max-width: 500px;
+            background: linear-gradient(135deg, var(--nebular-comet-white) 0%, var(--nebular-stardust) 100%);
+            box-shadow: 4px 0 32px rgba(15, 23, 42, 0.2);
+            z-index: 100;
+            display: flex;
+            flex-direction: column;
+            transition: width 0.3s ease;
+            resize: horizontal;
+            overflow: hidden;
+        }
+
+        .panel-header {
+            background: linear-gradient(135deg, var(--nebular-deep-blue) 0%, var(--nebular-space-blue) 50%, var(--nebular-cosmic-purple) 100%);
+            color: var(--nebular-comet-white);
+            padding: 20px;
+            flex-shrink: 0;
+        }
+
+        .app-title {
+            font-size: 20px;
+            font-weight: 700;
+            margin: 0 0 4px 0;
+            line-height: 1.2;
+        }
+
+        .app-subtitle {
+            font-size: 13px;
+            opacity: 0.9;
+            margin: 0;
+            line-height: 1.3;
+        }
+
+        .panel-content {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px;
+        }
+
+        #mapContainer {
+            flex: 1;
+            position: relative;
+            background: var(--nebular-deep-blue);
+        }
+
+        #viewDiv {
+            height: 100%;
+            width: 100%;
         }
 
         /* Animations */
-        @keyframes cosmicPulse {
-            0%, 100% { 
-                opacity: 1; 
-                transform: scale(1);
-                box-shadow: 0 0 6px rgba(245, 158, 11, 0.6);
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
             }
-            50% { 
-                opacity: 0.6; 
-                transform: scale(1.1);
-                box-shadow: 0 0 12px rgba(245, 158, 11, 0.8);
+            to {
+                opacity: 1;
+                transform: translateY(0);
             }
         }
 
-        @keyframes stellarFloat {
-            0%, 100% { transform: translateY(0px) rotate(0deg); }
-            33% { transform: translateY(-10px) rotate(120deg); }
-            66% { transform: translateY(5px) rotate(240deg); }
+        @keyframes fadeOut {
+            to {
+                opacity: 0;
+                visibility: hidden;
+            }
         }
 
         @keyframes nebulaShift {
@@ -761,6 +463,11 @@
             50% { opacity: 0.8; transform: scale(1.2); }
         }
 
+        @keyframes stellarFloat {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+
         @keyframes quantumGlow {
             0%, 100% { 
                 box-shadow: 0 0 5px rgba(99, 102, 241, 0.3),
@@ -774,204 +481,49 @@
             }
         }
 
-        @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        @keyframes blink {
-            0%, 50% { opacity: 1; }
-            51%, 100% { opacity: 0; }
-        }
-
-        @keyframes cosmicSpin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
-        @keyframes fadeOut {
-            to {
-                opacity: 0;
-                visibility: hidden;
-            }
-        }
-
-        @keyframes loadingProgress {
-            to {
-                width: 100%;
-            }
-        }
-
-        @keyframes progressGlow {
-            to {
-                left: 180px;
-            }
-        }
-
-        /* Mobile Responsiveness */
         @media (max-width: 768px) {
+            .splash-title {
+                font-size: 32px;
+            }
+
+            .splash-subtitle {
+                font-size: 14px;
+            }
+
+            .splash-content {
+                padding: 20px;
+            }
+
+            .how-it-works {
+                padding: 20px;
+            }
+
+            .features-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .enter-btn {
+                padding: 12px 24px;
+                font-size: 14px;
+            }
+
             .app-container {
                 flex-direction: column;
             }
 
             #leftPanel {
                 width: 100%;
-                max-width: none;
                 height: 40vh;
-                min-height: 300px;
-                resize: vertical;
             }
 
             #mapContainer {
                 height: 60vh;
             }
-
-            .app-title {
-                font-size: 18px;
-            }
-            
-            .app-subtitle {
-                font-size: 12px;
-            }
-            
-            .location-btn {
-                padding: 6px 10px;
-                font-size: 11px;
-            }
-
-            .panel-content {
-                padding: 16px;
-            }
-
-            .resize-handle {
-                right: 0;
-                left: 0;
-                bottom: 0;
-                top: auto;
-                width: auto;
-                height: 4px;
-                cursor: ns-resize;
-            }
-        }
-
-        @media (max-width: 480px) {
-            .panel-content {
-                padding: 12px;
-            }
-            
-            .app-title {
-                font-size: 16px;
-            }
-            
-            .app-subtitle {
-                font-size: 11px;
-            }
-            
-            .location-btn {
-                padding: 5px 8px;
-                font-size: 10px;
-            }
-            
-            .zone-name {
-                font-size: 14px;
-            }
-            
-            .zone-description {
-                font-size: 12px;
-            }
-            
-            .ai-response {
-                padding: 12px;
-                font-size: 12px;
-            }
-            
-            .chat-input {
-                padding: 10px 12px;
-                font-size: 12px;
-                min-height: 40px;
-            }
-            
-            .send-btn {
-                width: 40px;
-                height: 40px;
-                border-radius: 20px;
-            }
         }
     </style>
 </head>
-<body>    
-    <div class="app-container">
-        <!-- Left Panel -->
-        <div id="leftPanel">
-            <div class="resize-handle"></div>
-            
-            <!-- Panel Header -->
-            <div class="panel-header">
-                <h1 class="app-title">🌌 TerraNebular</h1>
-                <p class="app-subtitle">Where Development Dreams Take Shape</p>
-                
-                <div class="header-controls">
-                    <button class="location-btn" id="useLocationBtn" onclick="useCurrentLocation()">
-                        📍 Use My Location
-                    </button>
-                    <div class="status-indicator">
-                        <div class="status-dot" id="statusDot"></div>
-                        <span id="statusText">Loading...</span>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Panel Content -->
-            <div class="panel-content">
-                <!-- Data Banner -->
-                <div class="data-banner loaded" id="dataBanner">
-                    ✨ Connected to TerraNebular Intelligence Network
-                </div>
-                
-                <!-- Location Header -->
-                <div class="location-header" id="locationHeader" style="display: none;">
-                    <div class="zone-color-indicator" id="zoneColorIndicator"></div>
-                    <div class="zone-info">
-                        <h3 class="zone-name" id="zoneName">Select a location</h3>
-                        <p class="zone-description" id="zoneDescription">Click anywhere on the map</p>
-                    </div>
-                </div>
-                
-                <!-- Chat Container -->
-                <div class="chat-container" id="chatContainer">
-                    <div class="ai-response" id="aiResponse"></div>
-                    <div class="chat-input-container">
-                        <textarea class="chat-input" id="chatInput" 
-                                  placeholder="Ask TerraNebular: 'Can I build a restaurant here?', 'What's the maximum height?', 'Investment potential?'" 
-                                  rows="1"></textarea>
-                        <button class="send-btn" id="sendBtn" onclick="sendMessage()">
-                            ➤
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
-        
-        <!-- Map Container -->
-        <div id="mapContainer">
-            <!-- Loading Overlay -->
-            <div class="loading-overlay" id="loadingOverlay">
-                <div class="loading-spinner"></div>
-                <div class="loading-text" id="loadingText">Loading zoning data...</div>
-            </div>
-            
-            <!-- Map View -->
-            <div id="viewDiv"></div>
-        </div>
-    </div>
-
-    <!-- Cosmic Splash Screen -->
+<body>
+    <!-- Enhanced Splash Screen -->
     <div id="splashScreen" class="splash-screen">
         <div class="cosmic-background">
             <div class="star star-1"></div>
@@ -983,6 +535,7 @@
             <div class="nebula nebula-2"></div>
             <div class="nebula nebula-3"></div>
         </div>
+        
         <div class="splash-content">
             <div class="logo-container">
                 <div class="cosmic-ring ring-1"></div>
@@ -990,12 +543,95 @@
                 <div class="cosmic-ring ring-3"></div>
                 <div class="app-logo">🌌</div>
             </div>
+            
             <h1 class="splash-title">TerraNebular</h1>
-            <p class="splash-subtitle">Initializing spatial intelligence network...</p>
-            <div class="loading-progress">
-                <div class="progress-bar"></div>
-                <div class="progress-glow"></div>
+            <p class="splash-subtitle">Where Development Dreams Take Shape</p>
+            
+            <p class="splash-description">
+                Spatial intelligence platform for Kigali's urban development. Explore zoning regulations, get instant insights, and make informed development decisions with AI-powered analysis.
+            </p>
+
+            <div class="how-it-works">
+                <h3 class="works-title">How to Use</h3>
+                
+                <div class="step-item">
+                    <div class="step-number">1</div>
+                    <div class="step-content">
+                        <div class="step-title">Click on the Map</div>
+                        <div class="step-text">Select any location in Kigali to view its zoning classification</div>
+                    </div>
+                </div>
+
+                <div class="step-item">
+                    <div class="step-number">2</div>
+                    <div class="step-content">
+                        <div class="step-title">View Zone Details</div>
+                        <div class="step-text">See zoning type and regulations in the left panel</div>
+                    </div>
+                </div>
+
+                <div class="step-item">
+                    <div class="step-number">3</div>
+                    <div class="step-content">
+                        <div class="step-title">Ask Questions</div>
+                        <div class="step-text">Use AI to answer questions about development, permits, and investment</div>
+                    </div>
+                </div>
+
+                <div class="step-item">
+                    <div class="step-number">4</div>
+                    <div class="step-content">
+                        <div class="step-title">Make Decisions</div>
+                        <div class="step-text">Get zoning insights to inform your development plans</div>
+                    </div>
+                </div>
             </div>
+
+            <div class="features-grid">
+                <div class="feature-item">
+                    <div class="feature-icon">🗺️</div>
+                    <div class="feature-text">Interactive Zoning Map</div>
+                </div>
+                <div class="feature-item">
+                    <div class="feature-icon">🤖</div>
+                    <div class="feature-text">AI-Powered Guidance</div>
+                </div>
+                <div class="feature-item">
+                    <div class="feature-icon">⚡</div>
+                    <div class="feature-text">Real-time Data</div>
+                </div>
+                <div class="feature-item">
+                    <div class="feature-icon">📍</div>
+                    <div class="feature-text">Location Services</div>
+                </div>
+            </div>
+
+            <div class="button-group">
+                <button class="enter-btn" onclick="enterApplication()">
+                    ✨ Enter Application
+                </button>
+            </div>
+            
+
+        </div>
+    </div>
+
+    <!-- Main Application -->
+    <div class="app-container" id="appContainer">
+        <div id="leftPanel">
+            <div class="panel-header">
+                <h1 class="app-title">🌌 TerraNebular</h1>
+                <p class="app-subtitle">Where Development Dreams Take Shape</p>
+            </div>
+            <div class="panel-content">
+                <p style="color: #1E3A8A; font-size: 14px;">
+                    ✨ Connected to TerraNebular Intelligence Network
+                </p>
+            </div>
+        </div>
+        
+        <div id="mapContainer">
+            <div id="viewDiv"></div>
         </div>
     </div>
 
@@ -1003,676 +639,57 @@
     <script src="https://js.arcgis.com/4.28/"></script>
     
     <script>
-    // =============================================================================
-    // BACKEND INTEGRATION CONFIGURATION
-    // =============================================================================
-    
-    const API_BASE_URL = 'https://cok-development-assistant.onrender.com/api';
-    
-    // Session management
-    let sessionId = generateSessionId();
-    
-    function generateSessionId() {
-        return 'web_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
-    }
-
-    // =============================================================================
-    // BACKEND API FUNCTIONS
-    // =============================================================================
-
-    async function checkBackendHealth() {
-        try {
-            const response = await fetch(`${API_BASE_URL}/health`);
-            const data = await response.json();
-            return data.status === 'healthy';
-        } catch (error) {
-            console.error('Backend health check failed:', error);
-            return false;
+        // Configuration
+        const API_BASE_URL = 'https://cok-development-assistant.onrender.com/api';
+        let sessionId = generateSessionId();
+        
+        function generateSessionId() {
+            return 'web_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
         }
-    }
 
-    async function fetchZoningForLocation(lat, lng) {
-        try {
-            updateStatus('loading', 'Querying spatial database...');
+        // Enter Application Function
+        function enterApplication() {
+            const splashScreen = document.getElementById('splashScreen');
+            const appContainer = document.getElementById('appContainer');
             
-            const response = await fetch(`${API_BASE_URL}/zoning/location?lat=${lat}&lng=${lng}`);
+            splashScreen.classList.add('fade-out');
             
-            if (!response.ok) {
-                throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-            }
-            
-            const data = await response.json();
-            
-            if (data.success && data.data && data.data.zoneData) {
-                return {
-                    zoneName: data.data.zoneData.zone_name,
-                    properties: data.data.zoneData,
-                    source: 'backend_database',
-                    distance: data.data.zoneData.distance ? `${Math.round(data.data.zoneData.distance)}m` : null,
-                    area: data.data.zoneData.area ? `${Math.round(data.data.zoneData.area)} m²` : null
-                };
-            } else {
-                return null;
-            }
-        } catch (error) {
-            console.error('Error fetching zoning data:', error);
-            updateStatus('error', 'Database query failed');
-            return null;
-        }
-    }
-
-    async function askClaudeAI(question, lat, lng) {
-        try {
-            updateStatus('loading', 'Consulting TerraNebular AI...');
-            
-            const response = await fetch(`${API_BASE_URL}/ai/question`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    question: question,
-                    lat: lat,
-                    lng: lng,
-                    sessionId: sessionId
-                })
-            });
-
-            if (!response.ok) {
-                throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-            }
-
-            const data = await response.json();
-            
-            if (data.success && data.data) {
-                return {
-                    response: data.data.response,
-                    metadata: data.data.metadata,
-                    cached: data.data.cached || false
-                };
-            } else {
-                throw new Error(data.error || 'Unknown API error');
-            }
-        } catch (error) {
-            console.error('Error calling AI API:', error);
-            updateStatus('error', 'AI consultation failed');
-            
-            // Fallback response
-            return {
-                response: `❌ TerraNebular AI is temporarily offline.\n\nPlease try again or contact City of Kigali directly:\n📞 +250 788 000 000\n🌐 kigalicity.gov.rw\n\nError: ${error.message}`,
-                metadata: { fallback: true, error: error.message },
-                cached: false
-            };
-        }
-    }
-
-    // =============================================================================
-    // APPLICATION STATE
-    // =============================================================================
-    
-    let currentLocation = null;
-    let currentZoning = null;
-    let view = null;
-    let conversationHistory = [];
-    let backendConnected = false;
-
-    // Zone color mapping
-    const ZONE_COLORS = {
-        'A1-Agriculture zone': '#90EE90',
-        'C1-Mixed use zone': '#FFB6C1',
-        'C3-City commercial zone': '#CD5626',
-        'I1-Light industrial zone': '#DDA0DD',
-        'I2-General industrial zone': '#9370DB',
-        'I3-Mining/ Extraction/Quarry': '#8B4513',
-        'P1-Parks and open spaces zone': '#32CD32',
-        'P2-Sport and Eco tourism zone': '#00FA9A',
-        'P3B-Forest zone': '#006400',
-        'P3C-Steep slopes (> 30%) zone': '#2E8B57',
-        'PA-Public Administration zone': '#87CEEB',
-        'PF1-Education and research facilities': '#4169E1',
-        'PF2-Health facilities': '#0000FF',
-        'PF3-Religious facilities': '#191970',
-        'PF4-Cultural/ memorial sites': '#6495ED',
-        'PF5-Cemetery/ crematoria': '#B0C4DE',
-        'R1-Low density residential zone': '#FFFFE0',
-        'R1A-Low density residential densification zone': '#FFFACD',
-        'R1B-Rural residential zone': '#F0E68C',
-        'R2-Medium density residential - Improvement zone': '#F59E0B',
-        'R3-Medium density residential - Expansion zone': '#FF7F50',
-        'R4-High density residential zone': '#FF6347',
-        'T-Transportation zone': '#A9A9A9',
-        'U-Utility zone': '#D3D3D3',
-        'W2 - Rehabilitation': '#98FB98',
-        'W3 - Sustainable Exploitation': '#90EE90',
-        'W4 - Conservation': '#8FBC8F',
-        'W5 - Recreational': '#87CEEB',
-        'WR-Waterbody zone': '#87CEEB'
-    };
-
-    // =============================================================================
-    // INITIALIZATION
-    // =============================================================================
-
-    document.addEventListener('DOMContentLoaded', function() {
-        // Initialize splash screen
-        setTimeout(() => {
-            document.getElementById('splashScreen').style.display = 'none';
-        }, 4000);
-        
-        initializeApp();
-        setupPanelResize();
-    });
-
-    async function initializeApp() {
-        updateStatus('loading', 'Connecting to TerraNebular network...');
-        
-        // Check backend connection
-        backendConnected = await checkBackendHealth();
-        
-        if (backendConnected) {
-            updateStatus('ready', 'Connected to spatial intelligence');
-            console.log('✅ Backend connected successfully');
-        } else {
-            updateStatus('error', 'Unable to connect to backend');
-            console.error('❌ Backend connection failed');
-        }
-        
-        // Initialize map
-        require([
-            "esri/Map",
-            "esri/views/MapView",
-            "esri/Graphic",
-            "esri/geometry/Point"
-        ], function(Map, MapView, Graphic, Point) {
-            
-            const map = new Map({
-                basemap: "hybrid"
-            });
-            
-            view = new MapView({
-                container: "viewDiv",
-                map: map,
-                center: [30.0619, -1.9441],
-                zoom: 13,
-                ui: {
-                    components: ["attribution"]
-                }
-            });
-            
-            view.on("click", handleMapClick);
-            view.popup.autoOpenEnabled = false;
-            
-            view.when(() => {
-                if (backendConnected) {
-                    updateStatus('ready', '8,172 Kigali zones available');
-                } else {
-                    updateStatus('error', 'Map ready, backend offline');
-                }
-            });
-        });
-        
-        // Setup chat interface
-        const chatInput = document.getElementById('chatInput');
-        chatInput.addEventListener('input', autoResizeTextarea);
-        chatInput.addEventListener('keypress', function(e) {
-            if (e.key === 'Enter' && !e.shiftKey) {
-                e.preventDefault();
-                sendMessage();
-            }
-        });
-    }
-
-    // =============================================================================
-    // ENHANCED UI FUNCTIONS
-    // =============================================================================
-
-    async function typewriterEffect(element, text, speed = 30) {
-        return new Promise((resolve) => {
-            element.innerHTML = '';
-            element.classList.add('typing');
-            
-            let i = 0;
-            const timer = setInterval(() => {
-                if (i < text.length) {
-                    element.innerHTML += text.charAt(i);
-                    i++;
-                } else {
-                    element.classList.remove('typing');
-                    clearInterval(timer);
-                    resolve();
-                }
-            }, speed);
-        });
-    }
-
-    function addCosmicSparkles(element) {
-        for (let i = 0; i < 3; i++) {
             setTimeout(() => {
-                const sparkle = document.createElement('div');
-                sparkle.style.cssText = `
-                    position: absolute;
-                    width: 4px;
-                    height: 4px;
-                    background: var(--nebular-stellar-gold);
-                    border-radius: 50%;
-                    top: ${Math.random() * 100}%;
-                    left: ${Math.random() * 100}%;
-                    animation: stardust 1s ease-out forwards;
-                    pointer-events: none;
-                    z-index: 10;
-                `;
+                splashScreen.style.display = 'none';
+                appContainer.classList.add('show');
+                initializeApp();
+            }, 800);
+        }
+
+        // Auto-enter after 6 seconds
+        let autoEnterTimer = setTimeout(() => {
+            enterApplication();
+        }, 6000);
+
+        // Application Initialization
+        async function initializeApp() {
+            console.log('TerraNebular initialized');
+            
+            // Initialize map when app is visible
+            require([
+                "esri/Map",
+                "esri/views/MapView"
+            ], function(Map, MapView) {
+                const map = new Map({
+                    basemap: "hybrid"
+                });
                 
-                element.style.position = 'relative';
-                element.appendChild(sparkle);
-                
-                setTimeout(() => {
-                    if (sparkle.parentNode) {
-                        sparkle.parentNode.removeChild(sparkle);
+                const view = new MapView({
+                    container: "viewDiv",
+                    map: map,
+                    center: [30.0619, -1.9441],
+                    zoom: 13,
+                    ui: {
+                        components: ["attribution"]
                     }
-                }, 1000);
-            }, i * 200);
-        }
-    }
-
-    // =============================================================================
-    // MAP INTERACTION
-    // =============================================================================
-
-    async function handleMapClick(event) {
-        if (!backendConnected) {
-            showOfflineMessage();
-            return;
-        }
-        
-        currentLocation = event.mapPoint;
-        const lat = event.mapPoint.latitude;
-        const lng = event.mapPoint.longitude;
-        
-        // Add visual pin
-        addLocationPin(event.mapPoint);
-        
-        // Query backend for zoning data
-        const zoningResult = await fetchZoningForLocation(lat, lng);
-        
-        if (zoningResult) {
-            currentZoning = zoningResult;
-            displayLocationInfo(zoningResult);
-            updateStatus('ready', `Found: ${zoningResult.zoneName}`);
-        } else {
-            showNoDataMessage();
-            updateStatus('ready', 'No zoning data found');
-        }
-    }
-
-    function addLocationPin(point) {
-        require(["esri/Graphic", "esri/geometry/Point"], function(Graphic, Point) {
-            view.graphics.removeAll();
-            
-            const pinSymbol = {
-                type: "simple-marker",
-                color: [236, 72, 153, 0.9],
-                size: 12,
-                outline: {
-                    color: [255, 255, 255],
-                    width: 2
-                }
-            };
-            
-            const pinGraphic = new Graphic({
-                geometry: point,
-                symbol: pinSymbol
+                });
             });
-            
-            view.graphics.add(pinGraphic);
-        });
-    }
-
-    // =============================================================================
-    // LOCATION SERVICES
-    // =============================================================================
-
-    function useCurrentLocation() {
-        const btn = document.getElementById('useLocationBtn');
-        
-        if (!navigator.geolocation) {
-            alert('Your device cannot detect location coordinates');
-            return;
         }
-        
-        btn.disabled = true;
-        btn.innerHTML = '🛰️ Scanning...';
-        updateStatus('loading', 'Getting your location...');
-        
-        navigator.geolocation.getCurrentPosition(
-            async function(position) {
-                const lat = position.coords.latitude;
-                const lng = position.coords.longitude;
-                
-                if (lat < -2.2 || lat > -1.7 || lng < 29.8 || lng > 30.3) {
-                    btn.disabled = false;
-                    btn.innerHTML = '📍 Use My Location';
-                    updateStatus('ready', 'Location outside Kigali area');
-                    alert('Your location is outside the Kigali area.\n\nTerraNebular is currently optimized for Kigali\'s zoning data.');
-                    return;
-                }
-                
-                if (view) {
-                    view.center = [lng, lat];
-                    view.zoom = 16;
-                    
-                    require(["esri/geometry/Point"], function(Point) {
-                        const userPoint = new Point({
-                            longitude: lng,
-                            latitude: lat,
-                            spatialReference: view.spatialReference
-                        });
-                        
-                        handleMapClick({ mapPoint: userPoint });
-                    });
-                }
-                
-                btn.disabled = false;
-                btn.innerHTML = '✨ Location Found';
-                
-                setTimeout(() => {
-                    btn.innerHTML = '📍 Use My Location';
-                }, 3000);
-            },
-            function(error) {
-                btn.disabled = false;
-                btn.innerHTML = '📍 Use My Location';
-                
-                let errorMessage = '';
-                switch(error.code) {
-                    case error.PERMISSION_DENIED:
-                        errorMessage = 'TerraNebular needs access to your location.\n\nPlease allow location access and try again.';
-                        updateStatus('ready', 'Location permission denied');
-                        break;
-                    case error.POSITION_UNAVAILABLE:
-                        errorMessage = 'Unable to detect your position.\n\nPlease check your GPS/internet connection.';
-                        updateStatus('ready', 'Location unavailable');
-                        break;
-                    case error.TIMEOUT:
-                        errorMessage = 'Location scan timed out.\n\nPlease try again.';
-                        updateStatus('ready', 'Location timeout');
-                        break;
-                    default:
-                        errorMessage = 'Unknown location error.\n\nPlease try clicking on the map instead.';
-                        updateStatus('ready', 'Location error');
-                        break;
-                }
-                alert(errorMessage);
-            },
-            {
-                enableHighAccuracy: true,
-                timeout: 10000,
-                maximumAge: 60000
-            }
-        );
-    }
-
-    // =============================================================================
-    // CHAT INTERFACE
-    // =============================================================================
-
-    async function sendMessage() {
-        const input = document.getElementById('chatInput');
-        const question = input.value.trim();
-        
-        if (!question || !currentZoning || !currentLocation) {
-            if (!backendConnected) {
-                showOfflineMessage();
-                return;
-            }
-            if (!currentZoning) {
-                alert('Please select a location on the map first.');
-                return;
-            }
-            return;
-        }
-        
-        const sendBtn = document.getElementById('sendBtn');
-        const aiResponse = document.getElementById('aiResponse');
-        const chatContainer = document.getElementById('chatContainer');
-        
-        sendBtn.disabled = true;
-        sendBtn.innerHTML = '⏳';
-        
-        aiResponse.innerHTML = 'TerraNebular AI is analyzing your question...';
-        aiResponse.className = 'ai-response';
-        chatContainer.classList.add('show');
-        
-        input.value = '';
-        input.style.height = 'auto';
-        
-        try {
-            const result = await askClaudeAI(
-                question, 
-                currentLocation.latitude, 
-                currentLocation.longitude
-            );
-            
-            await typewriterEffect(aiResponse, result.response);
-            
-            let responseClass = 'ai-response';
-            if (result.response.includes('YES') && result.response.includes('PERMITTED')) {
-                responseClass += ' response-success';
-            } else if (result.response.includes('NO') && result.response.includes('PROHIBITED')) {
-                responseClass += ' response-error';
-            } else if (result.response.includes('MAYBE') || result.response.includes('CONDITIONAL')) {
-                responseClass += ' response-warning';
-            }
-            
-            aiResponse.className = responseClass;
-            
-            if (result.cached) {
-                const cacheIndicator = document.createElement('div');
-                cacheIndicator.style.cssText = 'font-size: 11px; opacity: 0.7; margin-top: 8px; font-style: italic;';
-                cacheIndicator.textContent = '⚡ Retrieved from cache';
-                aiResponse.appendChild(cacheIndicator);
-            }
-            
-            conversationHistory.push({ question, response: result.response });
-            if (conversationHistory.length > 10) {
-                conversationHistory.shift();
-            }
-            
-        } catch (error) {
-            console.error('Chat error:', error);
-            await typewriterEffect(aiResponse, `❌ Sorry, I couldn't process your question right now.\n\nError: ${error.message}\n\nPlease try again or contact City of Kigali directly.`);
-            aiResponse.className = 'ai-response response-error';
-        }
-        
-        sendBtn.disabled = false;
-        sendBtn.innerHTML = '➤';
-        
-        if (!chatContainer.querySelector('.quick-actions')) {
-            addQuickActionButtons();
-        }
-    }
-
-    function addQuickActionButtons() {
-        const chatContainer = document.getElementById('chatContainer');
-        const quickActions = document.createElement('div');
-        quickActions.className = 'quick-actions';
-        
-        const actions = [
-            { text: 'Can I build a restaurant?', question: 'Can I build a restaurant here?' },
-            { text: 'Max height?', question: 'What is the maximum height allowed?' },
-            { text: 'Investment potential?', question: 'What is the investment potential of this location?' },
-            { text: 'Permit process?', question: 'What is the process to get building permits?' }
-        ];
-
-        actions.forEach(action => {
-            const button = document.createElement('button');
-            button.className = 'location-btn';
-            button.textContent = action.text;
-            button.onclick = () => askQuestion(action.question);
-            quickActions.appendChild(button);
-        });
-
-        chatContainer.insertBefore(quickActions, chatContainer.querySelector('.ai-response'));
-    }
-
-    function askQuestion(question) {
-        const chatInput = document.getElementById('chatInput');
-        chatInput.value = question;
-        autoResizeTextarea();
-        sendMessage();
-    }
-
-    function autoResizeTextarea() {
-        const textarea = document.getElementById('chatInput');
-        textarea.style.height = 'auto';
-        textarea.style.height = `${Math.min(textarea.scrollHeight, 100)}px`;
-    }
-
-    // =============================================================================
-    // DISPLAY FUNCTIONS
-    // =============================================================================
-
-   function displayLocationInfo(zoning) {
-    const zoneName = zoning.zoneName;
-    
-    document.getElementById('zoneName').textContent = zoneName;
-    
-    const description = zoning.properties?.phase || 
-                      `${zoning.properties?.level_1} - ${zoning.properties?.level_2}` ||
-                      'Development zone per Kigali master plan';
-    
-    document.getElementById('zoneDescription').textContent = description;
-    
-    const colorIndicator = document.getElementById('zoneColorIndicator');
-    const zoneColor = ZONE_COLORS[zoneName] || '#999999';
-    colorIndicator.style.background = zoneColor;
-    colorIndicator.style.boxShadow = `0 0 20px ${zoneColor}40`;
-    
-    addCosmicSparkles(colorIndicator);
-    
-    const locationHeader = document.getElementById('locationHeader');
-    locationHeader.style.display = 'flex';
-    locationHeader.style.animation = 'fadeInUp 0.6s ease-out';
-    
-    const chatContainer = document.getElementById('chatContainer');
-    const aiResponse = document.getElementById('aiResponse');
-    
-    // Simplified welcome message - remove the detailed property information
-    let welcomeMessage = `Welcome to TerraNebular - your spatial intelligence assistant.
-
-📍 You have selected: ${zoneName}
-
-✨ Ask me anything about development regulations, building permissions, investment potential, or permit processes for this location.`;
-    
-    typewriterEffect(aiResponse, welcomeMessage).then(() => {
-        aiResponse.className = 'ai-response response-success';
-    });
-    
-    chatContainer.classList.add('show');
-    
-    if (!chatContainer.querySelector('.quick-actions')) {
-        setTimeout(() => addQuickActionButtons(), 1000);
-    }
-}
-
-    function showNoDataMessage() {
-        const chatContainer = document.getElementById('chatContainer');
-        const aiResponse = document.getElementById('aiResponse');
-        
-        const message = `No zoning data found for this location.\n\nThis could mean:\n• The location is outside the mapped zoning areas\n• The coordinates fall between zone boundaries\n• Network connectivity issues\n\nPlease try:\n• Selecting a different location within Kigali\n• Checking your internet connection\n• Contacting City of Kigali for the latest zoning information\n\n📞 City of Kigali Planning: +250 788 000 000\n🌐 More info: kigalicity.gov.rw`;
-        
-        typewriterEffect(aiResponse, message).then(() => {
-            aiResponse.className = 'ai-response response-warning';
-        });
-        
-        chatContainer.classList.add('show');
-    }
-
-    function showOfflineMessage() {
-        const chatContainer = document.getElementById('chatContainer');
-        const aiResponse = document.getElementById('aiResponse');
-        
-        const message = `TerraNebular backend is currently offline.\n\nPlease:\n• Check your internet connection\n• Ensure the backend server is running on localhost:3001\n• Contact the system administrator\n\nWhile offline, you can still explore the map, but spatial queries and AI assistance are unavailable.\n\n📞 For urgent zoning questions, contact City of Kigali directly:\n+250 788 000 000`;
-        
-        typewriterEffect(aiResponse, message).then(() => {
-            aiResponse.className = 'ai-response response-error';
-        });
-        
-        chatContainer.classList.add('show');
-    }
-
-    function updateStatus(status, text) {
-        const dot = document.getElementById('statusDot');
-        const statusText = document.getElementById('statusText');
-        
-        dot.className = `status-dot ${status}`;
-        statusText.textContent = text;
-    }
-
-    // =============================================================================
-    // PANEL RESIZE FUNCTIONALITY
-    // =============================================================================
-
-    function setupPanelResize() {
-        const panel = document.getElementById('leftPanel');
-        const resizeHandle = panel.querySelector('.resize-handle');
-        let isResizing = false;
-
-        resizeHandle.addEventListener('mousedown', (e) => {
-            isResizing = true;
-            document.addEventListener('mousemove', handleResize);
-            document.addEventListener('mouseup', stopResize);
-            e.preventDefault();
-        });
-
-        function handleResize(e) {
-            if (!isResizing) return;
-            
-            if (window.innerWidth > 768) {
-                const newWidth = e.clientX;
-                if (newWidth >= 300 && newWidth <= 600) {
-                    panel.style.width = newWidth + 'px';
-                }
-            } else {
-                const newHeight = e.clientY;
-                if (newHeight >= 250 && newHeight <= window.innerHeight * 0.7) {
-                    panel.style.height = newHeight + 'px';
-                }
-            }
-        }
-
-        function stopResize() {
-            isResizing = false;
-            document.removeEventListener('mousemove', handleResize);
-            document.removeEventListener('mouseup', stopResize);
-        }
-
-        resizeHandle.addEventListener('touchstart', (e) => {
-            isResizing = true;
-            document.addEventListener('touchmove', handleTouchResize);
-            document.addEventListener('touchend', stopTouchResize);
-            e.preventDefault();
-        });
-
-        function handleTouchResize(e) {
-            if (!isResizing) return;
-            const touch = e.touches[0];
-            
-            if (window.innerWidth <= 768) {
-                const newHeight = touch.clientY;
-                if (newHeight >= 250 && newHeight <= window.innerHeight * 0.7) {
-                    panel.style.height = newHeight + 'px';
-                }
-            }
-        }
-
-        function stopTouchResize() {
-            isResizing = false;
-            document.removeEventListener('touchmove', handleTouchResize);
-            document.removeEventListener('touchend', stopTouchResize);
-        }
-    }
-    
     </script>
 </body>
 </html>
-
