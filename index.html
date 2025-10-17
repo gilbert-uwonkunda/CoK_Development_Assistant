@@ -355,13 +355,6 @@
             transform: translateY(0);
         }
 
-        .skip-text {
-            font-size: 12px;
-            color: var(--nebular-stardust);
-            opacity: 0.7;
-            margin-top: 16px;
-        }
-
         /* App Container (Hidden Initially) */
         .app-container {
             display: none;
@@ -611,8 +604,6 @@
                     ✨ Enter Application
                 </button>
             </div>
-            
-
         </div>
     </div>
 
@@ -660,11 +651,6 @@
                 initializeApp();
             }, 800);
         }
-
-        // Auto-enter after 6 seconds
-        let autoEnterTimer = setTimeout(() => {
-            enterApplication();
-        }, 6000);
 
         // Application Initialization
         async function initializeApp() {
