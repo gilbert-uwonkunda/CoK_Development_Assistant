@@ -97,15 +97,41 @@
         .app-title {
             font-size: 20px;
             font-weight: 700;
-            margin: 0 0 4px 0;
-            line-height: 1.2;
-        }
-        
-        .app-subtitle {
-            font-size: 13px;
-            opacity: 0.9;
             margin: 0 0 16px 0;
-            line-height: 1.3;
+            line-height: 1.2;
+            text-align: center;
+        }
+
+        .app-title-container {
+            position: relative;
+            display: inline-block;
+            margin: 0 auto 8px;
+            width: 60px;
+            height: 60px;
+        }
+
+        .app-title-ring {
+            position: absolute;
+            border: 1.5px solid;
+            border-radius: 50%;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            animation: galaxyRotate 4s linear infinite;
+        }
+
+        .app-title-ring-1 { width: 40px; height: 40px; border-color: var(--nebular-cosmic-purple); animation-duration: 6s; }
+        .app-title-ring-2 { width: 50px; height: 50px; border-color: var(--nebular-plasma-pink); animation-duration: 8s; animation-direction: reverse; }
+        .app-title-ring-3 { width: 60px; height: 60px; border-color: var(--nebular-stellar-gold); animation-duration: 10s; }
+
+        .app-logo-text {
+            font-size: 24px;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 2;
+            animation: stellarFloat 3s ease-in-out infinite;
         }
 
         .header-controls {
@@ -198,32 +224,20 @@
             flex: 1;
             overflow-y: auto;
             padding: 20px;
+            display: flex;
+            flex-direction: column;
         }
 
-        /* Data Banner */
-        .data-banner {
-            background: linear-gradient(135deg, var(--nebular-cosmic-purple) 0%, var(--nebular-plasma-pink) 100%);
-            color: var(--nebular-comet-white);
-            padding: 12px 16px;
-            border-radius: 12px;
-            font-size: 13px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 20px rgba(99, 102, 241, 0.4);
-            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
-            margin-bottom: 20px;
+        /* Initial Guidance */
+        .initial-guidance {
+            color: var(--nebular-space-blue);
+            padding: 10px 12px;
+            border-radius: 6px;
+            font-size: 12px;
+            line-height: 1.4;
             text-align: center;
-        }
-        
-        .data-banner.loaded {
-            background: linear-gradient(135deg, var(--nebular-aurora-green) 0%, var(--nebular-stellar-gold) 100%);
-            box-shadow: 0 4px 20px rgba(16, 185, 129, 0.4);
-        }
-
-        .data-banner:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 24px rgba(99, 102, 241, 0.6);
+            margin-bottom: 8px;
+            background: var(--nebular-stardust);
         }
 
         /* Location Info */
@@ -268,159 +282,136 @@
 
         /* Chat Interface */
         .chat-container {
-            background: linear-gradient(135deg, var(--nebular-stardust) 0%, var(--nebular-comet-white) 100%);
-            border-radius: 12px;
-            padding: 16px;
-            margin-top: 8px;
+            background: transparent;
+            border-radius: 0;
+            padding: 0;
             display: none;
-            box-shadow: inset 0 1px 3px rgba(15, 23, 42, 0.1);
+            box-shadow: none;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
         }
         
         .chat-container.show {
-            display: block;
+            display: flex;
         }
         
         .ai-response {
-            background: linear-gradient(135deg, var(--nebular-comet-white) 0%, var(--nebular-stardust) 100%);
-            padding: 20px;
-            border-radius: 16px;
-            border-left: 4px solid var(--nebular-cosmic-purple);
+            background: var(--nebular-comet-white);
+            padding: 16px;
+            border-radius: 12px;
+            border-left: none;
             font-size: 14px;
-            line-height: 1.7;
+            line-height: 1.6;
             white-space: pre-wrap;
-            margin-bottom: 16px;
-            box-shadow: 0 4px 20px rgba(15, 23, 42, 0.1);
+            margin-bottom: 0;
+            box-shadow: 0 2px 8px rgba(15, 23, 42, 0.08);
             color: var(--nebular-deep-blue);
-            max-height: 400px;
             overflow-y: auto;
             position: relative;
             animation: fadeInUp 0.6s ease-out;
+            flex: 1;
         }
         
         .ai-response::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            border-radius: 16px;
-            padding: 2px;
-            background: linear-gradient(45deg, var(--nebular-cosmic-purple), var(--nebular-plasma-pink), var(--nebular-stellar-gold));
-            mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-            mask-composite: exclude;
-            animation: galaxyRotate 10s linear infinite;
-            opacity: 0.3;
-            z-index: -1;
+            display: none;
         }
         
         .chat-input-container {
             display: flex;
-            gap: 10px;
+            gap: 8px;
             align-items: flex-end;
+            flex-shrink: 0;
         }
         
         .chat-input {
             flex: 1;
-            padding: 12px 16px;
-            border: 2px solid var(--nebular-stardust);
-            border-radius: 24px;
+            padding: 10px 14px;
+            border: 1px solid #E2E8F0;
+            border-radius: 20px;
             font-size: 13px;
             resize: none;
-            min-height: 44px;
+            min-height: 40px;
             max-height: 100px;
             outline: none;
-            transition: all 0.3s ease;
+            transition: all 0.2s ease;
             background: var(--nebular-comet-white);
             color: var(--nebular-deep-blue);
+            font-family: inherit;
         }
         
         .chat-input:focus {
             border-color: var(--nebular-cosmic-purple);
-            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+            box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.1);
         }
         
         .chat-input::placeholder {
-            color: var(--nebular-space-blue);
-            font-style: italic;
+            color: #94A3B8;
         }
         
         .send-btn {
-            background: linear-gradient(135deg, var(--nebular-cosmic-purple) 0%, var(--nebular-plasma-pink) 100%);
+            background: var(--nebular-cosmic-purple);
             color: var(--nebular-comet-white);
             border: none;
-            width: 44px;
-            height: 44px;
-            border-radius: 22px;
+            width: 40px;
+            height: 40px;
+            border-radius: 20px;
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
-            transition: all 0.3s ease;
-            box-shadow: 0 2px 12px rgba(99, 102, 241, 0.4);
+            transition: all 0.2s ease;
+            box-shadow: none;
             flex-shrink: 0;
+            font-size: 16px;
         }
         
-        .send-btn:hover {
-            transform: translateY(-1px);
-            box-shadow: 0 4px 16px rgba(99, 102, 241, 0.6);
+        .send-btn:hover:not(:disabled) {
+            background: var(--nebular-plasma-pink);
+            transform: scale(1.05);
         }
         
-        .send-btn:active {
+        .send-btn:active:not(:disabled) {
             transform: scale(0.95);
         }
         
         .send-btn:disabled {
-            background: var(--nebular-stardust);
-            color: var(--nebular-space-blue);
-            box-shadow: none;
-            transform: none;
+            background: #CBD5E1;
+            color: #94A3B8;
             cursor: not-allowed;
-        }
-
-        /* Quick Actions */
-        .quick-actions {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 8px;
-            margin-bottom: 16px;
-        }
-        
-        .quick-actions .location-btn {
-            font-size: 11px;
-            padding: 6px 12px;
-            background: linear-gradient(135deg, var(--nebular-cosmic-purple) 0%, var(--nebular-plasma-pink) 100%);
+            transform: none;
         }
 
         /* Response States */
         .response-success {
-            border-left-color: var(--nebular-aurora-green);
-            background: linear-gradient(135deg, #ECFDF5 0%, #F0FDF4 100%);
-            box-shadow: 0 0 25px rgba(16, 185, 129, 0.2);
+            border-left-color: transparent;
+            background: var(--nebular-comet-white);
+            box-shadow: 0 2px 8px rgba(15, 23, 42, 0.08);
         }
         
         .response-success::before {
-            background: linear-gradient(45deg, var(--nebular-aurora-green), var(--nebular-stellar-gold), var(--nebular-aurora-green));
+            display: none;
         }
         
         .response-warning {
-            border-left-color: var(--nebular-stellar-gold);
-            background: linear-gradient(135deg, #FFFBEB 0%, #FEF3C7 100%);
-            box-shadow: 0 0 25px rgba(245, 158, 11, 0.2);
+            border-left-color: transparent;
+            background: var(--nebular-comet-white);
+            box-shadow: 0 2px 8px rgba(15, 23, 42, 0.08);
         }
         
         .response-warning::before {
-            background: linear-gradient(45deg, var(--nebular-stellar-gold), var(--nebular-meteor-orange), var(--nebular-stellar-gold));
+            display: none;
         }
         
         .response-error {
-            border-left-color: var(--nebular-plasma-pink);
-            background: linear-gradient(135deg, #FDF2F8 0%, #FCE7F3 100%);
-            box-shadow: 0 0 25px rgba(236, 72, 153, 0.2);
+            border-left-color: transparent;
+            background: var(--nebular-comet-white);
+            box-shadow: 0 2px 8px rgba(15, 23, 42, 0.08);
         }
         
         .response-error::before {
-            background: linear-gradient(45deg, var(--nebular-plasma-pink), var(--nebular-cosmic-purple), var(--nebular-plasma-pink));
+            display: none;
         }
 
         /* Map Container */
@@ -590,6 +581,8 @@
             position: relative;
             display: inline-block;
             margin: 0 auto 20px;
+            width: 120px;
+            height: 120px;
         }
 
         .cosmic-ring {
@@ -610,6 +603,11 @@
             font-size: 48px;
             display: block;
             animation: stellarFloat 3s ease-in-out infinite;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 2;
         }
 
         .splash-title {
@@ -693,34 +691,6 @@
             color: var(--nebular-stardust);
             margin: 0;
             line-height: 1.5;
-        }
-
-        .features-row {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-            gap: 15px;
-            margin-bottom: 30px;
-        }
-
-        .feature-badge {
-            background: linear-gradient(135deg, rgba(99, 102, 241, 0.2) 0%, rgba(236, 72, 153, 0.2) 100%);
-            border: 1px solid rgba(99, 102, 241, 0.4);
-            border-radius: 10px;
-            padding: 15px;
-            text-align: center;
-            backdrop-filter: blur(10px);
-        }
-
-        .feature-icon {
-            font-size: 32px;
-            margin-bottom: 8px;
-        }
-
-        .feature-name {
-            font-size: 14px;
-            font-weight: 600;
-            color: var(--nebular-comet-white);
-            margin: 0;
         }
 
         .enter-btn-container {
@@ -845,10 +815,6 @@
                 font-size: 18px;
             }
             
-            .app-subtitle {
-                font-size: 12px;
-            }
-            
             .location-btn {
                 padding: 6px 10px;
                 font-size: 11px;
@@ -907,10 +873,6 @@
             
             .app-title {
                 font-size: 16px;
-            }
-            
-            .app-subtitle {
-                font-size: 11px;
             }
             
             .location-btn {
@@ -980,12 +942,19 @@
             
             <!-- Panel Header -->
             <div class="panel-header">
-                <h1 class="app-title">🌌 TerraNebular</h1>
-                <p class="app-subtitle">Where Development Dreams Take Shape</p>
+                <div style="display: flex; justify-content: center; margin-bottom: 12px;">
+                    <div class="app-title-container">
+                        <div class="app-title-ring app-title-ring-1"></div>
+                        <div class="app-title-ring app-title-ring-2"></div>
+                        <div class="app-title-ring app-title-ring-3"></div>
+                        <div class="app-logo-text">🌌</div>
+                    </div>
+                </div>
+                <h1 class="app-title">TerraNebular</h1>
                 
                 <div class="header-controls">
                     <button class="location-btn" id="useLocationBtn" onclick="useCurrentLocation()">
-                        📍 Use My Location
+                        Use My Location
                     </button>
                     <div class="status-indicator">
                         <div class="status-dot" id="statusDot"></div>
@@ -996,9 +965,9 @@
             
             <!-- Panel Content -->
             <div class="panel-content">
-                <!-- Data Banner -->
-                <div class="data-banner loaded" id="dataBanner">
-                    ✨ Connected to TerraNebular Intelligence Network
+                <!-- Initial Guidance -->
+                <div class="initial-guidance" id="initialGuidance">
+                    Click anywhere on the map or use Use My Location and ask AI about zoning to get insights.
                 </div>
                 
                 <!-- Location Header -->
@@ -1015,7 +984,7 @@
                     <div class="ai-response" id="aiResponse"></div>
                     <div class="chat-input-container">
                         <textarea class="chat-input" id="chatInput" 
-                                  placeholder="Ask TerraNebular: 'Can I build a restaurant here?', 'What's the maximum height?', 'Investment potential?'" 
+                                  placeholder="Ask about zoning, permits, building regulations, or investment potential..." 
                                   rows="1"></textarea>
                         <button class="send-btn" id="sendBtn" onclick="sendMessage()">
                             ➤
@@ -1092,29 +1061,6 @@
                         <div class="feature-number">4</div>
                         <h3 class="feature-title">Make Decisions</h3>
                         <p class="feature-description">Get zoning insights to inform your development plans</p>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Features Section -->
-            <div>
-                <h2 style="text-align: center; color: var(--nebular-comet-white); font-size: 18px; margin: 0 0 20px 0;">Key Features</h2>
-                <div class="features-row">
-                    <div class="feature-badge">
-                        <div class="feature-icon">🗺️</div>
-                        <p class="feature-name">Interactive Zoning Map</p>
-                    </div>
-                    <div class="feature-badge">
-                        <div class="feature-icon">🤖</div>
-                        <p class="feature-name">AI-Powered Guidance</p>
-                    </div>
-                    <div class="feature-badge">
-                        <div class="feature-icon">⚡</div>
-                        <p class="feature-name">Real-time Data</p>
-                    </div>
-                    <div class="feature-badge">
-                        <div class="feature-icon">📍</div>
-                        <p class="feature-name">Location Services</p>
                     </div>
                 </div>
             </div>
@@ -1627,40 +1573,6 @@
         
         sendBtn.disabled = false;
         sendBtn.innerHTML = '➤';
-        
-        if (!chatContainer.querySelector('.quick-actions')) {
-            addQuickActionButtons();
-        }
-    }
-
-    function addQuickActionButtons() {
-        const chatContainer = document.getElementById('chatContainer');
-        const quickActions = document.createElement('div');
-        quickActions.className = 'quick-actions';
-        
-        const actions = [
-            { text: 'Can I build a restaurant?', question: 'Can I build a restaurant here?' },
-            { text: 'Max height?', question: 'What is the maximum height allowed?' },
-            { text: 'Investment potential?', question: 'What is the investment potential of this location?' },
-            { text: 'Permit process?', question: 'What is the process to get building permits?' }
-        ];
-
-        actions.forEach(action => {
-            const button = document.createElement('button');
-            button.className = 'location-btn';
-            button.textContent = action.text;
-            button.onclick = () => askQuestion(action.question);
-            quickActions.appendChild(button);
-        });
-
-        chatContainer.insertBefore(quickActions, chatContainer.querySelector('.ai-response'));
-    }
-
-    function askQuestion(question) {
-        const chatInput = document.getElementById('chatInput');
-        chatInput.value = question;
-        autoResizeTextarea();
-        sendMessage();
     }
 
     function autoResizeTextarea() {
@@ -1675,6 +1587,13 @@
 
     function displayLocationInfo(zoning) {
         const zoneName = zoning.zoneName;
+        const initialGuidance = document.getElementById('initialGuidance');
+        const locationHeader = document.getElementById('locationHeader');
+        
+        // Hide initial guidance
+        if (initialGuidance) {
+            initialGuidance.style.display = 'none';
+        }
         
         document.getElementById('zoneName').textContent = zoneName;
         
@@ -1691,7 +1610,6 @@
         
         addCosmicSparkles(colorIndicator);
         
-        const locationHeader = document.getElementById('locationHeader');
         locationHeader.style.display = 'flex';
         locationHeader.style.animation = 'fadeInUp 0.6s ease-out';
         
@@ -1709,10 +1627,6 @@
         });
         
         chatContainer.classList.add('show');
-        
-        if (!chatContainer.querySelector('.quick-actions')) {
-            setTimeout(() => addQuickActionButtons(), 1000);
-        }
     }
 
     function showNoDataMessage() {
