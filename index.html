@@ -1131,8 +1131,8 @@
 
             <!-- Enter Button -->
             <div class="enter-btn-container">
-                <button class="enter-btn" onclick="enterApplication()">
-                    ✨ Enter Application
+                <button class="enter-btn" id="enterBtn" onclick="enterApplication()">
+                    ✨ Enter TerraNebular
                 </button>
             </div>
         </div>
@@ -1143,27 +1143,49 @@
     
     <script>
     // =============================================================================
-    // SPLASH SCREEN CONTROL
+    // SPLASH SCREEN CONTROL - DEFINE FIRST
     // =============================================================================
 
+    let currentLocation = null;
+    let currentZoning = null;
+    let view = null;
+    let conversationHistory = [];
+    let backendConnected = false;
+
     function enterApplication() {
+        console.log('Enter button clicked');
         const splash = document.getElementById('persistentSplash');
         const appContainer = document.getElementById('appContainer');
         
+        if (!splash || !appContainer) {
+            console.error('Required elements not found');
+            return;
+        }
+        
+        console.log('Hiding splash screen and showing app');
         splash.classList.add('hidden');
         appContainer.style.display = 'flex';
         
         // Trigger map initialization after display
         setTimeout(() => {
+            console.log('Initializing map and panel');
             if (view === null) {
                 initializeApp();
             }
+            setupPanelResize();
         }, 100);
     }
 
-    // =============================================================================
-    // BACKEND INTEGRATION CONFIGURATION
-    // =============================================================================
+    // Make sure button is clickable when page loads
+    document.addEventListener('DOMContentLoaded', function() {
+        console.log('DOM Content Loaded');
+        const enterBtn = document.getElementById('enterBtn');
+        if (enterBtn) {
+            enterBtn.addEventListener('click', enterApplication);
+            console.log('Enter button event listener attached');
+        }
+        console.log('TerraNebular initialized - waiting for user to enter application');
+    });
     
     const API_BASE_URL = 'https://cok-development-assistant.onrender.com/api';
     
