@@ -6,7 +6,7 @@ class ClaudeService {
     constructor() {
         this.apiKey = process.env.CLAUDE_API_KEY;
         this.apiUrl = 'https://api.anthropic.com/v1/messages';
-        this.model = 'claude-3-5-sonnet-20241022';
+        this.model = 'claude-3-5-sonnet-20240620';
         this.maxTokens = 2000;
     }
 
