@@ -8,18 +8,49 @@ class ClaudeService {
         this.apiUrl = 'https://api.anthropic.com/v1/messages';
         this.model = 'claude-sonnet-4-20250514';
         this.maxTokens = 2000;
+        
+        // Language configurations
+        this.languages = {
+            en: {
+                name: 'English',
+                instruction: 'Respond in English.',
+                footer: {
+                    location: 'Location',
+                    contact: 'City of Kigali Planning',
+                    moreInfo: 'More info'
+                }
+            },
+            rw: {
+                name: 'Kinyarwanda',
+                instruction: 'Subiza mu Kinyarwanda gusa. Koresha amagambo yoroshye yumvikana.',
+                footer: {
+                    location: 'Aho hantu',
+                    contact: 'Umujyi wa Kigali - Imiyoborere',
+                    moreInfo: 'Amakuru yinyongera'
+                }
+            },
+            fr: {
+                name: 'Français',
+                instruction: 'Répondez entièrement en français.',
+                footer: {
+                    location: 'Emplacement',
+                    contact: 'Planification de la Ville de Kigali',
+                    moreInfo: 'Plus d\'infos'
+                }
+            }
+        };
     }
 
     // Generate cache key for questions
-    generateCacheKey(question, lat, lng, zoneName) {
-        const key = `${question}_${lat.toFixed(4)}_${lng.toFixed(4)}_${zoneName}`;
+    generateCacheKey(question, lat, lng, zoneName, language) {
+        const key = `${question}_${lat.toFixed(4)}_${lng.toFixed(4)}_${zoneName}_${language}`;
         return crypto.createHash('md5').update(key).digest('hex');
     }
 
     // Check for cached response
-    async getCachedResponse(question, lat, lng, zoneName) {
+    async getCachedResponse(question, lat, lng, zoneName, language = 'en') {
         try {
-            const cacheKey = this.generateCacheKey(question, lat, lng, zoneName);
+            const cacheKey = this.generateCacheKey(question, lat, lng, zoneName, language);
             
             const result = await pool.query(`
                 SELECT response, response_metadata, created_at
@@ -45,9 +76,9 @@ class ClaudeService {
     }
 
     // Cache AI response
-    async cacheResponse(question, lat, lng, zoneName, response, metadata) {
+    async cacheResponse(question, lat, lng, zoneName, language, response, metadata) {
         try {
-            const cacheKey = this.generateCacheKey(question, lat, lng, zoneName);
+            const cacheKey = this.generateCacheKey(question, lat, lng, zoneName, language);
             
             await pool.query(`
                 INSERT INTO ai_responses (question_hash, question, location, zone_name, response, response_metadata)
@@ -65,9 +96,10 @@ class ClaudeService {
         }
     }
 
-    // Build comprehensive spatial prompt
-    buildSpatialPrompt(question, spatialData) {
+    // Build comprehensive spatial prompt with language support
+    buildSpatialPrompt(question, spatialData, language = 'en') {
         const { location, zoneData, nearbyFeatures } = spatialData;
+        const langConfig = this.languages[language] || this.languages.en;
         
         return `SPATIAL INTELLIGENCE REQUEST - KIGALI, RWANDA
 
@@ -93,15 +125,30 @@ ${nearbyFeatures.map(f => `- ${f.zone_name} (${Math.round(f.distance)}m away)`).
 
 CITIZEN QUESTION: "${question}"
 
-As TerraNebular, an expert spatial intelligence assistant for Kigali development and zoning, provide a comprehensive response that includes:
+LANGUAGE INSTRUCTION: ${langConfig.instruction}
 
-1. Direct answer to the citizen's question
-2. Specific zoning regulations and requirements for this location
-3. Any permits or approvals needed
-4. Contact information for next steps
-5. Investment insights if relevant
+RESPONSE FORMAT RULES (CRITICAL - FOLLOW EXACTLY):
+1. Keep response SHORT and CLEAR - maximum 200 words
+2. Start with a ONE SENTENCE direct answer (YES/NO/CONDITIONAL + brief reason)
+3. Use only 3-5 bullet points for key requirements
+4. NO headers or markdown formatting (no ##, no **, no ###)
+5. NO lengthy explanations - citizens need quick, actionable answers
+6. End with ONE contact number and ONE website
+7. Write like you're texting a friend - simple, direct, helpful
 
-Be specific, actionable, and reference the actual Kigali zoning data provided. End with relevant contact information.`;
+EXAMPLE FORMAT:
+[Direct answer in one sentence]
+
+Key points:
+• [Most important requirement]
+• [Second requirement]
+• [Third requirement]
+
+Next step: [Single clear action]
+
+Contact: [Phone] | [Website]
+
+NOW RESPOND TO THE CITIZEN'S QUESTION IN THE SPECIFIED LANGUAGE:`;
     }
 
     // Call Claude API with enhanced debugging
@@ -118,11 +165,19 @@ Be specific, actionable, and reference the actual Kigali zoning data provided. E
             throw new Error('Claude API key not configured');
         }
 
-        // Fixed request body format - system message as top-level parameter
         const requestBody = {
             model: this.model,
             max_tokens: this.maxTokens,
-            system: 'You are TerraNebular, an expert spatial intelligence assistant for Kigali, Rwanda development and zoning. Provide specific, actionable advice based on official Kigali City regulations. Be concise but comprehensive.',
+            system: `You are TerraNebular, a friendly spatial intelligence assistant for Kigali, Rwanda. 
+
+YOUR PERSONALITY:
+- Speak like a helpful local expert, not a robot
+- Be warm, concise, and practical
+- Give clear YES/NO/MAYBE answers first
+- Keep responses under 200 words
+- Use simple language anyone can understand
+
+You speak English, Kinyarwanda (Ikinyarwanda), and French fluently. Always respond in the language requested.`,
             messages: [
                 {
                     role: 'user',
@@ -147,44 +202,32 @@ Be specific, actionable, and reference the actual Kigali zoning data provided. E
             console.log('Response received:');
             console.log('- Status:', response.status);
             console.log('- Status Text:', response.statusText);
-            console.log('- Headers:', Object.fromEntries(response.headers.entries()));
 
             if (!response.ok) {
                 const errorData = await response.text();
                 console.log('ERROR Response body:', errorData);
-                
-                // Parse error details if JSON
-                try {
-                    const errorJson = JSON.parse(errorData);
-                    console.log('Parsed error:', errorJson);
-                } catch (e) {
-                    console.log('Error response is not JSON');
-                }
-                
                 throw new Error(`Claude API error: ${response.status} - ${errorData}`);
             }
 
             const data = await response.json();
             console.log('SUCCESS! Response received');
             console.log('- Content length:', data.content[0].text.length);
-            console.log('- Usage:', data.usage || 'No usage data');
             console.log('=== END CLAUDE API DEBUG ===');
             
             return data.content[0].text;
 
         } catch (error) {
             console.log('EXCEPTION in Claude API call:');
-            console.log('- Error type:', error.constructor.name);
             console.log('- Error message:', error.message);
-            console.log('- Stack:', error.stack);
             console.log('=== END CLAUDE API DEBUG ===');
             throw error;
         }
     }
 
-    // Generate AI response with spatial context
-    async generateSpatialResponse(question, spatialData) {
+    // Generate AI response with spatial context and language support
+    async generateSpatialResponse(question, spatialData, language = 'en') {
         const { location, zoneData } = spatialData;
+        const langConfig = this.languages[language] || this.languages.en;
         
         try {
             // Check cache first
@@ -192,29 +235,32 @@ Be specific, actionable, and reference the actual Kigali zoning data provided. E
                 question, 
                 location.lat, 
                 location.lng, 
-                zoneData.zone_name
+                zoneData.zone_name,
+                language
             );
             
             if (cached) {
                 return cached;
             }
 
-            // Build spatial prompt
-            const prompt = this.buildSpatialPrompt(question, spatialData);
+            // Build spatial prompt with language
+            const prompt = this.buildSpatialPrompt(question, spatialData, language);
             
             // Call Claude API
             const aiResponse = await this.callClaudeAPI(prompt);
             
-            // Add footer with location info
+            // Add footer in appropriate language
+            const footer = langConfig.footer;
             const responseWithFooter = `${aiResponse}
 
-📍 Location: ${location.lat.toFixed(4)}°, ${location.lng.toFixed(4)}°
-📞 City of Kigali Planning: +250 788 000 000
-🌐 More info: kigalicity.gov.rw`;
+📍 ${footer.location}: ${location.lat.toFixed(4)}°, ${location.lng.toFixed(4)}°
+📞 ${footer.contact}: +250 788 000 000
+🌐 ${footer.moreInfo}: kigalicity.gov.rw`;
 
             // Cache the response
             const metadata = {
                 model: this.model,
+                language: language,
                 tokens: aiResponse.length,
                 spatialContext: true
             };
@@ -224,6 +270,7 @@ Be specific, actionable, and reference the actual Kigali zoning data provided. E
                 location.lat,
                 location.lng,
                 zoneData.zone_name,
+                language,
                 responseWithFooter,
                 metadata
             );
@@ -237,37 +284,54 @@ Be specific, actionable, and reference the actual Kigali zoning data provided. E
         } catch (error) {
             console.error('Error generating spatial response:', error);
             
-            // Fallback to basic response
+            // Fallback response in appropriate language
             return {
-                response: this.generateFallbackResponse(question, zoneData),
-                metadata: { fallback: true, error: error.message },
+                response: this.generateFallbackResponse(question, zoneData, language),
+                metadata: { fallback: true, error: error.message, language },
                 cached: false
             };
         }
     }
 
-    // Fallback response when AI is unavailable
-    generateFallbackResponse(question, zoneData) {
-        return `OFFLINE MODE - Basic Analysis for ${zoneData.zone_name}
+    // Fallback response when AI is unavailable - multi-language
+    generateFallbackResponse(question, zoneData, language = 'en') {
+        const fallbacks = {
+            en: `Apologies, TerraNebular AI is temporarily offline.
 
-${zoneData.regulations?.description || 'Development zone per master plan'}
+Your location: ${zoneData.zone_name}
 
-Key Regulations:
-• Max Height: ${zoneData.regulations?.maxHeight || 'Check with authorities'}
-• Max Coverage: ${zoneData.regulations?.coverage || 'Check with authorities'}
-• Min Lot Size: ${zoneData.regulations?.minLotSize || 'Check with authorities'}
-
-For detailed guidance on your question: "${question}"
-
-Contact City of Kigali Planning Office:
-📞 +250 788 000 000
+For assistance with "${question}", please contact:
+📞 City of Kigali: +250 788 000 000
 🌐 kigalicity.gov.rw
 
-Note: AI assistant is temporarily offline. This is basic information only.`;
+We'll be back online shortly!`,
+            
+            rw: `Ihangane, TerraNebular AI ntiriho ubu.
+
+Aho uri: ${zoneData.zone_name}
+
+Kubaza "${question}", hamagara:
+📞 Umujyi wa Kigali: +250 788 000 000
+🌐 kigalicity.gov.rw
+
+Tugaruka vuba!`,
+            
+            fr: `Désolé, TerraNebular AI est temporairement hors ligne.
+
+Votre zone: ${zoneData.zone_name}
+
+Pour "${question}", contactez:
+📞 Ville de Kigali: +250 788 000 000
+🌐 kigalicity.gov.rw
+
+Nous serons bientôt de retour!`
+        };
+        
+        return fallbacks[language] || fallbacks.en;
     }
 
     // Log analytics
-    async logAnalytics(sessionId, question, location, zoneName, responseType, responseLength, userAgent, ipAddress) {
+    async logAnalytics(sessionId, question, location, zoneName, responseType, responseLength, userAgent, ipAddress, language) {
         try {
             await pool.query(`
                 INSERT INTO user_analytics 
