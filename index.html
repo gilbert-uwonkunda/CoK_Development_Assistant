@@ -1090,147 +1090,181 @@
     let sessionId = generateSessionId();
 
     // =============================================================================
-    // 🔥 MILLION DOLLAR FIX: REQUEST MANAGEMENT SYSTEM
+    // 🔥 THE FIX: TYPEWRITER SINGLETON WITH CANCELLATION
     // =============================================================================
-
-    // Request state management - PREVENTS RACE CONDITIONS
-    const RequestManager = {
-        currentRequestId: null,
-        abortController: null,
-        isProcessing: false,
-        debounceTimer: null,
-        DEBOUNCE_MS: 300,      // Wait 300ms after last click before processing
-        TIMEOUT_MS: 30000,     // 30 second timeout for mobile networks
+    
+    // This is the KEY fix - a single typewriter controller that prevents race conditions
+    const TypewriterController = {
+        // Current active typewriter timer ID
+        activeTimerId: null,
         
-        // Generate unique request ID
-        generateRequestId() {
-            return `req_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+        // Current typewriter session ID (to detect stale callbacks)
+        currentSessionId: 0,
+        
+        /**
+         * Stop any running typewriter animation immediately
+         */
+        stop() {
+            if (this.activeTimerId !== null) {
+                clearTimeout(this.activeTimerId);
+                this.activeTimerId = null;
+            }
+            // Increment session to invalidate any pending callbacks
+            this.currentSessionId++;
         },
         
-        // Cancel any pending request
-        cancelPending() {
-            if (this.abortController) {
-                this.abortController.abort();
-                console.log('🛑 Cancelled pending request:', this.currentRequestId);
-            }
+        /**
+         * Type text to an element with cancellation support
+         * @param {HTMLElement} element - Target element
+         * @param {string} text - Text to type
+         * @param {number} speed - Delay between characters (ms)
+         * @returns {Promise} - Resolves when complete or cancelled
+         */
+        typeText(element, text, speed = 25) {
+            // Stop any existing typewriter
+            this.stop();
+            
+            // Clear the element IMMEDIATELY before starting
+            element.textContent = '';
+            
+            // Generate a unique session ID for this typewriter run
+            const sessionId = ++this.currentSessionId;
+            
+            return new Promise((resolve) => {
+                let charIndex = 0;
+                
+                const typeNextChar = () => {
+                    // Check if this session is still active
+                    if (sessionId !== this.currentSessionId) {
+                        console.log(`⏹️ Typewriter session ${sessionId} cancelled`);
+                        resolve(false); // Cancelled
+                        return;
+                    }
+                    
+                    if (charIndex < text.length) {
+                        // Append next character
+                        element.textContent = text.substring(0, charIndex + 1);
+                        charIndex++;
+                        
+                        // Schedule next character
+                        this.activeTimerId = setTimeout(typeNextChar, speed);
+                    } else {
+                        // Complete
+                        this.activeTimerId = null;
+                        resolve(true); // Completed
+                    }
+                };
+                
+                // Start typing
+                typeNextChar();
+            });
+        },
+        
+        /**
+         * Instantly display text (no animation)
+         * @param {HTMLElement} element - Target element
+         * @param {string} text - Text to display
+         */
+        instant(element, text) {
+            this.stop();
+            element.textContent = text;
+        }
+    };
+
+    // =============================================================================
+    // 🔥 THE FIX: REQUEST MANAGER - PREVENTS CONCURRENT API CALLS
+    // =============================================================================
+    
+    const RequestManager = {
+        // Current pending request ID
+        currentRequestId: null,
+        
+        // AbortController for fetch cancellation
+        abortController: null,
+        
+        // Debounce timer
+        debounceTimer: null,
+        
+        // Configuration
+        DEBOUNCE_MS: 250,  // Wait 250ms after last click
+        
+        /**
+         * Cancel any pending request
+         */
+        cancel() {
+            // Clear debounce timer
             if (this.debounceTimer) {
                 clearTimeout(this.debounceTimer);
                 this.debounceTimer = null;
             }
-            this.isProcessing = false;
+            
+            // Abort any pending fetch
+            if (this.abortController) {
+                this.abortController.abort();
+                this.abortController = null;
+            }
+            
+            // Clear current request ID
+            this.currentRequestId = null;
         },
         
-        // Start a new request with debouncing
-        async startRequest(callback) {
+        /**
+         * Execute a request with debouncing and cancellation
+         * @param {Function} requestFn - Async function to execute
+         * @returns {Promise} - Result or null if cancelled
+         */
+        async execute(requestFn) {
             // Cancel any existing request
-            this.cancelPending();
+            this.cancel();
             
-            // Create new abort controller
+            // Generate new request ID
+            const requestId = Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+            this.currentRequestId = requestId;
+            
+            // Create new AbortController
             this.abortController = new AbortController();
-            this.currentRequestId = this.generateRequestId();
-            const requestId = this.currentRequestId;
+            const signal = this.abortController.signal;
             
-            console.log('📡 New request queued:', requestId);
+            console.log(`📡 Request queued: ${requestId}`);
             
-            // Debounce - wait for user to stop clicking
             return new Promise((resolve, reject) => {
                 this.debounceTimer = setTimeout(async () => {
-                    // Check if this request is still current
+                    // Check if still current request
                     if (requestId !== this.currentRequestId) {
-                        console.log('⏭️ Request superseded:', requestId);
+                        console.log(`⏭️ Request ${requestId} superseded`);
                         resolve(null);
                         return;
                     }
                     
-                    this.isProcessing = true;
-                    
                     try {
-                        const result = await callback(this.abortController.signal, requestId);
+                        const result = await requestFn(signal);
                         
-                        // Only use result if this is still the current request
+                        // Check again if still current
                         if (requestId === this.currentRequestId) {
                             resolve(result);
                         } else {
-                            console.log('⏭️ Result discarded (superseded):', requestId);
+                            console.log(`⏭️ Result discarded: ${requestId}`);
                             resolve(null);
                         }
                     } catch (error) {
                         if (error.name === 'AbortError') {
-                            console.log('🛑 Request aborted:', requestId);
+                            console.log(`🛑 Request aborted: ${requestId}`);
                             resolve(null);
                         } else {
                             reject(error);
-                        }
-                    } finally {
-                        if (requestId === this.currentRequestId) {
-                            this.isProcessing = false;
                         }
                     }
                 }, this.DEBOUNCE_MS);
             });
         },
         
-        // Check if a request ID is still current
-        isCurrentRequest(requestId) {
+        /**
+         * Check if a request ID is still current
+         */
+        isCurrent(requestId) {
             return requestId === this.currentRequestId;
         }
     };
-
-    // =============================================================================
-    // 🔥 SAFE TYPEWRITER - PREVENTS TEXT INTERLEAVING
-    // =============================================================================
-
-    let typewriterAbortController = null;
-    let currentTypewriterId = null;
-
-    async function safeTypewriterEffect(element, text, speed = 20) {
-        // Cancel any running typewriter
-        if (typewriterAbortController) {
-            typewriterAbortController.abort();
-        }
-        
-        // Create new abort controller for this typewriter
-        typewriterAbortController = new AbortController();
-        const signal = typewriterAbortController.signal;
-        const typewriterId = Date.now();
-        currentTypewriterId = typewriterId;
-        
-        // Clear element immediately
-        element.innerHTML = '';
-        element.textContent = '';
-        
-        return new Promise((resolve, reject) => {
-            let i = 0;
-            
-            const typeChar = () => {
-                // Check if aborted or superseded
-                if (signal.aborted || typewriterId !== currentTypewriterId) {
-                    resolve();
-                    return;
-                }
-                
-                if (i < text.length) {
-                    // Use textContent to avoid HTML injection issues
-                    element.textContent = text.substring(0, i + 1);
-                    i++;
-                    requestAnimationFrame(() => setTimeout(typeChar, speed));
-                } else {
-                    resolve();
-                }
-            };
-            
-            typeChar();
-        });
-    }
-
-    // Instant text display (no animation) - for when speed matters
-    function instantDisplay(element, text) {
-        // Cancel any typewriter
-        if (typewriterAbortController) {
-            typewriterAbortController.abort();
-        }
-        element.textContent = text;
-    }
 
     // =============================================================================
     // SPLASH SCREEN & APPLICATION ENTRY
@@ -1301,23 +1335,15 @@
     };
 
     // =============================================================================
-    // 🔥 IMPROVED BACKEND API FUNCTIONS WITH RETRY & TIMEOUT
+    // BACKEND API FUNCTIONS
     // =============================================================================
 
     async function checkBackendHealth() {
         try {
-            const controller = new AbortController();
-            const timeoutId = setTimeout(() => controller.abort(), 10000); // 10s timeout
-            
             const response = await fetch(`${API_BASE_URL}/health`, {
-                signal: controller.signal,
-                headers: {
-                    'Accept': 'application/json',
-                    'Cache-Control': 'no-cache'
-                }
+                method: 'GET',
+                headers: { 'Accept': 'application/json' }
             });
-            
-            clearTimeout(timeoutId);
             const data = await response.json();
             return data.status === 'healthy';
         } catch (error) {
@@ -1326,72 +1352,32 @@
         }
     }
 
-    async function fetchZoningForLocation(lat, lng, signal, requestId) {
-        try {
-            updateStatus('loading', 'Querying spatial database...');
-            
-            const controller = new AbortController();
-            const timeoutId = setTimeout(() => controller.abort(), RequestManager.TIMEOUT_MS);
-            
-            // Combine signals
-            if (signal) {
-                signal.addEventListener('abort', () => controller.abort());
-            }
-            
-            const response = await fetch(`${API_BASE_URL}/zoning/location?lat=${lat}&lng=${lng}`, {
-                signal: controller.signal,
-                headers: {
-                    'Accept': 'application/json',
-                    'Cache-Control': 'no-cache'
-                }
-            });
-            
-            clearTimeout(timeoutId);
-            
-            if (!response.ok) {
-                throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-            }
-            
-            const data = await response.json();
-            
-            // Verify this is still the current request
-            if (!RequestManager.isCurrentRequest(requestId)) {
-                console.log('🚫 Zoning result discarded (request superseded)');
-                return null;
-            }
-            
-            if (data.success && data.data && data.data.zoneData) {
-                return {
-                    zoneName: data.data.zoneData.zone_name,
-                    properties: data.data.zoneData,
-                    source: 'backend_database',
-                    distance: data.data.zoneData.distance ? `${Math.round(data.data.zoneData.distance)}m` : null,
-                    area: data.data.zoneData.area ? `${Math.round(data.data.zoneData.area)} m²` : null
-                };
-            } else {
-                return null;
-            }
-        } catch (error) {
-            if (error.name === 'AbortError') {
-                throw error; // Re-throw abort errors
-            }
-            console.error('Error fetching zoning data:', error);
-            updateStatus('error', 'Database query failed');
-            return null;
+    async function fetchZoningForLocation(lat, lng, signal) {
+        const response = await fetch(`${API_BASE_URL}/zoning/location?lat=${lat}&lng=${lng}`, {
+            signal: signal,
+            headers: { 'Accept': 'application/json' }
+        });
+        
+        if (!response.ok) {
+            throw new Error(`HTTP ${response.status}: ${response.statusText}`);
         }
+        
+        const data = await response.json();
+        
+        if (data.success && data.data && data.data.zoneData) {
+            return {
+                zoneName: data.data.zoneData.zone_name,
+                properties: data.data.zoneData,
+                source: 'backend_database'
+            };
+        }
+        
+        return null;
     }
 
-    async function askClaudeAI(question, lat, lng, signal) {
+    async function askClaudeAI(question, lat, lng) {
         try {
             updateStatus('loading', 'Consulting TerraNebular AI...');
-            
-            const controller = new AbortController();
-            const timeoutId = setTimeout(() => controller.abort(), RequestManager.TIMEOUT_MS);
-            
-            // Combine signals
-            if (signal) {
-                signal.addEventListener('abort', () => controller.abort());
-            }
             
             const response = await fetch(`${API_BASE_URL}/ai/question`, {
                 method: 'POST',
@@ -1399,7 +1385,6 @@
                     'Content-Type': 'application/json',
                     'Accept': 'application/json'
                 },
-                signal: controller.signal,
                 body: JSON.stringify({
                     question: question,
                     lat: lat,
@@ -1407,8 +1392,6 @@
                     sessionId: sessionId
                 })
             });
-
-            clearTimeout(timeoutId);
 
             if (!response.ok) {
                 throw new Error(`HTTP ${response.status}: ${response.statusText}`);
@@ -1426,100 +1409,15 @@
                 throw new Error(data.error || 'Unknown API error');
             }
         } catch (error) {
-            if (error.name === 'AbortError') {
-                throw error;
-            }
             console.error('Error calling AI API:', error);
             updateStatus('error', 'AI consultation failed');
             
-            // Enhanced fallback response
             return {
-                response: generateEnhancedFallback(question),
+                response: `❌ TerraNebular AI is temporarily offline.\n\nPlease try again or contact City of Kigali directly:\n📞 +250 788 000 000\n🌐 kigalicity.gov.rw\n\nError: ${error.message}`,
                 metadata: { fallback: true, error: error.message },
                 cached: false
             };
         }
-    }
-
-    // =============================================================================
-    // 🔥 ENHANCED OFFLINE FALLBACK (REMOVES GENERIC RESPONSES)
-    // =============================================================================
-
-    function generateEnhancedFallback(question) {
-        const zoneName = currentZoning?.zoneName || 'Unknown zone';
-        const q = question.toLowerCase();
-        
-        // Detect question type and give specific guidance
-        if (q.includes('build') || q.includes('construct') || q.includes('develop')) {
-            return `📍 ${zoneName}
-
-For construction questions in this zone, please contact:
-
-🏛️ City of Kigali One Stop Center
-📞 +250 788 182 121
-📧 onestop@kigalicity.gov.rw
-
-🏗️ Rwanda Housing Authority
-📞 +250 252 582 820
-
-⚠️ AI is temporarily offline. The database confirms your location is in ${zoneName}. For accurate permit requirements and building regulations, please visit the One Stop Center or call the numbers above.
-
-🌐 Online: masterplan.kigali.gov.rw`;
-        }
-        
-        if (q.includes('permit') || q.includes('license') || q.includes('approval')) {
-            return `📍 ${zoneName}
-
-For permit and approval processes:
-
-🏛️ City of Kigali One Stop Center
-📍 KN 3 Ave, Kigali
-📞 +250 788 182 121
-⏰ Mon-Fri: 8:00 AM - 5:00 PM
-
-Required documents typically include:
-• Land title or lease agreement
-• Architectural plans
-• Environmental clearance (if applicable)
-• Tax clearance certificate
-
-⚠️ AI is temporarily offline. Please contact the One Stop Center for current requirements specific to ${zoneName}.`;
-        }
-        
-        if (q.includes('residential') || q.includes('house') || q.includes('home')) {
-            return `📍 ${zoneName}
-
-For residential development inquiries:
-
-🏠 Rwanda Housing Authority
-📞 +250 252 582 820
-📧 info@rha.gov.rw
-
-🏛️ City of Kigali Planning
-📞 +250 788 000 000
-
-⚠️ AI is temporarily offline. Whether residential construction is permitted depends on the specific zone regulations. Please contact the authorities above for guidance on ${zoneName}.`;
-        }
-        
-        // Generic fallback with zone info
-        return `📍 ${zoneName}
-
-Your question: "${question}"
-
-⚠️ TerraNebular AI is temporarily offline.
-
-For assistance, please contact:
-
-🏛️ City of Kigali One Stop Center
-📞 +250 788 182 121
-📧 onestop@kigalicity.gov.rw
-
-🏢 Rwanda Development Board
-📞 +250 727 775 170
-
-🌐 masterplan.kigali.gov.rw
-
-The AI service should be restored shortly. Please try again in a few minutes.`;
     }
 
     // =============================================================================
@@ -1529,23 +1427,14 @@ The AI service should be restored shortly. Please try again in a few minutes.`;
     async function initializeApp() {
         updateStatus('loading', 'Connecting to TerraNebular network...');
         
-        // Retry backend connection up to 3 times
-        let retries = 3;
-        while (retries > 0 && !backendConnected) {
-            backendConnected = await checkBackendHealth();
-            if (!backendConnected && retries > 1) {
-                console.log(`Backend check failed, retrying... (${retries - 1} attempts left)`);
-                await new Promise(r => setTimeout(r, 2000));
-            }
-            retries--;
-        }
+        backendConnected = await checkBackendHealth();
         
         if (backendConnected) {
             updateStatus('ready', 'Connected to spatial intelligence');
             console.log('✅ Backend connected successfully');
         } else {
-            updateStatus('error', 'Backend connection limited');
-            console.warn('⚠️ Backend connection failed - limited functionality');
+            updateStatus('error', 'Unable to connect to backend');
+            console.error('❌ Backend connection failed');
         }
         
         require([
@@ -1576,7 +1465,7 @@ The AI service should be restored shortly. Please try again in a few minutes.`;
                 if (backendConnected) {
                     updateStatus('ready', '8,172 Kigali zones available');
                 } else {
-                    updateStatus('error', 'Map ready, backend limited');
+                    updateStatus('error', 'Map ready, backend offline');
                 }
             });
         });
@@ -1592,7 +1481,7 @@ The AI service should be restored shortly. Please try again in a few minutes.`;
     }
 
     // =============================================================================
-    // UI/UX FUNCTIONS
+    // UI HELPERS
     // =============================================================================
 
     function addCosmicSparkles(element) {
@@ -1633,62 +1522,61 @@ The AI service should be restored shortly. Please try again in a few minutes.`;
     }
 
     // =============================================================================
-    // 🔥 IMPROVED MAP INTERACTION WITH REQUEST MANAGEMENT
+    // 🔥 FIXED MAP CLICK HANDLER - NO MORE RACE CONDITIONS
     // =============================================================================
 
     async function handleMapClick(event) {
+        if (!backendConnected) {
+            showOfflineMessage();
+            return;
+        }
+        
         const lat = event.mapPoint.latitude;
         const lng = event.mapPoint.longitude;
         
         console.log(`📍 Map clicked: ${lat.toFixed(6)}, ${lng.toFixed(6)}`);
         
-        // Immediately update pin location (visual feedback)
-        addLocationPin(event.mapPoint);
+        // Update location and pin immediately (visual feedback)
         currentLocation = event.mapPoint;
+        addLocationPin(event.mapPoint);
         
-        // Show loading state immediately
+        // Show loading state immediately using INSTANT display (not typewriter)
         const aiResponse = document.getElementById('aiResponse');
         const chatContainer = document.getElementById('chatContainer');
         chatContainer.classList.add('show');
-        instantDisplay(aiResponse, '🔍 Querying spatial database...');
         
-        // Use RequestManager to handle debouncing and cancellation
-        const result = await RequestManager.startRequest(async (signal, requestId) => {
-            console.log(`🚀 Processing request: ${requestId}`);
+        // Use instant display for loading message - no typewriter!
+        TypewriterController.instant(aiResponse, '🔍 Querying spatial database...');
+        aiResponse.className = 'ai-response';
+        updateStatus('loading', 'Querying spatial database...');
+        
+        // Execute request with debouncing and cancellation
+        try {
+            const result = await RequestManager.execute(async (signal) => {
+                return await fetchZoningForLocation(lat, lng, signal);
+            });
             
-            if (!backendConnected) {
-                // Try one more health check
-                backendConnected = await checkBackendHealth();
+            // If result is null, request was cancelled - do nothing
+            if (result === null) {
+                console.log('Request cancelled, ignoring result');
+                return;
             }
             
-            if (!backendConnected) {
-                return { type: 'offline' };
+            // Process successful result
+            if (result) {
+                currentZoning = result;
+                displayLocationInfo(result);
+                updateStatus('ready', `Found: ${result.zoneName}`);
+            } else {
+                showNoDataMessage();
+                updateStatus('ready', 'No zoning data found');
             }
             
-            const zoningResult = await fetchZoningForLocation(lat, lng, signal, requestId);
-            return { type: 'success', data: zoningResult, requestId };
-        });
-        
-        // Handle result
-        if (result === null) {
-            // Request was cancelled or superseded
-            console.log('Request result ignored (cancelled/superseded)');
-            return;
-        }
-        
-        if (result.type === 'offline') {
-            showOfflineMessage();
-            updateStatus('error', 'Backend offline');
-            return;
-        }
-        
-        if (result.data) {
-            currentZoning = result.data;
-            displayLocationInfo(result.data);
-            updateStatus('ready', `Found: ${result.data.zoneName}`);
-        } else {
-            showNoDataMessage();
-            updateStatus('ready', 'No zoning data found');
+        } catch (error) {
+            console.error('Error fetching zoning:', error);
+            TypewriterController.instant(aiResponse, `❌ Error: ${error.message}`);
+            aiResponse.className = 'ai-response response-error';
+            updateStatus('error', 'Query failed');
         }
     }
 
@@ -1793,28 +1681,29 @@ The AI service should be restored shortly. Please try again in a few minutes.`;
             },
             {
                 enableHighAccuracy: true,
-                timeout: 15000,  // Increased timeout for mobile
+                timeout: 10000,
                 maximumAge: 60000
             }
         );
     }
 
     // =============================================================================
-    // 🔥 IMPROVED CHAT INTERFACE WITH REQUEST MANAGEMENT
+    // 🔥 FIXED CHAT - USES TYPEWRITER CONTROLLER
     // =============================================================================
 
     async function sendMessage() {
         const input = document.getElementById('chatInput');
         const question = input.value.trim();
         
-        if (!question) return;
-        
-        if (!currentZoning || !currentLocation) {
+        if (!question || !currentZoning || !currentLocation) {
             if (!backendConnected) {
                 showOfflineMessage();
                 return;
             }
-            alert('Please select a location on the map first.');
+            if (!currentZoning) {
+                alert('Please select a location on the map first.');
+                return;
+            }
             return;
         }
         
@@ -1822,32 +1711,28 @@ The AI service should be restored shortly. Please try again in a few minutes.`;
         const aiResponse = document.getElementById('aiResponse');
         const chatContainer = document.getElementById('chatContainer');
         
-        // Cancel any pending request
-        RequestManager.cancelPending();
-        
         sendBtn.disabled = true;
         sendBtn.innerHTML = '⏳';
         
-        // Show loading immediately
-        instantDisplay(aiResponse, '🤖 TerraNebular AI is analyzing your question...');
+        // Use INSTANT display for loading (not typewriter)
+        TypewriterController.instant(aiResponse, 'TerraNebular AI is analyzing your question...');
         aiResponse.className = 'ai-response';
         chatContainer.classList.add('show');
         
         // Clear input immediately
-        const savedQuestion = question;
+        const questionToSend = question;
         input.value = '';
         input.style.height = 'auto';
         
         try {
             const result = await askClaudeAI(
-                savedQuestion, 
+                questionToSend, 
                 currentLocation.latitude, 
-                currentLocation.longitude,
-                null // No abort signal for AI requests - let them complete
+                currentLocation.longitude
             );
             
-            // Use safe typewriter
-            await safeTypewriterEffect(aiResponse, result.response);
+            // Use TypewriterController for the response
+            await TypewriterController.typeText(aiResponse, result.response);
             
             let responseClass = 'ai-response';
             if (result.response.includes('YES') && result.response.includes('PERMITTED')) {
@@ -1867,7 +1752,7 @@ The AI service should be restored shortly. Please try again in a few minutes.`;
                 aiResponse.appendChild(cacheIndicator);
             }
             
-            conversationHistory.push({ question: savedQuestion, response: result.response });
+            conversationHistory.push({ question: questionToSend, response: result.response });
             if (conversationHistory.length > 10) {
                 conversationHistory.shift();
             }
@@ -1876,7 +1761,7 @@ The AI service should be restored shortly. Please try again in a few minutes.`;
             
         } catch (error) {
             console.error('Chat error:', error);
-            await safeTypewriterEffect(aiResponse, generateEnhancedFallback(savedQuestion));
+            TypewriterController.instant(aiResponse, `❌ Sorry, I couldn't process your question right now.\n\nError: ${error.message}\n\nPlease try again or contact City of Kigali directly.`);
             aiResponse.className = 'ai-response response-error';
         }
         
@@ -1891,7 +1776,7 @@ The AI service should be restored shortly. Please try again in a few minutes.`;
     }
 
     // =============================================================================
-    // DISPLAY & MESSAGE FUNCTIONS
+    // DISPLAY FUNCTIONS - NOW USE TYPEWRITER CONTROLLER
     // =============================================================================
 
     function displayLocationInfo(zoning) {
@@ -1931,8 +1816,11 @@ The AI service should be restored shortly. Please try again in a few minutes.`;
 
 ✨ Ask me anything about development regulations, building permissions, investment potential, or permit processes for this location.`;
         
-        safeTypewriterEffect(aiResponse, welcomeMessage).then(() => {
-            aiResponse.className = 'ai-response response-success';
+        // Use TypewriterController
+        TypewriterController.typeText(aiResponse, welcomeMessage).then((completed) => {
+            if (completed) {
+                aiResponse.className = 'ai-response response-success';
+            }
         });
         
         chatContainer.classList.add('show');
@@ -1957,8 +1845,10 @@ Please try:
 📞 City of Kigali Planning: +250 788 000 000
 🌐 More info: kigalicity.gov.rw`;
         
-        safeTypewriterEffect(aiResponse, message).then(() => {
-            aiResponse.className = 'ai-response response-warning';
+        TypewriterController.typeText(aiResponse, message).then((completed) => {
+            if (completed) {
+                aiResponse.className = 'ai-response response-warning';
+            }
         });
         
         chatContainer.classList.add('show');
@@ -1968,25 +1858,22 @@ Please try:
         const chatContainer = document.getElementById('chatContainer');
         const aiResponse = document.getElementById('aiResponse');
         
-        const message = `⚠️ TerraNebular backend is currently unreachable.
-
-Possible causes:
-• Slow mobile network connection
-• Backend server is waking up (Render free tier)
-• Network connectivity issues
+        const message = `TerraNebular backend is currently offline.
 
 Please:
-• Wait 30 seconds and try again
 • Check your internet connection
-• Try using WiFi instead of mobile data
+• Ensure the backend server is running
+• Contact the system administrator
 
-While offline, you can still explore the map visually.
+While offline, you can still explore the map, but spatial queries and AI assistance are unavailable.
 
 📞 For urgent zoning questions, contact City of Kigali directly:
 +250 788 000 000`;
         
-        safeTypewriterEffect(aiResponse, message).then(() => {
-            aiResponse.className = 'ai-response response-error';
+        TypewriterController.typeText(aiResponse, message).then((completed) => {
+            if (completed) {
+                aiResponse.className = 'ai-response response-error';
+            }
         });
         
         chatContainer.classList.add('show');
@@ -2068,6 +1955,14 @@ While offline, you can still explore the map visually.
         console.error('Unhandled promise rejection:', e.reason);
     });
 
-        </script>
+    // =============================================================================
+    // INITIALIZATION
+    // =============================================================================
+
+    console.log('🌌 TerraNebular v2.1 - Web Race Condition Fix');
+    console.log('Session ID:', sessionId);
+    console.log('✅ TypewriterController: Prevents text interleaving');
+    console.log('✅ RequestManager: Cancels superseded requests');
+    </script>
 </body>
 </html>
