@@ -306,7 +306,7 @@ For assistance with "${question}", please contact:
 
 We'll be back online shortly!`,
             
-            rw: `Ihangane, TerraNebular AI ntiriho ubu.
+            rw: `Mbabarira, TerraNebular AI ntiriho ubu.
 
 Aho uri: ${zoneData.zone_name}
 
