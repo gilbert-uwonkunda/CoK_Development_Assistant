@@ -78,10 +78,14 @@ router.get('/zoning/location', async (req, res) => {
     }
 });
 
-// AI assistant endpoint
+// AI assistant endpoint - NOW WITH LANGUAGE SUPPORT
 router.post('/ai/question', claudeLimiter, async (req, res) => {
     try {
-        const { question, lat, lng, sessionId } = req.body;
+        // ✅ FIXED: Extract language from request body
+        const { question, lat, lng, sessionId, language } = req.body;
+        
+        // Log the language for debugging
+        console.log(`🌍 AI Request - Language: ${language || 'en'}, Question: ${question.substring(0, 50)}...`);
         
         if (!question || !lat || !lng) {
             return res.status(400).json({
@@ -100,27 +104,61 @@ router.post('/ai/question', claudeLimiter, async (req, res) => {
         
         const spatialData = await spatialService.getLocationSpatialData(latitude, longitude);
         
-        // Handle coordinates outside mapped zones with better error response
+        // Handle coordinates outside mapped zones with multi-language support
         if (!spatialData.zoneData) {
-            return res.status(200).json({
-                success: true,
-                data: {
-                    response: `No zoning data found for this location.
+            // Multi-language fallback messages
+            const noDataMessages = {
+                en: `No zoning data found for this location.
 
-This coordinate appears to be outside the mapped zoning areas of Kigali. TerraNebular's spatial intelligence currently covers official zoning designations within Kigali city boundaries.
+This coordinate appears to be outside the mapped zoning areas of Kigali.
 
 Please try:
 • Selecting a location within Kigali city center
 • Using the "Use My Location" button if you're in Kigali
-• Contacting City of Kigali directly for areas outside the master plan
 
 📞 City of Kigali Planning: +250 788 000 000
-🌐 More info: kigalicity.gov.rw
+🌐 kigalicity.gov.rw
 
 📍 Searched Location: ${latitude.toFixed(4)}°, ${longitude.toFixed(4)}°`,
+
+                rw: `Nta makuru y'imiyoborere y'ubutaka yabonetse aha hantu.
+
+Aha hantu bigaragara ko hari hanze y'akarere ka Kigali kagenzurwa.
+
+Gerageza:
+• Guhitamo ahantu mu mujyi wa Kigali
+• Gukoresha buto "Koresha Aho Ndi" niba uri i Kigali
+
+📞 Umujyi wa Kigali: +250 788 000 000
+🌐 kigalicity.gov.rw
+
+📍 Aho washakishije: ${latitude.toFixed(4)}°, ${longitude.toFixed(4)}°`,
+
+                fr: `Aucune donnée de zonage trouvée pour cet emplacement.
+
+Ces coordonnées semblent être en dehors des zones cartographiées de Kigali.
+
+Veuillez essayer:
+• Sélectionner un emplacement dans le centre-ville de Kigali
+• Utiliser le bouton "Utiliser Ma Position" si vous êtes à Kigali
+
+📞 Ville de Kigali: +250 788 000 000
+🌐 kigalicity.gov.rw
+
+📍 Emplacement recherché: ${latitude.toFixed(4)}°, ${longitude.toFixed(4)}°`
+            };
+            
+            const selectedLanguage = language || 'en';
+            const message = noDataMessages[selectedLanguage] || noDataMessages.en;
+            
+            return res.status(200).json({
+                success: true,
+                data: {
+                    response: message,
                     metadata: { 
                         fallback: true, 
                         error: 'location_outside_zones',
+                        language: selectedLanguage,
                         coordinates: { lat: latitude, lng: longitude }
                     },
                     cached: false
@@ -128,7 +166,12 @@ Please try:
             });
         }
         
-        const aiResult = await claudeService.generateSpatialResponse(question, spatialData);
+        // ✅ FIXED: Pass language to Claude service
+        const aiResult = await claudeService.generateSpatialResponse(
+            question, 
+            spatialData,
+            language || 'en'  // Default to English if not specified
+        );
         
         await claudeService.logAnalytics(
             sessionId || 'anonymous',
@@ -138,7 +181,8 @@ Please try:
             aiResult.cached ? 'cached' : 'generated',
             aiResult.response.length,
             req.get('User-Agent'),
-            req.ip
+            req.ip,
+            language || 'en'  // Also log the language used
         );
         
         res.json({
@@ -147,6 +191,7 @@ Please try:
                 response: aiResult.response,
                 zoneName: spatialData.zoneData.new_zoning,
                 cached: aiResult.cached,
+                language: language || 'en',  // Return language in response
                 metadata: aiResult.metadata
             }
         });
