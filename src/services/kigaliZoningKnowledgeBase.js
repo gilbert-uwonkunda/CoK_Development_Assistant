@@ -508,16 +508,16 @@ const ZONING_KNOWLEDGE_BASE = {
                 min: "1000 m²"
             },
             coverage: {
-                maxBuilding: "60%",
+                maxBuilding: "70%",
                 minLandscaping: "10%"
             },
             far: {
-                max: 2.5
+                max: 2.4
             }
         },
 
         building: {
-            maxFloors: "G+8 maximum. Additional floors may be authorised along BRT corridors.",
+            maxFloors: "G+10 maximum. Additional floors may be authorised along BRT corridors.",
             form: ["Attached Buildings", "Detached Buildings", "Semi-Detached Buildings"]
         }
     },
@@ -1205,3 +1205,4 @@ module.exports = {
     isUsePermitted,
     getDevelopmentParams
 };
+
