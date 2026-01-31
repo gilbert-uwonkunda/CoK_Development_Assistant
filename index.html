@@ -838,6 +838,11 @@
                 box-shadow: var(--z-shadow);
                 transform: translateX(-20px);
                 opacity: 0;
+                resize: both;
+                overflow: hidden;
+                min-width: 320px;
+                min-height: 400px;
+                max-width: 600px;
             }
 
             .chat-overlay.active {
@@ -845,8 +850,47 @@
                 opacity: 1;
             }
 
+            .chat-overlay.dragging {
+                transition: none;
+                user-select: none;
+            }
+
+            .chat-header {
+                cursor: grab;
+            }
+
+            .chat-header:active {
+                cursor: grabbing;
+            }
+
+            /* Drag handle indicator */
+            .drag-indicator {
+                display: flex;
+                justify-content: center;
+                padding: 8px 0 0 0;
+            }
+
+            .drag-dots {
+                display: flex;
+                gap: 4px;
+            }
+
+            .drag-dots span {
+                width: 4px;
+                height: 4px;
+                background: var(--z-muted);
+                border-radius: 50%;
+            }
+
             .map-hint {
                 bottom: 32px;
+            }
+        }
+
+        /* Hide drag indicator on mobile */
+        @media (max-width: 767px) {
+            .drag-indicator {
+                display: none;
             }
         }
 
@@ -954,7 +998,12 @@
          CHAT OVERLAY
          ============================================ -->
     <div class="chat-overlay" id="chatOverlay">
-        <div class="chat-header">
+        <div class="drag-indicator">
+            <div class="drag-dots">
+                <span></span><span></span><span></span><span></span><span></span>
+            </div>
+        </div>
+        <div class="chat-header" id="chatHeader">
             <div class="chat-zone-info">
                 <div class="chat-zone-name">
                     <span class="zone-color" id="zoneColor"></span>
@@ -994,9 +1043,279 @@
     <script src="https://js.arcgis.com/4.28/"></script>
 
     <script>
-    // =============================================================================
+  
+    const UsageTracker = {
+        visitorId: null,
+        
+        async init() {
+            this.visitorId = await this.generateFingerprint();
+            this.trackEvent('session_start');
+            console.log('Visitor ID:', this.visitorId);
+        },
+        
+        async generateFingerprint() {
+        
+            let storedId = localStorage.getItem('za_visitor_id');
+            if (storedId) return storedId;
+            
+        
+            const components = [
+                navigator.userAgent,
+                navigator.language,
+                screen.width + 'x' + screen.height,
+                screen.colorDepth,
+                new Date().getTimezoneOffset(),
+                navigator.hardwareConcurrency || 'unknown',
+                navigator.platform
+            ];
+            
+            // Create hash
+            const fingerprint = components.join('|');
+            const hash = await this.hashString(fingerprint);
+            
+            // Add random suffix for uniqueness
+            const visitorId = hash.substring(0, 12) + '_' + Date.now().toString(36);
+            
+            // Store for future sessions
+            localStorage.setItem('za_visitor_id', visitorId);
+            
+            return visitorId;
+        },
+        
+        async hashString(str) {
+            const encoder = new TextEncoder();
+            const data = encoder.encode(str);
+            const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+            const hashArray = Array.from(new Uint8Array(hashBuffer));
+            return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+        },
+        
+        trackEvent(eventType, data = {}) {
+            const event = {
+                visitor_id: this.visitorId,
+                event: eventType,
+                timestamp: new Date().toISOString(),
+                session_id: sessionId,
+                language: currentLanguage,
+                ...data
+            };
+            
+            // Store locally
+            this.storeLocally(event);
+            
+            // Send to backend (fire and forget)
+            this.sendToBackend(event);
+        },
+        
+        storeLocally(event) {
+            try {
+                const events = JSON.parse(localStorage.getItem('za_events') || '[]');
+                events.push(event);
+                // Keep only last 100 events
+                if (events.length > 100) events.shift();
+                localStorage.setItem('za_events', JSON.stringify(events));
+            } catch (e) {
+                console.warn('Local storage unavailable');
+            }
+        },
+        
+        async sendToBackend(event) {
+            try {
+                // Replace with your analytics endpoint
+                await fetch(`${API_BASE_URL}/analytics/event`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(event)
+                }).catch(() => {}); // Silent fail
+            } catch (e) {
+                // Silent fail - don't block user experience
+            }
+        },
+        
+        trackLocationQuery(lat, lng, zoneName) {
+            this.trackEvent('location_query', {
+                lat: lat.toFixed(4),
+                lng: lng.toFixed(4),
+                zone: zoneName
+            });
+        },
+        
+        trackQuestion(question, zoneName) {
+            this.trackEvent('ai_question', {
+                question_length: question.length,
+                zone: zoneName
+            });
+        },
+        
+        trackDownload(zoneName) {
+            this.trackEvent('pdf_download', { zone: zoneName });
+        },
+        
+        trackShare(zoneName) {
+            this.trackEvent('share', { zone: zoneName });
+        },
+        
+        // Get usage stats for this visitor
+        getLocalStats() {
+            try {
+                const events = JSON.parse(localStorage.getItem('za_events') || '[]');
+                return {
+                    total_queries: events.filter(e => e.event === 'location_query').length,
+                    total_questions: events.filter(e => e.event === 'ai_question').length,
+                    total_downloads: events.filter(e => e.event === 'pdf_download').length,
+                    first_visit: events[0]?.timestamp,
+                    last_visit: events[events.length - 1]?.timestamp
+                };
+            } catch (e) {
+                return null;
+            }
+        }
+    };
+
+    
+    // DRAGGABLE CHAT PANEL
+    
+    const DraggablePanel = {
+        isDragging: false,
+        startX: 0,
+        startY: 0,
+        startLeft: 0,
+        startTop: 0,
+        
+        init() {
+            if (window.innerWidth < 768) return; // Mobile - no drag
+            
+            const panel = document.getElementById('chatOverlay');
+            const header = document.getElementById('chatHeader');
+            const dragIndicator = document.querySelector('.drag-indicator');
+            
+            // Make header and drag indicator draggable
+            [header, dragIndicator].forEach(el => {
+                if (!el) return;
+                el.addEventListener('mousedown', (e) => this.startDrag(e, panel));
+            });
+            
+            document.addEventListener('mousemove', (e) => this.drag(e, panel));
+            document.addEventListener('mouseup', () => this.stopDrag(panel));
+            
+            // Touch support
+            [header, dragIndicator].forEach(el => {
+                if (!el) return;
+                el.addEventListener('touchstart', (e) => this.startDrag(e, panel), { passive: false });
+            });
+            document.addEventListener('touchmove', (e) => this.drag(e, panel), { passive: false });
+            document.addEventListener('touchend', () => this.stopDrag(panel));
+            
+            // Load saved position
+            this.loadPosition(panel);
+        },
+        
+        startDrag(e, panel) {
+            if (window.innerWidth < 768) return;
+            
+            // Don't drag if clicking on buttons
+            if (e.target.closest('button')) return;
+            
+            this.isDragging = true;
+            panel.classList.add('dragging');
+            
+            const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+            const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+            
+            const rect = panel.getBoundingClientRect();
+            this.startX = clientX;
+            this.startY = clientY;
+            this.startLeft = rect.left;
+            this.startTop = rect.top;
+            
+            // Switch to absolute positioning
+            panel.style.left = rect.left + 'px';
+            panel.style.top = rect.top + 'px';
+            panel.style.bottom = 'auto';
+            panel.style.right = 'auto';
+            
+            e.preventDefault();
+        },
+        
+        drag(e, panel) {
+            if (!this.isDragging) return;
+            
+            const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+            const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+            
+            const deltaX = clientX - this.startX;
+            const deltaY = clientY - this.startY;
+            
+            let newLeft = this.startLeft + deltaX;
+            let newTop = this.startTop + deltaY;
+            
+            // Constrain to viewport
+            const rect = panel.getBoundingClientRect();
+            const maxLeft = window.innerWidth - rect.width;
+            const maxTop = window.innerHeight - rect.height;
+            
+            newLeft = Math.max(0, Math.min(newLeft, maxLeft));
+            newTop = Math.max(0, Math.min(newTop, maxTop));
+            
+            panel.style.left = newLeft + 'px';
+            panel.style.top = newTop + 'px';
+            
+            e.preventDefault();
+        },
+        
+        stopDrag(panel) {
+            if (!this.isDragging) return;
+            
+            this.isDragging = false;
+            panel.classList.remove('dragging');
+            
+            // Save position
+            this.savePosition(panel);
+        },
+        
+        savePosition(panel) {
+            const rect = panel.getBoundingClientRect();
+            localStorage.setItem('za_panel_position', JSON.stringify({
+                left: rect.left,
+                top: rect.top,
+                width: rect.width,
+                height: rect.height
+            }));
+        },
+        
+        loadPosition(panel) {
+            try {
+                const saved = JSON.parse(localStorage.getItem('za_panel_position'));
+                if (saved && window.innerWidth >= 768) {
+                    // Validate position is still on screen
+                    if (saved.left < window.innerWidth - 100 && saved.top < window.innerHeight - 100) {
+                        panel.style.left = saved.left + 'px';
+                        panel.style.top = saved.top + 'px';
+                        panel.style.bottom = 'auto';
+                        panel.style.right = 'auto';
+                        if (saved.width) panel.style.width = saved.width + 'px';
+                        if (saved.height) panel.style.height = saved.height + 'px';
+                    }
+                }
+            } catch (e) {
+                // Use default position
+            }
+        },
+        
+        resetPosition(panel) {
+            localStorage.removeItem('za_panel_position');
+            panel.style.left = '24px';
+            panel.style.top = 'auto';
+            panel.style.bottom = '24px';
+            panel.style.right = 'auto';
+            panel.style.width = '420px';
+            panel.style.height = '600px';
+        }
+    };
+
+   
     // STATE
-    // =============================================================================
+    
     let view = null;
     let currentLocation = null;
     let currentZoning = null;
@@ -1007,9 +1326,8 @@
 
     const API_BASE_URL = 'https://cok-development-assistant.onrender.com/api';
 
-    // =============================================================================
     // TRANSLATIONS
-    // =============================================================================
+
     const i18n = {
         en: {
             myLocation: 'My Location',
@@ -1139,9 +1457,9 @@ Tapez votre question ci-dessous.`,
         document.getElementById('chatInput').placeholder = t('askPlaceholder');
     }
 
-    // =============================================================================
+    
     // ZONE COLORS
-    // =============================================================================
+   
     const ZONE_COLORS = {
         'A1-Agriculture zone': '#90EE90',
         'C1-Mixed use zone': '#FFB6C1',
@@ -1174,14 +1492,19 @@ Tapez votre question ci-dessous.`,
         'WR-Waterbody zone': '#87CEEB'
     };
 
-    // =============================================================================
+   
     // APP INITIALIZATION
-    // =============================================================================
+
     document.getElementById('enterBtn').addEventListener('click', enterApp);
 
-    function enterApp() {
+    async function enterApp() {
         document.getElementById('splash').classList.add('hidden');
         document.getElementById('app').classList.add('active');
+        
+        // Initialize tracking and draggable
+        await UsageTracker.init();
+        DraggablePanel.init();
+        
         initMap();
     }
 
@@ -1258,9 +1581,8 @@ Tapez votre question ci-dessous.`,
         input.style.height = Math.min(input.scrollHeight, 120) + 'px';
     }
 
-    // =============================================================================
     // MAP INTERACTIONS
-    // =============================================================================
+ 
     async function handleMapClick(event) {
         if (!backendConnected) return;
 
@@ -1292,6 +1614,13 @@ Tapez votre question ci-dessous.`,
                     properties: data.data.zoneData
                 };
                 displayZoneInfo();
+                
+                // Track usage
+                UsageTracker.trackLocationQuery(
+                    currentLocation.latitude, 
+                    currentLocation.longitude, 
+                    currentZoning.zoneName
+                );
             } else {
                 clearMessages();
                 addMessage('assistant', t('noZoning'));
@@ -1362,9 +1691,9 @@ Tapez votre question ci-dessous.`,
         );
     }
 
-    // =============================================================================
+ 
     // TYPEWRITER CONTROLLER
-    // =============================================================================
+
     const Typewriter = {
         activeTimer: null,
         sessionId: 0,
@@ -1438,7 +1767,7 @@ Tapez votre question ci-dessous.`,
                 .replace(/</g, '&lt;')
                 .replace(/>/g, '&gt;')
                 
-                // Replace emojis with SVG icons
+                // SVG icons
                 .replace(/📍/g, '<svg class="inline-icon" viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>')
                 .replace(/📋|📄/g, '<svg class="inline-icon" viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg>')
                 .replace(/📞|📱/g, '<svg class="inline-icon" viewBox="0 0 24 24"><path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg>')
@@ -1449,7 +1778,7 @@ Tapez votre question ci-dessous.`,
                 .replace(/⚠️/g, '<svg class="inline-icon icon-warning" viewBox="0 0 24 24"><path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"/></svg>')
                 .replace(/💡/g, '<svg class="inline-icon icon-accent" viewBox="0 0 24 24"><path d="M9 21c0 .5.4 1 1 1h4c.6 0 1-.5 1-1v-1H9v1zm3-19C8.1 2 5 5.1 5 9c0 2.4 1.2 4.5 3 5.7V17c0 .5.4 1 1 1h6c.6 0 1-.5 1-1v-2.3c1.8-1.3 3-3.4 3-5.7 0-3.9-3.1-7-7-7z"/></svg>')
                 .replace(/🎯/g, '<svg class="inline-icon icon-accent" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm0-14c-3.31 0-6 2.69-6 6s2.69 6 6 6 6-2.69 6-6-2.69-6-6-6zm0 10c-2.21 0-4-1.79-4-4s1.79-4 4-4 4 1.79 4 4-1.79 4-4 4zm0-6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/></svg>')
-                // Remove any other emojis
+                // 
                 .replace(/[\u{1F300}-\u{1F9FF}]/gu, '')
                 
                 // Single line separator (triple dash or underscore)
@@ -1488,9 +1817,8 @@ Tapez votre question ci-dessous.`,
         }
     };
 
-    // =============================================================================
     // CHAT INTERFACE
-    // =============================================================================
+    
     function openChat() {
         document.getElementById('chatOverlay').classList.add('active');
     }
@@ -1598,6 +1926,9 @@ Tapez votre question ci-dessous.`,
                 };
                 await addMessage('assistant', data.data.response, true);
                 document.getElementById('chatActions').style.display = 'flex';
+                
+                // Track usage
+                UsageTracker.trackQuestion(question, currentZoning.zoneName);
             } else {
                 addMessage('assistant', t('error'));
             }
@@ -1609,9 +1940,9 @@ Tapez votre question ci-dessous.`,
         document.getElementById('sendBtn').disabled = false;
     }
 
-    // =============================================================================
+   
     // PDF & SHARE
-    // =============================================================================
+    
     async function downloadPDF() {
         if (!currentZoning || !currentResponse) return;
 
@@ -1755,6 +2086,9 @@ Tapez votre question ci-dessous.`,
             // Save
             const zoneSafe = currentZoning.zoneName.replace(/[^a-zA-Z0-9]/g, '_').substring(0, 20);
             doc.save(`ZoneAgent_${zoneSafe}_${new Date().toISOString().split('T')[0]}.pdf`);
+            
+            // Track usage
+            UsageTracker.trackDownload(currentZoning.zoneName);
 
         } catch (error) {
             console.error('PDF Error:', error);
@@ -1766,6 +2100,9 @@ Tapez votre question ci-dessous.`,
 
     async function shareReport() {
         if (!currentZoning || !currentResponse) return;
+        
+        // Track usage
+        UsageTracker.trackShare(currentZoning.zoneName);
 
         const text = `ZoneAgent Report
 
