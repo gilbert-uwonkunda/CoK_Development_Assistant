@@ -500,6 +500,114 @@
             font-size: 13px;
         }
 
+        /* Formatted message content */
+        .message-content {
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+
+        .message-content h4 {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--z-accent);
+            margin: 16px 0 8px 0;
+            padding-bottom: 4px;
+            border-bottom: 1px solid var(--z-slate);
+        }
+
+        .message-content h4:first-child {
+            margin-top: 0;
+        }
+
+        .message-content p {
+            margin: 0 0 12px 0;
+        }
+
+        .message-content p:last-child {
+            margin-bottom: 0;
+        }
+
+        .message-content ul {
+            margin: 8px 0 12px 0;
+            padding-left: 20px;
+        }
+
+        .message-content li {
+            margin-bottom: 6px;
+            line-height: 1.5;
+        }
+
+        .message-content strong {
+            color: var(--z-white);
+            font-weight: 600;
+        }
+
+        .message-content code {
+            background: var(--z-deep);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: var(--z-mono);
+            font-size: 12px;
+        }
+
+        /* Typing indicator */
+        .typing-indicator {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 14px 18px;
+            background: var(--z-space);
+            border: 1px solid var(--z-slate);
+            border-radius: 16px;
+            border-bottom-left-radius: 4px;
+            max-width: 120px;
+            animation: messageIn 0.3s ease-out;
+        }
+
+        .typing-dots {
+            display: flex;
+            gap: 4px;
+        }
+
+        .typing-dots span {
+            width: 8px;
+            height: 8px;
+            background: var(--z-muted);
+            border-radius: 50%;
+            animation: typingBounce 1.4s ease-in-out infinite;
+        }
+
+        .typing-dots span:nth-child(1) { animation-delay: 0s; }
+        .typing-dots span:nth-child(2) { animation-delay: 0.2s; }
+        .typing-dots span:nth-child(3) { animation-delay: 0.4s; }
+
+        @keyframes typingBounce {
+            0%, 60%, 100% { 
+                transform: translateY(0);
+                background: var(--z-muted);
+            }
+            30% { 
+                transform: translateY(-6px);
+                background: var(--z-accent);
+            }
+        }
+
+        /* Cursor blink for typewriter */
+        .typing-cursor {
+            display: inline-block;
+            width: 2px;
+            height: 1em;
+            background: var(--z-accent);
+            margin-left: 2px;
+            animation: cursorBlink 0.8s infinite;
+            vertical-align: text-bottom;
+        }
+
+        @keyframes cursorBlink {
+            0%, 50% { opacity: 1; }
+            51%, 100% { opacity: 0; }
+        }
+
         .message-loading {
             display: flex;
             gap: 6px;
@@ -685,20 +793,20 @@
         @media (min-width: 768px) {
             .chat-overlay {
                 top: auto;
-                left: auto;
-                right: 24px;
+                left: 24px;
+                right: auto;
                 bottom: 24px;
                 width: 420px;
                 height: 600px;
                 max-height: calc(100vh - 48px);
                 border-radius: var(--z-radius);
                 box-shadow: var(--z-shadow);
-                transform: translateY(20px);
+                transform: translateX(-20px);
                 opacity: 0;
             }
 
             .chat-overlay.active {
-                transform: translateY(0);
+                transform: translateX(0);
                 opacity: 1;
             }
 
@@ -879,8 +987,21 @@
             offline: 'Offline',
             loading: 'Checking zoning...',
             analyzing: 'Analyzing...',
-            welcome: (zone) => `This location is zoned as ${zone}.\n\nAsk me anything about:\n• What you can build here\n• Permit requirements\n• Building regulations\n• Investment potential`,
-            outsideKigali: 'This location is outside the Kigali zoning area.',
+            welcome: (zone) => `**Welcome to ZoneAgent**
+
+This location is classified as:
+**${zone}**
+
+What You Can Ask:
+
+• What types of buildings are permitted here?
+• What are the height and setback requirements?
+• What permits do I need to build?
+• Is this zone suitable for commercial use?
+• What are the investment opportunities?
+
+Type your question below to get instant guidance.`,
+            outsideKigali: 'This location is outside the Kigali zoning coverage area.\n\nPlease select a location within Kigali City boundaries to check zoning information.',
             error: 'Something went wrong. Please try again.',
             noZoning: 'No zoning data available for this location.',
             reportTitle: 'ZONING COMPLIANCE REPORT',
@@ -904,8 +1025,20 @@
             offline: 'Ntibihari',
             loading: 'Kureba imiyoborere...',
             analyzing: 'Gusesengura...',
-            welcome: (zone) => `Aha hantu ni ${zone}.\n\nMbaze ikibazo ku:\n• Icyo ushobora kubaka\n• Uruhushya rukenewe\n• Amategeko yo kubaka`,
-            outsideKigali: 'Aha hantu ni inyuma y\'imiyoborere ya Kigali.',
+            welcome: (zone) => `**Murakaza neza kuri ZoneAgent**
+
+Aha hantu hafite imiyoborere:
+**${zone}**
+
+Ibyo Ushobora Kubaza:
+
+• Ni ubuhe bwubatsi bwemewe aha?
+• Ni izihe ntera n'imipaka isabwa?
+• Ni uruhe ruhushya nkeneye kubaka?
+• Ese aha hantu hashobora gukoreshwa mu bucuruzi?
+
+Andika ikibazo cyawe hano.`,
+            outsideKigali: 'Aha hantu ni inyuma y\'imiyoborere ya Kigali.\n\nHitamo aho hantu mu mujyi wa Kigali kugira urebe amakuru y\'imiyoborere.',
             error: 'Habaye ikibazo. Ongera ugerageze.',
             noZoning: 'Nta makuru y\'imiyoborere kuri aha hantu.',
             reportTitle: 'RAPORO Y\'IMIYOBORERE',
@@ -929,8 +1062,21 @@
             offline: 'Hors ligne',
             loading: 'Vérification du zonage...',
             analyzing: 'Analyse...',
-            welcome: (zone) => `Cette zone est classée ${zone}.\n\nDemandez-moi:\n• Ce que vous pouvez construire\n• Les permis requis\n• Les réglementations`,
-            outsideKigali: 'Cet emplacement est en dehors de la zone de Kigali.',
+            welcome: (zone) => `**Bienvenue sur ZoneAgent**
+
+Cette zone est classée:
+**${zone}**
+
+Questions Possibles:
+
+• Quels types de bâtiments sont autorisés ici?
+• Quelles sont les exigences de hauteur et de retrait?
+• Quels permis sont nécessaires pour construire?
+• Cette zone est-elle adaptée à un usage commercial?
+• Quelles sont les opportunités d'investissement?
+
+Tapez votre question ci-dessous.`,
+            outsideKigali: 'Cet emplacement est en dehors de la zone de couverture de Kigali.\n\nVeuillez sélectionner un emplacement dans les limites de la ville de Kigali.',
             error: 'Une erreur s\'est produite. Veuillez réessayer.',
             noZoning: 'Aucune donnée de zonage disponible.',
             reportTitle: 'RAPPORT DE ZONAGE',
@@ -1182,6 +1328,112 @@
     }
 
     // =============================================================================
+    // TYPEWRITER CONTROLLER
+    // =============================================================================
+    const Typewriter = {
+        activeTimer: null,
+        sessionId: 0,
+        
+        stop() {
+            if (this.activeTimer) {
+                clearTimeout(this.activeTimer);
+                this.activeTimer = null;
+            }
+            this.sessionId++;
+        },
+        
+        async type(element, text, speed = 15) {
+            this.stop();
+            const session = ++this.sessionId;
+            
+            // Create content container with cursor
+            element.innerHTML = '<div class="message-content"></div><span class="typing-cursor"></span>';
+            const content = element.querySelector('.message-content');
+            const cursor = element.querySelector('.typing-cursor');
+            
+            return new Promise((resolve) => {
+                let index = 0;
+                
+                const typeNext = () => {
+                    if (session !== this.sessionId) {
+                        resolve(false);
+                        return;
+                    }
+                    
+                    if (index < text.length) {
+                        // Add character
+                        const char = text[index];
+                        content.innerHTML = this.formatText(text.substring(0, index + 1));
+                        index++;
+                        
+                        // Variable speed for natural feel
+                        let delay = speed;
+                        if (char === '\n') delay = speed * 3;
+                        else if (char === '.' || char === '!' || char === '?') delay = speed * 4;
+                        else if (char === ',') delay = speed * 2;
+                        
+                        // Scroll to bottom
+                        const container = document.getElementById('chatMessages');
+                        container.scrollTop = container.scrollHeight;
+                        
+                        this.activeTimer = setTimeout(typeNext, delay);
+                    } else {
+                        // Done typing - remove cursor, format final
+                        cursor.remove();
+                        content.innerHTML = this.formatText(text);
+                        this.activeTimer = null;
+                        resolve(true);
+                    }
+                };
+                
+                typeNext();
+            });
+        },
+        
+        instant(element, text) {
+            this.stop();
+            element.innerHTML = `<div class="message-content">${this.formatText(text)}</div>`;
+        },
+        
+        formatText(text) {
+            // Convert markdown-like formatting to HTML
+            let formatted = text
+                // Escape HTML
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                // Headers (lines ending with :)
+                .replace(/^([A-Z][^:\n]{2,50}):$/gm, '<h4>$1</h4>')
+                // Bold **text**
+                .replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>')
+                // Bullet points
+                .replace(/^[•\-\*]\s+(.+)$/gm, '<li>$1</li>')
+                // Numbered lists
+                .replace(/^\d+\.\s+(.+)$/gm, '<li>$1</li>')
+                // Wrap consecutive <li> in <ul>
+                .replace(/((?:<li>.*<\/li>\n?)+)/g, '<ul>$1</ul>')
+                // Line breaks to paragraphs (double newline)
+                .replace(/\n\n+/g, '</p><p>')
+                // Single line breaks
+                .replace(/\n/g, '<br>');
+            
+            // Wrap in paragraph if not starting with special element
+            if (!formatted.startsWith('<h4>') && !formatted.startsWith('<ul>')) {
+                formatted = '<p>' + formatted + '</p>';
+            }
+            
+            // Clean up empty paragraphs
+            formatted = formatted.replace(/<p><\/p>/g, '');
+            formatted = formatted.replace(/<p><h4>/g, '<h4>');
+            formatted = formatted.replace(/<\/h4><\/p>/g, '</h4>');
+            formatted = formatted.replace(/<p><ul>/g, '<ul>');
+            formatted = formatted.replace(/<\/ul><\/p>/g, '</ul>');
+            
+            return formatted;
+        }
+    };
+
+    // =============================================================================
     // CHAT INTERFACE
     // =============================================================================
     function openChat() {
@@ -1191,6 +1443,7 @@
     function closeChat() {
         document.getElementById('chatOverlay').classList.remove('active');
         document.getElementById('mapHint').classList.remove('hidden');
+        Typewriter.stop();
     }
 
     function clearMessages() {
@@ -1198,28 +1451,42 @@
         document.getElementById('chatActions').style.display = 'none';
     }
 
-    function addMessage(type, content) {
+    function addMessage(type, content, animate = false) {
         const container = document.getElementById('chatMessages');
         const msg = document.createElement('div');
         msg.className = `message ${type}`;
-        msg.textContent = content;
-        container.appendChild(msg);
-        container.scrollTop = container.scrollHeight;
+        
+        if (animate && type === 'assistant') {
+            container.appendChild(msg);
+            container.scrollTop = container.scrollHeight;
+            return Typewriter.type(msg, content);
+        } else {
+            msg.innerHTML = `<div class="message-content">${Typewriter.formatText(content)}</div>`;
+            container.appendChild(msg);
+            container.scrollTop = container.scrollHeight;
+            return Promise.resolve();
+        }
     }
 
-    function addLoadingMessage() {
+    function showTypingIndicator() {
         const container = document.getElementById('chatMessages');
-        const msg = document.createElement('div');
-        msg.className = 'message assistant';
-        msg.id = 'loadingMsg';
-        msg.innerHTML = '<div class="message-loading"><span></span><span></span><span></span></div>';
-        container.appendChild(msg);
+        const indicator = document.createElement('div');
+        indicator.className = 'typing-indicator';
+        indicator.id = 'typingIndicator';
+        indicator.innerHTML = `
+            <div class="typing-dots">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        `;
+        container.appendChild(indicator);
         container.scrollTop = container.scrollHeight;
     }
 
-    function removeLoadingMessage() {
-        const loading = document.getElementById('loadingMsg');
-        if (loading) loading.remove();
+    function hideTypingIndicator() {
+        const indicator = document.getElementById('typingIndicator');
+        if (indicator) indicator.remove();
     }
 
     function displayZoneInfo() {
@@ -1230,12 +1497,12 @@
         document.getElementById('zoneColor').style.background = 
             ZONE_COLORS[currentZoning.zoneName] || '#64748B';
 
-        // Show welcome message
+        // Show welcome message with typewriter
         clearMessages();
         const welcomeMsg = t('welcome', currentZoning.zoneName);
-        addMessage('assistant', welcomeMsg);
-        
         currentResponse = { response: welcomeMsg, question: null };
+        
+        addMessage('assistant', welcomeMsg, true);
     }
 
     async function sendMessage() {
@@ -1249,8 +1516,8 @@
         input.value = '';
         input.style.height = 'auto';
 
-        // Show loading
-        addLoadingMessage();
+        // Show typing indicator
+        showTypingIndicator();
         document.getElementById('sendBtn').disabled = true;
 
         try {
@@ -1267,20 +1534,20 @@
             });
 
             const data = await res.json();
-            removeLoadingMessage();
+            hideTypingIndicator();
 
             if (data.success && data.data) {
                 currentResponse = {
                     response: data.data.response,
                     question
                 };
-                addMessage('assistant', data.data.response);
+                await addMessage('assistant', data.data.response, true);
                 document.getElementById('chatActions').style.display = 'flex';
             } else {
                 addMessage('assistant', t('error'));
             }
         } catch (error) {
-            removeLoadingMessage();
+            hideTypingIndicator();
             addMessage('assistant', t('error'));
         }
 
