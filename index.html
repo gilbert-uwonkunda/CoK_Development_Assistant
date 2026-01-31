@@ -585,6 +585,67 @@
             margin: 16px 0;
         }
 
+        /* Status badges inline */
+        .status-badge-inline {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            margin-right: 8px;
+            vertical-align: middle;
+        }
+
+        .status-badge-inline.success {
+            background: rgba(16, 185, 129, 0.2);
+            color: var(--z-success);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+        }
+
+        .status-badge-inline.error {
+            background: rgba(239, 68, 68, 0.2);
+            color: var(--z-error);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+        }
+
+        .status-badge-inline.warning {
+            background: rgba(245, 158, 11, 0.2);
+            color: var(--z-warning);
+            border: 1px solid rgba(245, 158, 11, 0.3);
+        }
+
+        /* Legal citation */
+        .message-content cite {
+            display: block;
+            font-style: italic;
+            font-size: 12px;
+            color: var(--z-muted);
+            margin-top: 12px;
+            padding-top: 8px;
+            border-top: 1px dashed var(--z-slate);
+        }
+
+        /* Note styling */
+        .message-content .note {
+            display: block;
+            font-size: 12px;
+            color: var(--z-light);
+            background: rgba(59, 130, 246, 0.1);
+            padding: 8px 12px;
+            border-radius: 6px;
+            border-left: 3px solid var(--z-accent);
+            margin: 12px 0;
+        }
+
+        /* Footer info section */
+        .message-content .footer-info {
+            font-size: 12px;
+            color: var(--z-muted);
+            line-height: 1.8;
+        }
+
         /* Typing indicator */
         .typing-indicator {
             display: flex;
@@ -1043,7 +1104,9 @@
     <script src="https://js.arcgis.com/4.28/"></script>
 
     <script>
-  
+    // =============================================================================
+    // ANONYMOUS USAGE TRACKING (No Login Required)
+    // =============================================================================
     const UsageTracker = {
         visitorId: null,
         
@@ -1054,11 +1117,11 @@
         },
         
         async generateFingerprint() {
-        
+            // Check if we have a stored ID first
             let storedId = localStorage.getItem('za_visitor_id');
             if (storedId) return storedId;
             
-        
+            // Generate fingerprint from browser characteristics
             const components = [
                 navigator.userAgent,
                 navigator.language,
@@ -1172,9 +1235,9 @@
         }
     };
 
-    
-    // DRAGGABLE CHAT PANEL
-    
+    // =============================================================================
+    // DRAGGABLE CHAT PANEL (Desktop Only)
+    // =============================================================================
     const DraggablePanel = {
         isDragging: false,
         startX: 0,
@@ -1313,9 +1376,9 @@
         }
     };
 
-   
+    // =============================================================================
     // STATE
-    
+    // =============================================================================
     let view = null;
     let currentLocation = null;
     let currentZoning = null;
@@ -1326,8 +1389,9 @@
 
     const API_BASE_URL = 'https://cok-development-assistant.onrender.com/api';
 
+    // =============================================================================
     // TRANSLATIONS
-
+    // =============================================================================
     const i18n = {
         en: {
             myLocation: 'My Location',
@@ -1457,9 +1521,9 @@ Tapez votre question ci-dessous.`,
         document.getElementById('chatInput').placeholder = t('askPlaceholder');
     }
 
-    
+    // =============================================================================
     // ZONE COLORS
-   
+    // =============================================================================
     const ZONE_COLORS = {
         'A1-Agriculture zone': '#90EE90',
         'C1-Mixed use zone': '#FFB6C1',
@@ -1492,9 +1556,9 @@ Tapez votre question ci-dessous.`,
         'WR-Waterbody zone': '#87CEEB'
     };
 
-   
+    // =============================================================================
     // APP INITIALIZATION
-
+    // =============================================================================
     document.getElementById('enterBtn').addEventListener('click', enterApp);
 
     async function enterApp() {
@@ -1581,8 +1645,9 @@ Tapez votre question ci-dessous.`,
         input.style.height = Math.min(input.scrollHeight, 120) + 'px';
     }
 
+    // =============================================================================
     // MAP INTERACTIONS
- 
+    // =============================================================================
     async function handleMapClick(event) {
         if (!backendConnected) return;
 
@@ -1691,9 +1756,9 @@ Tapez votre question ci-dessous.`,
         );
     }
 
- 
+    // =============================================================================
     // TYPEWRITER CONTROLLER
-
+    // =============================================================================
     const Typewriter = {
         activeTimer: null,
         sessionId: 0,
@@ -1767,7 +1832,7 @@ Tapez votre question ci-dessous.`,
                 .replace(/</g, '&lt;')
                 .replace(/>/g, '&gt;')
                 
-                // SVG icons
+                // Replace emojis with SVG icons
                 .replace(/📍/g, '<svg class="inline-icon" viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>')
                 .replace(/📋|📄/g, '<svg class="inline-icon" viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg>')
                 .replace(/📞|📱/g, '<svg class="inline-icon" viewBox="0 0 24 24"><path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg>')
@@ -1778,47 +1843,73 @@ Tapez votre question ci-dessous.`,
                 .replace(/⚠️/g, '<svg class="inline-icon icon-warning" viewBox="0 0 24 24"><path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"/></svg>')
                 .replace(/💡/g, '<svg class="inline-icon icon-accent" viewBox="0 0 24 24"><path d="M9 21c0 .5.4 1 1 1h4c.6 0 1-.5 1-1v-1H9v1zm3-19C8.1 2 5 5.1 5 9c0 2.4 1.2 4.5 3 5.7V17c0 .5.4 1 1 1h6c.6 0 1-.5 1-1v-2.3c1.8-1.3 3-3.4 3-5.7 0-3.9-3.1-7-7-7z"/></svg>')
                 .replace(/🎯/g, '<svg class="inline-icon icon-accent" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm0-14c-3.31 0-6 2.69-6 6s2.69 6 6 6 6-2.69 6-6-2.69-6-6-6zm0 10c-2.21 0-4-1.79-4-4s1.79-4 4-4 4 1.79 4 4-1.79 4-4 4zm0-6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/></svg>')
-                // 
+                // Remove any other emojis
                 .replace(/[\u{1F300}-\u{1F9FF}]/gu, '')
                 
-                // Single line separator (triple dash or underscore)
+                // Heavy separator lines (━━━ or ═══ or ───)
+                .replace(/^[━═─]{3,}$/gm, '<hr class="message-divider">')
+                
+                // Triple dash/underscore separator
                 .replace(/^[-_]{3,}$/gm, '<hr class="message-divider">')
                 
-                // Headers (lines ending with :)
-                .replace(/^([A-Z][^:\n]{2,50}):$/gm, '<h4>$1</h4>')
+                // Status labels - make them badges
+                .replace(/^(YES|PERMITTED|ALLOWED)\s*[-–—]?\s*/gm, '<span class="status-badge-inline success">$1</span> ')
+                .replace(/^(NO|NOT PERMITTED|PROHIBITED)\s*[-–—]?\s*/gm, '<span class="status-badge-inline error">$1</span> ')
+                .replace(/^(CONDITIONAL|REQUIRES APPROVAL)\s*[-–—]?\s*/gm, '<span class="status-badge-inline warning">$1</span> ')
+                
+                // Section headers (text ending with colon on its own or followed by newline)
+                .replace(/^([A-Z][A-Za-z0-9 ]{2,40}):?\s*$/gm, '<h4>$1</h4>')
+                
                 // Bold **text**
                 .replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>')
-                // Bullet points
-                .replace(/^[•\-\*]\s+(.+)$/gm, '<li>$1</li>')
+                
+                // Bullet points (•, -, *, ▪, ▸)
+                .replace(/^[•\-\*▪▸]\s+(.+)$/gm, '<li>$1</li>')
+                
                 // Numbered lists
-                .replace(/^\d+\.\s+(.+)$/gm, '<li>$1</li>')
+                .replace(/^\d+[\.\)]\s+(.+)$/gm, '<li>$1</li>')
+                
                 // Wrap consecutive <li> in <ul>
-                .replace(/((?:<li>.*<\/li>\n?)+)/g, '<ul>$1</ul>')
+                .replace(/((?:<li>.*<\/li>\s*)+)/g, '<ul>$1</ul>')
+                
+                // Legal basis line - style as citation
+                .replace(/^(Legal basis:.*?)$/gm, '<cite>$1</cite>')
+                
+                // Note lines
+                .replace(/^(Note:.*?)$/gm, '<small class="note">$1</small>')
+                
                 // Line breaks to paragraphs (double newline)
                 .replace(/\n\n+/g, '</p><p>')
+                
                 // Single line breaks
                 .replace(/\n/g, '<br>');
             
             // Wrap in paragraph if not starting with special element
-            if (!formatted.startsWith('<h4>') && !formatted.startsWith('<ul>') && !formatted.startsWith('<hr')) {
+            if (!formatted.startsWith('<h4>') && !formatted.startsWith('<ul>') && !formatted.startsWith('<hr') && !formatted.startsWith('<span class="status')) {
                 formatted = '<p>' + formatted + '</p>';
             }
             
-            // Clean up empty paragraphs
+            // Clean up empty paragraphs and misplaced tags
             formatted = formatted.replace(/<p><\/p>/g, '');
-            formatted = formatted.replace(/<p><h4>/g, '<h4>');
-            formatted = formatted.replace(/<\/h4><\/p>/g, '</h4>');
-            formatted = formatted.replace(/<p><ul>/g, '<ul>');
-            formatted = formatted.replace(/<\/ul><\/p>/g, '</ul>');
-            formatted = formatted.replace(/<p><hr/g, '<hr');
-            formatted = formatted.replace(/><\/p>/g, '>');
+            formatted = formatted.replace(/<p>(<h4>)/g, '$1');
+            formatted = formatted.replace(/(<\/h4>)<\/p>/g, '$1');
+            formatted = formatted.replace(/<p>(<ul>)/g, '$1');
+            formatted = formatted.replace(/(<\/ul>)<\/p>/g, '$1');
+            formatted = formatted.replace(/<p>(<hr)/g, '$1');
+            formatted = formatted.replace(/(class="message-divider">)<\/p>/g, '$1');
+            formatted = formatted.replace(/<p>(<cite>)/g, '$1');
+            formatted = formatted.replace(/(<\/cite>)<\/p>/g, '$1');
+            formatted = formatted.replace(/<p>(<small)/g, '$1');
+            formatted = formatted.replace(/(<\/small>)<\/p>/g, '$1');
+            formatted = formatted.replace(/<p>(<span class="status)/g, '$1');
             
             return formatted;
         }
     };
 
+    // =============================================================================
     // CHAT INTERFACE
-    
+    // =============================================================================
     function openChat() {
         document.getElementById('chatOverlay').classList.add('active');
     }
@@ -1940,9 +2031,9 @@ Tapez votre question ci-dessous.`,
         document.getElementById('sendBtn').disabled = false;
     }
 
-   
+    // =============================================================================
     // PDF & SHARE
-    
+    // =============================================================================
     async function downloadPDF() {
         if (!currentZoning || !currentResponse) return;
 
@@ -2111,7 +2202,7 @@ Location: ${currentLocation.latitude.toFixed(4)}, ${currentLocation.longitude.to
 
 ${currentResponse.response.substring(0, 400)}...
 
-City of Kigali: +250 788 000 000`;
+City of Kigali: Hotline:3260`;
 
         if (navigator.share) {
             try {
@@ -2132,7 +2223,7 @@ City of Kigali: +250 788 000 000`;
         });
     }
 
-    console.log('ZoneAgent v1.0 - Zero Trips. Instant Compliance.');
+    console.log('ZoneAgent- Zero Trips. Instant Compliance.');
     </script>
 </body>
 </html>
