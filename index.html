@@ -229,6 +229,11 @@
         #mapDiv {
             width: 100%;
             height: 100%;
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
         }
 
         /* Leaflet overrides for dark theme */
@@ -1725,6 +1730,12 @@ Tapez votre question ci-dessous.`,
             subdomains: ['mt0', 'mt1', 'mt2', 'mt3']
         }).addTo(map);
 
+        // CRITICAL: Force Leaflet to recalculate size and load all tiles
+        setTimeout(() => {
+            map.invalidateSize();
+            map.setView([-1.9441, 30.0619], 12);
+        }, 100);
+
         // Wait for backend check
         backendConnected = await healthCheck;
         
@@ -1749,6 +1760,12 @@ Tapez votre question ci-dessous.`,
             console.log('⏳ Waiting for map...');
             await mapInitPromise;
         }
+        
+        // CRITICAL: Force map to recognize its full size
+        setTimeout(() => {
+            map.invalidateSize(true);
+            console.log('✨ Map resized to full viewport');
+        }, 200);
         
         // Setup interactions
         map.on('click', handleMapClick);
