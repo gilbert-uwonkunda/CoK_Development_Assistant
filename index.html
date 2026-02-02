@@ -246,6 +246,11 @@
             color: var(--z-accent) !important;
         }
 
+        /* Zoom controls - bottom left */
+        .leaflet-bottom.leaflet-left {
+            bottom: 80px;
+        }
+
         .leaflet-control-zoom {
             border: none !important;
             box-shadow: var(--z-shadow) !important;
@@ -255,14 +260,143 @@
             background: var(--z-space) !important;
             border: 1px solid var(--z-slate) !important;
             color: var(--z-white) !important;
-            width: 36px !important;
-            height: 36px !important;
-            line-height: 36px !important;
+            width: 40px !important;
+            height: 40px !important;
+            line-height: 40px !important;
+            font-size: 20px !important;
         }
 
         .leaflet-control-zoom a:hover {
             background: var(--z-slate) !important;
             border-color: var(--z-accent) !important;
+        }
+
+        /* Search control */
+        .search-control {
+            position: absolute;
+            top: 16px;
+            right: 16px;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .search-box {
+            display: flex;
+            align-items: center;
+            background: var(--z-space);
+            border: 1px solid var(--z-slate);
+            border-radius: 24px;
+            padding: 0 16px;
+            transition: all var(--z-transition);
+            width: 0;
+            opacity: 0;
+            overflow: hidden;
+        }
+
+        .search-box.active {
+            width: 300px;
+            opacity: 1;
+        }
+
+        .search-input {
+            flex: 1;
+            background: transparent;
+            border: none;
+            color: var(--z-white);
+            font-family: var(--z-font);
+            font-size: 14px;
+            padding: 10px 0;
+            outline: none;
+        }
+
+        .search-input::placeholder {
+            color: var(--z-muted);
+        }
+
+        .search-icon-btn {
+            width: 40px;
+            height: 40px;
+            background: var(--z-space);
+            border: 1px solid var(--z-slate);
+            border-radius: 50%;
+            color: var(--z-white);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all var(--z-transition);
+        }
+
+        .search-icon-btn:hover {
+            background: var(--z-slate);
+            border-color: var(--z-accent);
+        }
+
+        .search-icon-btn svg {
+            width: 18px;
+            height: 18px;
+            fill: currentColor;
+        }
+
+        .search-results {
+            position: absolute;
+            top: 48px;
+            right: 0;
+            background: var(--z-space);
+            border: 1px solid var(--z-slate);
+            border-radius: var(--z-radius);
+            min-width: 300px;
+            max-height: 400px;
+            overflow-y: auto;
+            box-shadow: var(--z-shadow);
+            display: none;
+        }
+
+        .search-results.active {
+            display: block;
+        }
+
+        .search-result-item {
+            padding: 12px 16px;
+            border-bottom: 1px solid var(--z-slate);
+            cursor: pointer;
+            transition: background var(--z-transition);
+        }
+
+        .search-result-item:last-child {
+            border-bottom: none;
+        }
+
+        .search-result-item:hover {
+            background: var(--z-slate);
+        }
+
+        .search-result-name {
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--z-white);
+            margin-bottom: 4px;
+        }
+
+        .search-result-address {
+            font-size: 12px;
+            color: var(--z-muted);
+        }
+
+        .search-loading {
+            padding: 16px;
+            text-align: center;
+            color: var(--z-muted);
+            font-size: 13px;
+        }
+
+        .search-no-results {
+            padding: 16px;
+            text-align: center;
+            color: var(--z-muted);
+            font-size: 13px;
         }
 
         /* Map Overlay Header */
@@ -1043,14 +1177,25 @@
                     </svg>
                 </div>
                 <span class="header-title">ZoneAgent</span>
-            </div>
-
-            <div class="header-actions">
-                <div class="lang-selector">
+                <div class="lang-selector" style="margin-left: 12px;">
                     <button class="lang-btn active" data-lang="en">EN</button>
                     <button class="lang-btn" data-lang="rw">RW</button>
                     <button class="lang-btn" data-lang="fr">FR</button>
                 </div>
+            </div>
+
+            <div class="header-actions">
+                <!-- Search Control -->
+                <div class="search-control">
+                    <div class="search-box" id="searchBox">
+                        <input type="text" class="search-input" id="searchInput" placeholder="Search location...">
+                    </div>
+                    <button class="search-icon-btn" id="searchBtn">
+                        <svg viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
+                    </button>
+                    <div class="search-results" id="searchResults"></div>
+                </div>
+
                 <button class="location-btn" id="locationBtn">
                     <svg viewBox="0 0 24 24"><path d="M12 8c-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4-1.79-4-4-4zm8.94 3c-.46-4.17-3.77-7.48-7.94-7.94V1h-2v2.06C6.83 3.52 3.52 6.83 3.06 11H1v2h2.06c.46 4.17 3.77 7.48 7.94 7.94V23h2v-2.06c4.17-.46 7.48-3.77 7.94-7.94H23v-2h-2.06zM12 19c-3.87 0-7-3.13-7-7s3.13-7 7-7 7 3.13 7 7-3.13 7-7 7z"/></svg>
                     <span data-i18n="myLocation">My Location</span>
@@ -1552,9 +1697,14 @@ Tapez votre question ci-dessous.`,
             zoom: 13,
             minZoom: 10,
             maxZoom: 20,
-            zoomControl: true,
+            zoomControl: false, // Disable default position
             attributionControl: true
         });
+
+        // Add zoom control to bottom left
+        L.control.zoom({
+            position: 'bottomleft'
+        }).addTo(map);
 
         // Use Esri World Imagery (satellite)
         L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
@@ -1642,12 +1792,133 @@ Tapez votre question ci-dessous.`,
 
         // Share button
         document.getElementById('shareBtn').addEventListener('click', shareReport);
+
+        // Search functionality
+        const searchBtn = document.getElementById('searchBtn');
+        const searchBox = document.getElementById('searchBox');
+        const searchInput = document.getElementById('searchInput');
+        const searchResults = document.getElementById('searchResults');
+
+        // Toggle search box
+        searchBtn.addEventListener('click', () => {
+            searchBox.classList.toggle('active');
+            if (searchBox.classList.contains('active')) {
+                searchInput.focus();
+            } else {
+                searchInput.value = '';
+                searchResults.classList.remove('active');
+            }
+        });
+
+        // Search input
+        let searchTimeout;
+        searchInput.addEventListener('input', (e) => {
+            clearTimeout(searchTimeout);
+            const query = e.target.value.trim();
+            
+            if (query.length < 3) {
+                searchResults.classList.remove('active');
+                return;
+            }
+
+            searchTimeout = setTimeout(() => {
+                performSearch(query);
+            }, 500);
+        });
+
+        // Close search on escape
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                searchBox.classList.remove('active');
+                searchResults.classList.remove('active');
+                searchInput.value = '';
+            }
+        });
+
+        // Close search when clicking outside
+        document.addEventListener('click', (e) => {
+            if (!e.target.closest('.search-control')) {
+                searchBox.classList.remove('active');
+                searchResults.classList.remove('active');
+            }
+        });
     }
 
     function autoResize() {
         const input = document.getElementById('chatInput');
         input.style.height = 'auto';
         input.style.height = Math.min(input.scrollHeight, 120) + 'px';
+    }
+
+    // =============================================================================
+    // LOCATION SEARCH
+    // =============================================================================
+    async function performSearch(query) {
+        const searchResults = document.getElementById('searchResults');
+        
+        // Show loading
+        searchResults.innerHTML = '<div class="search-loading">Searching...</div>';
+        searchResults.classList.add('active');
+
+        try {
+            // Use Nominatim (OpenStreetMap) geocoding API
+            // Bias search towards Kigali, Rwanda
+            const url = `https://nominatim.openstreetmap.org/search?` +
+                `q=${encodeURIComponent(query)},Kigali,Rwanda&` +
+                `format=json&` +
+                `limit=5&` +
+                `countrycodes=rw&` +
+                `viewbox=29.8,-2.2,30.3,-1.7&` + // Kigali bounds
+                `bounded=1`;
+
+            const response = await fetch(url, {
+                headers: {
+                    'User-Agent': 'ZoneAgent/1.0'
+                }
+            });
+
+            const results = await response.json();
+
+            if (results.length === 0) {
+                searchResults.innerHTML = '<div class="search-no-results">No locations found in Kigali</div>';
+                return;
+            }
+
+            // Display results
+            searchResults.innerHTML = results.map(result => `
+                <div class="search-result-item" data-lat="${result.lat}" data-lng="${result.lon}">
+                    <div class="search-result-name">${result.display_name.split(',')[0]}</div>
+                    <div class="search-result-address">${result.display_name}</div>
+                </div>
+            `).join('');
+
+            // Add click handlers to results
+            searchResults.querySelectorAll('.search-result-item').forEach(item => {
+                item.addEventListener('click', () => {
+                    const lat = parseFloat(item.dataset.lat);
+                    const lng = parseFloat(item.dataset.lng);
+                    
+                    // Fly to location
+                    map.flyTo([lat, lng], 16);
+                    
+                    // Simulate click
+                    setTimeout(() => {
+                        handleMapClick({
+                            latlng: L.latLng(lat, lng)
+                        });
+                    }, 1000);
+
+                    // Close search
+                    document.getElementById('searchBox').classList.remove('active');
+                    searchResults.classList.remove('active');
+                    document.getElementById('searchInput').value = '';
+                });
+            });
+
+        } catch (error) {
+            console.error('Search error:', error);
+            searchResults.innerHTML = '<div class="search-no-results">Search failed. Please try again.</div>';
+        }
     }
 
     // =============================================================================
