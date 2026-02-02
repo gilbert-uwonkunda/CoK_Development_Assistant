@@ -1709,23 +1709,20 @@ Tapez votre question ci-dessous.`,
             position: 'bottomright'
         }).addTo(map);
 
-        // Use Esri World Imagery (satellite)
-        L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
-            attribution: 'Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community',
+        // Use Google Maps Satellite (much faster than Esri)
+        L.tileLayer('https://mt1.google.com/vt/lyrs=s&x={x}&y={y}&z={z}', {
+            attribution: 'Imagery &copy; Google',
             maxZoom: 20,
             minZoom: 10,
-            updateWhenIdle: false,
-            updateWhenZooming: false,
-            keepBuffer: 2 // Preload surrounding tiles
+            subdomains: ['mt0', 'mt1', 'mt2', 'mt3']
         }).addTo(map);
         
-        // Add labels layer on top of satellite imagery
-        L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_only_labels/{z}/{x}/{y}{r}.png', {
+        // Add road/label overlay for hybrid view
+        L.tileLayer('https://mt1.google.com/vt/lyrs=h&x={x}&y={y}&z={z}', {
             attribution: '',
-            subdomains: 'abcd',
             maxZoom: 20,
             minZoom: 10,
-            pane: 'shadowPane' // Render above imagery
+            subdomains: ['mt0', 'mt1', 'mt2', 'mt3']
         }).addTo(map);
 
         // Wait for backend check
