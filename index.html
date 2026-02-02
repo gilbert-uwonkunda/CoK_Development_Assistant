@@ -6,7 +6,7 @@
     <meta name="theme-color" content="#0F172A">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <title>ZoneAgent</title>
+    <title>ZoneAgent - Zero Trips. Instant Compliance.</title>
     
     <!-- Leaflet CSS -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" 
@@ -66,7 +66,7 @@
         }
 
         /* ============================================
-           SPLASH SCREEN - Minimal & Professional
+           SPLASH SCREEN
            ============================================ */
         .splash {
             position: fixed;
@@ -87,7 +87,6 @@
             pointer-events: none;
         }
 
-        /* Subtle animated background */
         .splash::before {
             content: '';
             position: absolute;
@@ -113,63 +112,63 @@
         }
 
         .splash-logo {
-            width: 80px;
-            height: 80px;
+            width: 72px;
+            height: 72px;
             background: linear-gradient(135deg, var(--z-accent) 0%, var(--z-purple) 100%);
-            border-radius: 20px;
+            border-radius: 18px;
             display: flex;
             align-items: center;
             justify-content: center;
-            margin: 0 auto 24px;
+            margin: 0 auto 20px;
             box-shadow: 0 8px 32px var(--z-accent-glow);
         }
 
         .splash-logo svg {
-            width: 44px;
-            height: 44px;
+            width: 40px;
+            height: 40px;
             fill: var(--z-white);
         }
 
         .splash-title {
-            font-size: 32px;
+            font-size: 28px;
             font-weight: 700;
             letter-spacing: -0.5px;
-            margin-bottom: 8px;
+            margin-bottom: 6px;
         }
 
         .splash-tagline {
-            font-size: 16px;
+            font-size: 15px;
             color: var(--z-light);
-            margin-bottom: 40px;
+            margin-bottom: 32px;
         }
 
         .splash-features {
             display: flex;
             flex-direction: column;
-            gap: 16px;
-            margin-bottom: 40px;
+            gap: 12px;
+            margin-bottom: 32px;
             text-align: left;
         }
 
         .splash-feature {
             display: flex;
             align-items: flex-start;
-            gap: 16px;
-            padding: 16px;
+            gap: 14px;
+            padding: 14px;
             background: rgba(255, 255, 255, 0.03);
             border: 1px solid rgba(255, 255, 255, 0.06);
             border-radius: var(--z-radius);
         }
 
         .feature-num {
-            width: 28px;
-            height: 28px;
+            width: 26px;
+            height: 26px;
             background: var(--z-space);
             border-radius: 8px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 13px;
+            font-size: 12px;
             font-weight: 600;
             color: var(--z-accent);
             flex-shrink: 0;
@@ -180,25 +179,25 @@
         }
 
         .feature-title {
-            font-size: 14px;
+            font-size: 13px;
             font-weight: 600;
             margin-bottom: 2px;
         }
 
         .feature-desc {
-            font-size: 13px;
+            font-size: 12px;
             color: var(--z-muted);
         }
 
         .enter-btn {
             width: 100%;
-            padding: 16px 24px;
+            padding: 14px 24px;
             background: linear-gradient(135deg, var(--z-accent) 0%, var(--z-purple) 100%);
             border: none;
             border-radius: var(--z-radius);
             color: var(--z-white);
             font-family: var(--z-font);
-            font-size: 16px;
+            font-size: 15px;
             font-weight: 600;
             cursor: pointer;
             transition: transform var(--z-transition), box-shadow var(--z-transition);
@@ -214,7 +213,7 @@
         }
 
         /* ============================================
-           MAIN APP - Map Full Screen
+           MAIN APP
            ============================================ */
         .app {
             position: fixed;
@@ -236,25 +235,24 @@
             bottom: 0;
         }
 
-        /* Leaflet overrides for dark theme */
         .leaflet-container {
             background: #0a0e1a;
         }
 
         .leaflet-control-attribution {
-            background: rgba(15, 23, 42, 0.8) !important;
+            background: rgba(15, 23, 42, 0.85) !important;
             color: var(--z-light) !important;
             font-size: 10px !important;
+            padding: 4px 8px !important;
         }
 
         .leaflet-control-attribution a {
             color: var(--z-accent) !important;
         }
 
-        /* Zoom controls - bottom right */
         .leaflet-bottom.leaflet-right {
-            bottom: 80px;
-            right: 16px;
+            bottom: 100px;
+            right: 12px;
         }
 
         .leaflet-control-zoom {
@@ -266,10 +264,10 @@
             background: var(--z-space) !important;
             border: 1px solid var(--z-slate) !important;
             color: var(--z-white) !important;
-            width: 40px !important;
-            height: 40px !important;
-            line-height: 40px !important;
-            font-size: 20px !important;
+            width: 36px !important;
+            height: 36px !important;
+            line-height: 36px !important;
+            font-size: 18px !important;
         }
 
         .leaflet-control-zoom a:hover {
@@ -277,24 +275,111 @@
             border-color: var(--z-accent) !important;
         }
 
-        /* Search control */
+        /* ============================================
+           MAP HEADER - Mobile Optimized
+           ============================================ */
+        .map-header {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            padding: 12px;
+            background: linear-gradient(to bottom, rgba(15, 23, 42, 0.95) 0%, rgba(15, 23, 42, 0.8) 70%, transparent 100%);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            z-index: 1000;
+            pointer-events: none;
+            gap: 8px;
+        }
+
+        .map-header > * {
+            pointer-events: auto;
+        }
+
+        .header-brand {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-shrink: 0;
+        }
+
+        .header-logo {
+            width: 32px;
+            height: 32px;
+            background: linear-gradient(135deg, var(--z-accent) 0%, var(--z-purple) 100%);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .header-logo svg {
+            width: 18px;
+            height: 18px;
+            fill: var(--z-white);
+        }
+
+        .header-title {
+            font-size: 16px;
+            font-weight: 700;
+        }
+
+        .lang-selector {
+            display: flex;
+            gap: 2px;
+            background: var(--z-slate);
+            padding: 3px;
+            border-radius: 6px;
+            margin-left: 8px;
+        }
+
+        .lang-btn {
+            padding: 4px 8px;
+            background: transparent;
+            border: none;
+            border-radius: 4px;
+            color: var(--z-muted);
+            font-family: var(--z-font);
+            font-size: 11px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all var(--z-transition);
+        }
+
+        .lang-btn:hover {
+            color: var(--z-white);
+        }
+
+        .lang-btn.active {
+            background: var(--z-accent);
+            color: var(--z-white);
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 6px;
+            align-items: center;
+        }
+
+        /* Search Control */
         .search-control {
             position: relative;
             display: flex;
             align-items: center;
-            gap: 8px;
         }
 
         .search-box {
             position: absolute;
-            right: 48px;
+            right: 40px;
             top: 0;
             display: flex;
             align-items: center;
             background: var(--z-space);
             border: 1px solid var(--z-slate);
-            border-radius: 24px;
-            padding: 0 16px;
+            border-radius: 20px;
+            padding: 0 12px;
             transition: all var(--z-transition);
             width: 0;
             opacity: 0;
@@ -303,7 +388,7 @@
         }
 
         .search-box.active {
-            width: 280px;
+            width: 200px;
             opacity: 1;
         }
 
@@ -313,18 +398,19 @@
             border: none;
             color: var(--z-white);
             font-family: var(--z-font);
-            font-size: 14px;
-            padding: 10px 0;
+            font-size: 13px;
+            padding: 8px 0;
             outline: none;
+            min-width: 0;
         }
 
         .search-input::placeholder {
             color: var(--z-muted);
         }
 
-        .search-icon-btn {
-            width: 40px;
-            height: 40px;
+        .icon-btn {
+            width: 36px;
+            height: 36px;
             background: var(--z-space);
             border: 1px solid var(--z-slate);
             border-radius: 50%;
@@ -334,28 +420,30 @@
             align-items: center;
             justify-content: center;
             transition: all var(--z-transition);
+            flex-shrink: 0;
         }
 
-        .search-icon-btn:hover {
+        .icon-btn:hover {
             background: var(--z-slate);
             border-color: var(--z-accent);
         }
 
-        .search-icon-btn svg {
-            width: 18px;
-            height: 18px;
+        .icon-btn svg {
+            width: 16px;
+            height: 16px;
             fill: currentColor;
         }
 
         .search-results {
             position: absolute;
-            top: 48px;
+            top: 44px;
             right: 0;
             background: var(--z-space);
             border: 1px solid var(--z-slate);
             border-radius: var(--z-radius);
-            min-width: 320px;
-            max-height: 400px;
+            min-width: 280px;
+            max-width: calc(100vw - 24px);
+            max-height: 350px;
             overflow-y: auto;
             box-shadow: var(--z-shadow);
             display: none;
@@ -367,7 +455,7 @@
         }
 
         .search-result-item {
-            padding: 12px 16px;
+            padding: 10px 14px;
             border-bottom: 1px solid var(--z-slate);
             cursor: pointer;
             transition: background var(--z-transition);
@@ -382,96 +470,44 @@
         }
 
         .search-result-name {
-            font-size: 14px;
+            font-size: 13px;
             font-weight: 500;
             color: var(--z-white);
-            margin-bottom: 4px;
+            margin-bottom: 2px;
         }
 
         .search-result-address {
+            font-size: 11px;
+            color: var(--z-muted);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .search-loading, .search-no-results {
+            padding: 14px;
+            text-align: center;
+            color: var(--z-muted);
             font-size: 12px;
-            color: var(--z-muted);
         }
 
-        .search-loading {
-            padding: 16px;
-            text-align: center;
-            color: var(--z-muted);
-            font-size: 13px;
-        }
-
-        .search-no-results {
-            padding: 16px;
-            text-align: center;
-            color: var(--z-muted);
-            font-size: 13px;
-        }
-
-        /* Map Overlay Header */
-        .map-header {
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            padding: 16px;
-            background: linear-gradient(to bottom, rgba(15, 23, 42, 0.95) 0%, transparent 100%);
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            z-index: 1000;
-            pointer-events: none;
-        }
-
-        .map-header > * {
-            pointer-events: auto;
-        }
-
-        .header-brand {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .header-logo {
-            width: 36px;
-            height: 36px;
-            background: linear-gradient(135deg, var(--z-accent) 0%, var(--z-purple) 100%);
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .header-logo svg {
-            width: 20px;
-            height: 20px;
-            fill: var(--z-white);
-        }
-
-        .header-title {
-            font-size: 18px;
-            font-weight: 700;
-        }
-
-        .header-actions {
-            display: flex;
-            gap: 8px;
-        }
-
+        /* Location Button */
         .location-btn {
             display: flex;
             align-items: center;
+            justify-content: center;
             gap: 6px;
-            padding: 10px 16px;
+            padding: 8px 12px;
             background: var(--z-space);
             border: 1px solid var(--z-slate);
-            border-radius: 24px;
+            border-radius: 20px;
             color: var(--z-white);
             font-family: var(--z-font);
-            font-size: 13px;
+            font-size: 12px;
             font-weight: 500;
             cursor: pointer;
             transition: all var(--z-transition);
+            white-space: nowrap;
         }
 
         .location-btn:hover {
@@ -485,25 +521,31 @@
         }
 
         .location-btn svg {
-            width: 16px;
-            height: 16px;
+            width: 14px;
+            height: 14px;
             fill: currentColor;
         }
 
-        /* Map Bottom Hint */
+        .location-btn .btn-text {
+            display: none;
+        }
+
+        /* Map Hint */
         .map-hint {
             position: absolute;
             bottom: 24px;
             left: 50%;
             transform: translateX(-50%);
-            padding: 12px 20px;
+            padding: 10px 16px;
             background: var(--z-deep);
             border: 1px solid var(--z-slate);
-            border-radius: 24px;
-            font-size: 14px;
+            border-radius: 20px;
+            font-size: 13px;
             color: var(--z-pale);
             z-index: 1000;
             transition: opacity var(--z-transition), transform var(--z-transition);
+            text-align: center;
+            max-width: calc(100% - 48px);
         }
 
         .map-hint.hidden {
@@ -512,48 +554,57 @@
             pointer-events: none;
         }
 
-        /* Status Indicator */
-        .status-badge {
-            position: absolute;
-            top: 16px;
-            right: 16px;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            padding: 8px 12px;
-            background: var(--z-space);
-            border: 1px solid var(--z-slate);
-            border-radius: 20px;
-            font-size: 12px;
-            color: var(--z-light);
-            z-index: 1000;
-        }
-
-        .status-dot {
-            width: 8px;
-            height: 8px;
+        /* ============================================
+           FLOATING CHAT TOGGLE BUTTON
+           ============================================ */
+        .chat-toggle-btn {
+            position: fixed;
+            bottom: 24px;
+            left: 24px;
+            width: 56px;
+            height: 56px;
+            background: linear-gradient(135deg, var(--z-accent) 0%, var(--z-purple) 100%);
+            border: none;
             border-radius: 50%;
-            background: var(--z-warning);
-            animation: pulse 2s infinite;
+            color: var(--z-white);
+            cursor: pointer;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 20px var(--z-accent-glow);
+            z-index: 1500;
+            transition: all var(--z-transition);
         }
 
-        .status-dot.ready {
-            background: var(--z-success);
-            animation: none;
+        .chat-toggle-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 28px var(--z-accent-glow);
         }
 
-        .status-dot.error {
-            background: var(--z-error);
-            animation: none;
+        .chat-toggle-btn svg {
+            width: 24px;
+            height: 24px;
+            fill: currentColor;
         }
 
-        @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.4; }
+        .chat-toggle-btn.visible {
+            display: flex;
+            animation: popIn 0.3s ease-out;
+        }
+
+        @keyframes popIn {
+            from {
+                transform: scale(0);
+                opacity: 0;
+            }
+            to {
+                transform: scale(1);
+                opacity: 1;
+            }
         }
 
         /* ============================================
-           CHAT OVERLAY - Full Screen on Mobile
+           CHAT OVERLAY
            ============================================ */
         .chat-overlay {
             position: fixed;
@@ -570,15 +621,15 @@
             transform: translateY(0);
         }
 
-        /* Chat Header */
         .chat-header {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: 16px 20px;
+            padding: 12px 16px;
             background: var(--z-space);
             border-bottom: 1px solid var(--z-slate);
             flex-shrink: 0;
+            gap: 12px;
         }
 
         .chat-zone-info {
@@ -587,22 +638,33 @@
         }
 
         .chat-zone-name {
-            font-size: 16px;
+            font-size: 14px;
             font-weight: 600;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
+            display: flex;
+            align-items: center;
         }
 
         .chat-zone-coords {
-            font-size: 12px;
+            font-size: 11px;
             color: var(--z-muted);
             font-family: var(--z-mono);
         }
 
+        .zone-color {
+            width: 10px;
+            height: 10px;
+            border-radius: 3px;
+            flex-shrink: 0;
+            margin-right: 8px;
+            display: inline-block;
+        }
+
         .close-btn {
-            width: 40px;
-            height: 40px;
+            width: 36px;
+            height: 36px;
             background: var(--z-slate);
             border: none;
             border-radius: 50%;
@@ -613,7 +675,6 @@
             justify-content: center;
             transition: background var(--z-transition);
             flex-shrink: 0;
-            margin-left: 16px;
         }
 
         .close-btn:hover {
@@ -621,8 +682,8 @@
         }
 
         .close-btn svg {
-            width: 20px;
-            height: 20px;
+            width: 18px;
+            height: 18px;
             fill: currentColor;
         }
 
@@ -630,17 +691,17 @@
         .chat-messages {
             flex: 1;
             overflow-y: auto;
-            padding: 20px;
+            padding: 16px;
             display: flex;
             flex-direction: column;
-            gap: 16px;
+            gap: 12px;
         }
 
         .message {
-            max-width: 90%;
-            padding: 14px 18px;
-            border-radius: 16px;
-            font-size: 14px;
+            max-width: 88%;
+            padding: 12px 14px;
+            border-radius: 14px;
+            font-size: 13px;
             line-height: 1.6;
             animation: messageIn 0.3s ease-out;
         }
@@ -675,20 +736,21 @@
             color: var(--z-light);
             align-self: center;
             text-align: center;
-            font-size: 13px;
+            font-size: 12px;
+            padding: 10px 16px;
         }
 
-        /* Formatted message content */
+        /* Message Content */
         .message-content {
             white-space: pre-wrap;
             word-wrap: break-word;
         }
 
         .message-content h4 {
-            font-size: 14px;
+            font-size: 13px;
             font-weight: 600;
             color: var(--z-accent);
-            margin: 16px 0 8px 0;
+            margin: 14px 0 6px 0;
             padding-bottom: 4px;
             border-bottom: 1px solid var(--z-slate);
         }
@@ -698,7 +760,7 @@
         }
 
         .message-content p {
-            margin: 0 0 12px 0;
+            margin: 0 0 10px 0;
         }
 
         .message-content p:last-child {
@@ -706,12 +768,12 @@
         }
 
         .message-content ul {
-            margin: 8px 0 12px 0;
-            padding-left: 20px;
+            margin: 6px 0 10px 0;
+            padding-left: 18px;
         }
 
         .message-content li {
-            margin-bottom: 6px;
+            margin-bottom: 4px;
             line-height: 1.5;
         }
 
@@ -722,58 +784,37 @@
 
         .message-content code {
             background: var(--z-deep);
-            padding: 2px 6px;
+            padding: 2px 5px;
             border-radius: 4px;
             font-family: var(--z-mono);
-            font-size: 12px;
+            font-size: 11px;
         }
 
-        /* Inline SVG icons in messages */
         .inline-icon {
-            width: 16px;
-            height: 16px;
+            width: 14px;
+            height: 14px;
             fill: var(--z-light);
             vertical-align: text-bottom;
-            margin-right: 6px;
-            flex-shrink: 0;
+            margin-right: 4px;
             display: inline-block;
         }
 
-        .inline-icon.icon-success {
-            fill: var(--z-success);
-        }
-
-        .inline-icon.icon-error {
-            fill: var(--z-error);
-        }
-
-        .inline-icon.icon-warning {
-            fill: var(--z-warning);
-        }
-
-        .inline-icon.icon-accent {
-            fill: var(--z-accent);
-        }
-
-        /* Message divider line */
         .message-divider {
             border: none;
             height: 1px;
             background: var(--z-slate);
-            margin: 16px 0;
+            margin: 14px 0;
         }
 
-        /* Status badges inline */
         .status-badge-inline {
             display: inline-block;
-            padding: 4px 10px;
+            padding: 3px 8px;
             border-radius: 4px;
-            font-size: 11px;
+            font-size: 10px;
             font-weight: 700;
             letter-spacing: 0.5px;
             text-transform: uppercase;
-            margin-right: 8px;
-            vertical-align: middle;
+            margin-right: 6px;
         }
 
         .status-badge-inline.success {
@@ -794,47 +835,38 @@
             border: 1px solid rgba(245, 158, 11, 0.3);
         }
 
-        /* Legal citation */
         .message-content cite {
             display: block;
             font-style: italic;
-            font-size: 12px;
+            font-size: 11px;
             color: var(--z-muted);
-            margin-top: 12px;
-            padding-top: 8px;
+            margin-top: 10px;
+            padding-top: 6px;
             border-top: 1px dashed var(--z-slate);
         }
 
-        /* Note styling */
         .message-content .note {
             display: block;
-            font-size: 12px;
+            font-size: 11px;
             color: var(--z-light);
             background: rgba(59, 130, 246, 0.1);
-            padding: 8px 12px;
+            padding: 6px 10px;
             border-radius: 6px;
             border-left: 3px solid var(--z-accent);
-            margin: 12px 0;
+            margin: 10px 0;
         }
 
-        /* Footer info section */
-        .message-content .footer-info {
-            font-size: 12px;
-            color: var(--z-muted);
-            line-height: 1.8;
-        }
-
-        /* Typing indicator */
+        /* Typing Indicator */
         .typing-indicator {
             display: flex;
             align-items: center;
             gap: 8px;
-            padding: 14px 18px;
+            padding: 12px 14px;
             background: var(--z-space);
             border: 1px solid var(--z-slate);
-            border-radius: 16px;
+            border-radius: 14px;
             border-bottom-left-radius: 4px;
-            max-width: 120px;
+            max-width: 100px;
             animation: messageIn 0.3s ease-out;
         }
 
@@ -844,8 +876,8 @@
         }
 
         .typing-dots span {
-            width: 8px;
-            height: 8px;
+            width: 7px;
+            height: 7px;
             background: var(--z-muted);
             border-radius: 50%;
             animation: typingBounce 1.4s ease-in-out infinite;
@@ -856,17 +888,10 @@
         .typing-dots span:nth-child(3) { animation-delay: 0.4s; }
 
         @keyframes typingBounce {
-            0%, 60%, 100% { 
-                transform: translateY(0);
-                background: var(--z-muted);
-            }
-            30% { 
-                transform: translateY(-6px);
-                background: var(--z-accent);
-            }
+            0%, 60%, 100% { transform: translateY(0); background: var(--z-muted); }
+            30% { transform: translateY(-5px); background: var(--z-accent); }
         }
 
-        /* Cursor blink for typewriter */
         .typing-cursor {
             display: inline-block;
             width: 2px;
@@ -886,7 +911,7 @@
         .chat-actions {
             display: flex;
             gap: 8px;
-            padding: 12px 20px;
+            padding: 10px 16px;
             border-top: 1px solid var(--z-slate);
             background: var(--z-space);
             flex-shrink: 0;
@@ -897,14 +922,14 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 8px;
-            padding: 12px 16px;
+            gap: 6px;
+            padding: 10px 12px;
             background: var(--z-slate);
             border: none;
             border-radius: var(--z-radius-sm);
             color: var(--z-white);
             font-family: var(--z-font);
-            font-size: 13px;
+            font-size: 12px;
             font-weight: 500;
             cursor: pointer;
             transition: all var(--z-transition);
@@ -920,8 +945,8 @@
         }
 
         .action-btn svg {
-            width: 16px;
-            height: 16px;
+            width: 14px;
+            height: 14px;
             fill: currentColor;
         }
 
@@ -936,8 +961,8 @@
         /* Chat Input */
         .chat-input-area {
             display: flex;
-            gap: 12px;
-            padding: 16px 20px;
+            gap: 10px;
+            padding: 12px 16px;
             background: var(--z-deep);
             border-top: 1px solid var(--z-slate);
             flex-shrink: 0;
@@ -945,16 +970,16 @@
 
         .chat-input {
             flex: 1;
-            padding: 14px 18px;
+            padding: 12px 14px;
             background: var(--z-space);
             border: 1px solid var(--z-slate);
-            border-radius: 24px;
+            border-radius: 20px;
             color: var(--z-white);
             font-family: var(--z-font);
-            font-size: 14px;
+            font-size: 13px;
             resize: none;
-            min-height: 48px;
-            max-height: 120px;
+            min-height: 44px;
+            max-height: 100px;
             outline: none;
             transition: border-color var(--z-transition);
         }
@@ -968,8 +993,8 @@
         }
 
         .send-btn {
-            width: 48px;
-            height: 48px;
+            width: 44px;
+            height: 44px;
             background: var(--z-accent);
             border: none;
             border-radius: 50%;
@@ -993,62 +1018,68 @@
         }
 
         .send-btn svg {
-            width: 20px;
-            height: 20px;
+            width: 18px;
+            height: 18px;
             fill: currentColor;
         }
 
-        /* Language Selector */
-        .lang-selector {
-            display: flex;
-            gap: 4px;
-            background: var(--z-slate);
-            padding: 4px;
-            border-radius: 8px;
-        }
-
-        .lang-btn {
-            padding: 6px 12px;
-            background: transparent;
-            border: none;
-            border-radius: 6px;
-            color: var(--z-muted);
-            font-family: var(--z-font);
-            font-size: 12px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all var(--z-transition);
-        }
-
-        .lang-btn:hover {
-            color: var(--z-white);
-        }
-
-        .lang-btn.active {
-            background: var(--z-accent);
-            color: var(--z-white);
-        }
-
-        /* Zone Color Badge */
-        .zone-color {
-            width: 12px;
-            height: 12px;
-            border-radius: 4px;
-            flex-shrink: 0;
-            margin-right: 8px;
-            display: inline-block;
-            vertical-align: middle;
-        }
-
-        /* Responsive - Desktop */
+        /* ============================================
+           DESKTOP STYLES
+           ============================================ */
         @media (min-width: 768px) {
+            .map-header {
+                padding: 16px 20px;
+            }
+
+            .header-logo {
+                width: 36px;
+                height: 36px;
+            }
+
+            .header-logo svg {
+                width: 20px;
+                height: 20px;
+            }
+
+            .header-title {
+                font-size: 18px;
+            }
+
+            .lang-btn {
+                padding: 5px 10px;
+                font-size: 12px;
+            }
+
+            .location-btn {
+                padding: 10px 16px;
+                font-size: 13px;
+            }
+
+            .location-btn .btn-text {
+                display: inline;
+            }
+
+            .icon-btn {
+                width: 40px;
+                height: 40px;
+            }
+
+            .icon-btn svg {
+                width: 18px;
+                height: 18px;
+            }
+
+            .search-box.active {
+                width: 280px;
+            }
+
             .chat-overlay {
                 top: auto;
                 left: 24px;
                 right: auto;
                 bottom: 24px;
-                width: 420px;
-                height: 600px;
+                width: 400px;
+                height: 560px;
                 max-height: calc(100vh - 48px);
                 border-radius: var(--z-radius);
                 box-shadow: var(--z-shadow);
@@ -1058,7 +1089,7 @@
                 overflow: hidden;
                 min-width: 320px;
                 min-height: 400px;
-                max-width: 600px;
+                max-width: 560px;
             }
 
             .chat-overlay.active {
@@ -1073,13 +1104,13 @@
 
             .chat-header {
                 cursor: grab;
+                padding: 14px 20px;
             }
 
             .chat-header:active {
                 cursor: grabbing;
             }
 
-            /* Drag handle indicator */
             .drag-indicator {
                 display: flex;
                 justify-content: center;
@@ -1098,39 +1129,96 @@
                 border-radius: 50%;
             }
 
+            .chat-messages {
+                padding: 20px;
+                gap: 14px;
+            }
+
+            .message {
+                font-size: 14px;
+                padding: 14px 16px;
+            }
+
+            .chat-toggle-btn {
+                bottom: 32px;
+                left: 32px;
+            }
+
             .map-hint {
                 bottom: 32px;
             }
+
+            .leaflet-bottom.leaflet-right {
+                bottom: 80px;
+                right: 16px;
+            }
         }
 
-        /* Hide drag indicator on mobile */
+        /* Mobile - hide drag indicator */
         @media (max-width: 767px) {
             .drag-indicator {
                 display: none;
+            }
+
+            .leaflet-bottom.leaflet-right {
+                bottom: 90px;
+                right: 10px;
+            }
+
+            .leaflet-control-zoom a {
+                width: 32px !important;
+                height: 32px !important;
+                line-height: 32px !important;
+                font-size: 16px !important;
             }
         }
 
         /* Safe area for notched phones */
         @supports (padding-top: env(safe-area-inset-top)) {
             .map-header {
-                padding-top: calc(16px + env(safe-area-inset-top));
+                padding-top: calc(12px + env(safe-area-inset-top));
             }
 
             .chat-header {
-                padding-top: calc(16px + env(safe-area-inset-top));
+                padding-top: calc(12px + env(safe-area-inset-top));
             }
 
             .chat-input-area {
-                padding-bottom: calc(16px + env(safe-area-inset-bottom));
+                padding-bottom: calc(12px + env(safe-area-inset-bottom));
+            }
+
+            .chat-toggle-btn {
+                bottom: calc(24px + env(safe-area-inset-bottom));
+            }
+
+            .map-hint {
+                bottom: calc(24px + env(safe-area-inset-bottom));
+            }
+        }
+
+        /* Small phones */
+        @media (max-width: 380px) {
+            .header-title {
+                display: none;
+            }
+
+            .lang-selector {
+                margin-left: 0;
+            }
+
+            .splash-title {
+                font-size: 24px;
+            }
+
+            .splash-tagline {
+                font-size: 14px;
             }
         }
     </style>
 </head>
 <body>
 
-    <!-- ============================================
-         SPLASH SCREEN
-         ============================================ -->
+    <!-- SPLASH SCREEN -->
     <div class="splash" id="splash">
         <div class="splash-content">
             <div class="splash-logo">
@@ -1169,14 +1257,11 @@
         </div>
     </div>
 
-    <!-- ============================================
-         MAIN APP
-         ============================================ -->
+    <!-- MAIN APP -->
     <div class="app" id="app">
-        <!-- Map -->
         <div id="mapDiv"></div>
 
-        <!-- Map Header Overlay -->
+        <!-- Map Header -->
         <div class="map-header">
             <div class="header-brand">
                 <div class="header-logo">
@@ -1185,7 +1270,7 @@
                     </svg>
                 </div>
                 <span class="header-title">ZoneAgent</span>
-                <div class="lang-selector" style="margin-left: 12px;">
+                <div class="lang-selector">
                     <button class="lang-btn active" data-lang="en">EN</button>
                     <button class="lang-btn" data-lang="rw">RW</button>
                     <button class="lang-btn" data-lang="fr">FR</button>
@@ -1193,20 +1278,19 @@
             </div>
 
             <div class="header-actions">
-                <!-- Search Control -->
-                <div class="search-control" style="position: relative;">
-                    <button class="search-icon-btn" id="searchBtn">
-                        <svg viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
-                    </button>
+                <div class="search-control">
                     <div class="search-box" id="searchBox">
                         <input type="text" class="search-input" id="searchInput" placeholder="Search location...">
                     </div>
+                    <button class="icon-btn" id="searchBtn" title="Search">
+                        <svg viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
+                    </button>
                     <div class="search-results" id="searchResults"></div>
                 </div>
 
-                <button class="location-btn" id="locationBtn">
+                <button class="location-btn" id="locationBtn" title="My Location">
                     <svg viewBox="0 0 24 24"><path d="M12 8c-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4-1.79-4-4-4zm8.94 3c-.46-4.17-3.77-7.48-7.94-7.94V1h-2v2.06C6.83 3.52 3.52 6.83 3.06 11H1v2h2.06c.46 4.17 3.77 7.48 7.94 7.94V23h2v-2.06c4.17-.46 7.48-3.77 7.94-7.94H23v-2h-2.06zM12 19c-3.87 0-7-3.13-7-7s3.13-7 7-7 7 3.13 7 7-3.13 7-7 7z"/></svg>
-                    <span data-i18n="myLocation">My Location</span>
+                    <span class="btn-text" data-i18n="myLocation">My Location</span>
                 </button>
             </div>
         </div>
@@ -1214,16 +1298,13 @@
         <!-- Map Hint -->
         <div class="map-hint" id="mapHint" data-i18n="tapHint">Tap anywhere on the map to check zoning</div>
 
-        <!-- Status Badge (hidden by default, shown when loading) -->
-        <div class="status-badge" id="statusBadge" style="display: none;">
-            <div class="status-dot" id="statusDot"></div>
-            <span id="statusText">Connecting...</span>
-        </div>
+        <!-- Floating Chat Toggle Button -->
+        <button class="chat-toggle-btn" id="chatToggleBtn" title="Open Chat">
+            <svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 14H6l-2 2V4h16v12z"/></svg>
+        </button>
     </div>
 
-    <!-- ============================================
-         CHAT OVERLAY
-         ============================================ -->
+    <!-- CHAT OVERLAY -->
     <div class="chat-overlay" id="chatOverlay">
         <div class="drag-indicator">
             <div class="drag-dots">
@@ -1238,14 +1319,12 @@
                 </div>
                 <div class="chat-zone-coords" id="zoneCoords">--.------, --.------</div>
             </div>
-            <button class="close-btn" id="closeChat">
+            <button class="close-btn" id="closeChat" title="Close (view map)">
                 <svg viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
             </button>
         </div>
 
-        <div class="chat-messages" id="chatMessages">
-            <!-- Messages will be inserted here -->
-        </div>
+        <div class="chat-messages" id="chatMessages"></div>
 
         <div class="chat-actions" id="chatActions" style="display: none;">
             <button class="action-btn primary" id="downloadBtn">
@@ -1273,7 +1352,25 @@
 
     <script>
     // =============================================================================
-    // ANONYMOUS USAGE TRACKING (No Login Required)
+    // CONFIGURATION
+    // =============================================================================
+    const API_BASE_URL = 'https://cok-development-assistant.onrender.com/api';
+    const sessionId = 'web_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+
+    // =============================================================================
+    // STATE
+    // =============================================================================
+    let map = null;
+    let currentMarker = null;
+    let currentLocation = null;
+    let currentZoning = null;
+    let currentResponse = null;
+    let backendConnected = false;
+    let currentLanguage = 'en';
+    let chatHasContent = false;
+
+    // =============================================================================
+    // USAGE TRACKER
     // =============================================================================
     const UsageTracker = {
         visitorId: null,
@@ -1281,7 +1378,6 @@
         async init() {
             this.visitorId = await this.generateFingerprint();
             this.trackEvent('session_start');
-            console.log('Visitor ID:', this.visitorId);
         },
         
         async generateFingerprint() {
@@ -1289,13 +1385,10 @@
             if (storedId) return storedId;
             
             const components = [
-                navigator.userAgent,
-                navigator.language,
-                screen.width + 'x' + screen.height,
-                screen.colorDepth,
+                navigator.userAgent, navigator.language,
+                screen.width + 'x' + screen.height, screen.colorDepth,
                 new Date().getTimezoneOffset(),
-                navigator.hardwareConcurrency || 'unknown',
-                navigator.platform
+                navigator.hardwareConcurrency || 'unknown', navigator.platform
             ];
             
             const fingerprint = components.join('|');
@@ -1316,14 +1409,10 @@
         
         trackEvent(eventType, data = {}) {
             const event = {
-                visitor_id: this.visitorId,
-                event: eventType,
+                visitor_id: this.visitorId, event: eventType,
                 timestamp: new Date().toISOString(),
-                session_id: sessionId,
-                language: currentLanguage,
-                ...data
+                session_id: sessionId, language: currentLanguage, ...data
             };
-            
             this.storeLocally(event);
             this.sendToBackend(event);
         },
@@ -1334,9 +1423,7 @@
                 events.push(event);
                 if (events.length > 100) events.shift();
                 localStorage.setItem('za_events', JSON.stringify(events));
-            } catch (e) {
-                console.warn('Local storage unavailable');
-            }
+            } catch (e) {}
         },
         
         async sendToBackend(event) {
@@ -1350,42 +1437,23 @@
         },
         
         trackLocationQuery(lat, lng, zoneName) {
-            this.trackEvent('location_query', {
-                lat: lat.toFixed(4),
-                lng: lng.toFixed(4),
-                zone: zoneName
-            });
+            this.trackEvent('location_query', { lat: lat.toFixed(4), lng: lng.toFixed(4), zone: zoneName });
         },
-        
         trackQuestion(question, zoneName) {
-            this.trackEvent('ai_question', {
-                question_length: question.length,
-                zone: zoneName
-            });
+            this.trackEvent('ai_question', { question_length: question.length, zone: zoneName });
         },
-        
-        trackDownload(zoneName) {
-            this.trackEvent('pdf_download', { zone: zoneName });
-        },
-        
-        trackShare(zoneName) {
-            this.trackEvent('share', { zone: zoneName });
-        }
+        trackDownload(zoneName) { this.trackEvent('pdf_download', { zone: zoneName }); },
+        trackShare(zoneName) { this.trackEvent('share', { zone: zoneName }); }
     };
 
     // =============================================================================
-    // DRAGGABLE CHAT PANEL (Desktop Only)
+    // DRAGGABLE PANEL (Desktop)
     // =============================================================================
     const DraggablePanel = {
-        isDragging: false,
-        startX: 0,
-        startY: 0,
-        startLeft: 0,
-        startTop: 0,
+        isDragging: false, startX: 0, startY: 0, startLeft: 0, startTop: 0,
         
         init() {
             if (window.innerWidth < 768) return;
-            
             const panel = document.getElementById('chatOverlay');
             const header = document.getElementById('chatHeader');
             const dragIndicator = document.querySelector('.drag-indicator');
@@ -1394,66 +1462,32 @@
                 if (!el) return;
                 el.addEventListener('mousedown', (e) => this.startDrag(e, panel));
             });
-            
             document.addEventListener('mousemove', (e) => this.drag(e, panel));
             document.addEventListener('mouseup', () => this.stopDrag(panel));
-            
-            [header, dragIndicator].forEach(el => {
-                if (!el) return;
-                el.addEventListener('touchstart', (e) => this.startDrag(e, panel), { passive: false });
-            });
-            document.addEventListener('touchmove', (e) => this.drag(e, panel), { passive: false });
-            document.addEventListener('touchend', () => this.stopDrag(panel));
-            
             this.loadPosition(panel);
         },
         
         startDrag(e, panel) {
-            if (window.innerWidth < 768) return;
-            if (e.target.closest('button')) return;
-            
+            if (window.innerWidth < 768 || e.target.closest('button')) return;
             this.isDragging = true;
             panel.classList.add('dragging');
-            
-            const clientX = e.touches ? e.touches[0].clientX : e.clientX;
-            const clientY = e.touches ? e.touches[0].clientY : e.clientY;
-            
             const rect = panel.getBoundingClientRect();
-            this.startX = clientX;
-            this.startY = clientY;
-            this.startLeft = rect.left;
-            this.startTop = rect.top;
-            
+            this.startX = e.clientX; this.startY = e.clientY;
+            this.startLeft = rect.left; this.startTop = rect.top;
             panel.style.left = rect.left + 'px';
             panel.style.top = rect.top + 'px';
-            panel.style.bottom = 'auto';
-            panel.style.right = 'auto';
-            
+            panel.style.bottom = 'auto'; panel.style.right = 'auto';
             e.preventDefault();
         },
         
         drag(e, panel) {
             if (!this.isDragging) return;
-            
-            const clientX = e.touches ? e.touches[0].clientX : e.clientX;
-            const clientY = e.touches ? e.touches[0].clientY : e.clientY;
-            
-            const deltaX = clientX - this.startX;
-            const deltaY = clientY - this.startY;
-            
-            let newLeft = this.startLeft + deltaX;
-            let newTop = this.startTop + deltaY;
-            
+            let newLeft = this.startLeft + (e.clientX - this.startX);
+            let newTop = this.startTop + (e.clientY - this.startY);
             const rect = panel.getBoundingClientRect();
-            const maxLeft = window.innerWidth - rect.width;
-            const maxTop = window.innerHeight - rect.height;
-            
-            newLeft = Math.max(0, Math.min(newLeft, maxLeft));
-            newTop = Math.max(0, Math.min(newTop, maxTop));
-            
-            panel.style.left = newLeft + 'px';
-            panel.style.top = newTop + 'px';
-            
+            newLeft = Math.max(0, Math.min(newLeft, window.innerWidth - rect.width));
+            newTop = Math.max(0, Math.min(newTop, window.innerHeight - rect.height));
+            panel.style.left = newLeft + 'px'; panel.style.top = newTop + 'px';
             e.preventDefault();
         },
         
@@ -1467,43 +1501,22 @@
         savePosition(panel) {
             const rect = panel.getBoundingClientRect();
             localStorage.setItem('za_panel_position', JSON.stringify({
-                left: rect.left,
-                top: rect.top,
-                width: rect.width,
-                height: rect.height
+                left: rect.left, top: rect.top, width: rect.width, height: rect.height
             }));
         },
         
         loadPosition(panel) {
             try {
                 const saved = JSON.parse(localStorage.getItem('za_panel_position'));
-                if (saved && window.innerWidth >= 768) {
-                    if (saved.left < window.innerWidth - 100 && saved.top < window.innerHeight - 100) {
-                        panel.style.left = saved.left + 'px';
-                        panel.style.top = saved.top + 'px';
-                        panel.style.bottom = 'auto';
-                        panel.style.right = 'auto';
-                        if (saved.width) panel.style.width = saved.width + 'px';
-                        if (saved.height) panel.style.height = saved.height + 'px';
-                    }
+                if (saved && window.innerWidth >= 768 && saved.left < window.innerWidth - 100 && saved.top < window.innerHeight - 100) {
+                    panel.style.left = saved.left + 'px'; panel.style.top = saved.top + 'px';
+                    panel.style.bottom = 'auto'; panel.style.right = 'auto';
+                    if (saved.width) panel.style.width = saved.width + 'px';
+                    if (saved.height) panel.style.height = saved.height + 'px';
                 }
             } catch (e) {}
         }
     };
-
-    // =============================================================================
-    // STATE
-    // =============================================================================
-    let map = null;
-    let currentMarker = null;
-    let currentLocation = null;
-    let currentZoning = null;
-    let currentResponse = null;
-    let backendConnected = false;
-    let currentLanguage = 'en';
-    const sessionId = 'web_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
-
-    const API_BASE_URL = 'https://cok-development-assistant.onrender.com/api';
 
     // =============================================================================
     // TRANSLATIONS
@@ -1515,11 +1528,7 @@
             download: 'Download PDF',
             share: 'Share',
             askPlaceholder: 'Ask about zoning, permits, regulations...',
-            connecting: 'Connecting...',
-            connected: 'Connected',
-            offline: 'Offline',
             loading: 'Checking zoning...',
-            analyzing: 'Analyzing...',
             welcome: (zone) => `**Welcome to ZoneAgent**
 
 This location is classified as:
@@ -1531,21 +1540,17 @@ What You Can Ask:
 • What are the height and setback requirements?
 • What permits do I need to build?
 • Is this zone suitable for commercial use?
-• What are the investment opportunities?
 
 Type your question below to get instant guidance.`,
-            outsideKigali: 'This location is outside the Kigali zoning coverage area.\n\nPlease select a location within Kigali City boundaries to check zoning information.',
+            outsideKigali: 'This location is outside the Kigali zoning coverage area.\n\nPlease select a location within Kigali City boundaries.',
             error: 'Something went wrong. Please try again.',
             noZoning: 'No zoning data available for this location.',
             reportTitle: 'ZONING COMPLIANCE REPORT',
             generatedBy: 'Generated by ZoneAgent',
-            locationLabel: 'Location',
-            zoneLabel: 'Zone',
-            dateLabel: 'Date',
-            questionLabel: 'Question',
-            analysisLabel: 'Analysis',
+            locationLabel: 'Location', zoneLabel: 'Zone', dateLabel: 'Date',
+            questionLabel: 'Question', analysisLabel: 'Analysis',
             contactLabel: 'Official Contacts',
-            disclaimer: 'This report is for informational purposes only. Verify all information with City of Kigali authorities before making development decisions.'
+            disclaimer: 'This report is for informational purposes only. Verify with City of Kigali authorities.'
         },
         rw: {
             myLocation: 'Aho Ndi',
@@ -1553,11 +1558,7 @@ Type your question below to get instant guidance.`,
             download: 'Kuramo PDF',
             share: 'Sangiza',
             askPlaceholder: 'Baza ku miyoborere, uruhushya...',
-            connecting: 'Guhuza...',
-            connected: 'Byahujwe',
-            offline: 'Ntibihari',
             loading: 'Kureba imiyoborere...',
-            analyzing: 'Gusesengura...',
             welcome: (zone) => `**Murakaza neza kuri ZoneAgent**
 
 Aha hantu hafite imiyoborere:
@@ -1568,21 +1569,18 @@ Ibyo Ushobora Kubaza:
 • Ni ubuhe bwubatsi bwemewe aha?
 • Ni izihe ntera n'imipaka isabwa?
 • Ni uruhe ruhushya nkeneye kubaka?
-• Ese aha hantu hashobora gukoreshwa mu bucuruzi?
+• Ese hashobora gukoreshwa mu bucuruzi?
 
 Andika ikibazo cyawe hano.`,
-            outsideKigali: 'Aha hantu ni inyuma y\'imiyoborere ya Kigali.\n\nHitamo aho hantu mu mujyi wa Kigali kugira urebe amakuru y\'imiyoborere.',
+            outsideKigali: 'Aha hantu ni inyuma y\'imiyoborere ya Kigali.',
             error: 'Habaye ikibazo. Ongera ugerageze.',
-            noZoning: 'Nta makuru y\'imiyoborere kuri aha hantu.',
+            noZoning: 'Nta makuru y\'imiyoborere.',
             reportTitle: 'RAPORO Y\'IMIYOBORERE',
             generatedBy: 'Yakozwe na ZoneAgent',
-            locationLabel: 'Aho hantu',
-            zoneLabel: 'Akarere',
-            dateLabel: 'Itariki',
-            questionLabel: 'Ikibazo',
-            analysisLabel: 'Isesengura',
+            locationLabel: 'Aho hantu', zoneLabel: 'Akarere', dateLabel: 'Itariki',
+            questionLabel: 'Ikibazo', analysisLabel: 'Isesengura',
             contactLabel: 'Aho Wakwiyambaza',
-            disclaimer: 'Iyi raporo ni iy\'amakuru gusa. Emeza amakuru yose n\'ubuyobozi bw\'Umujyi wa Kigali.'
+            disclaimer: 'Emeza amakuru yose n\'ubuyobozi bw\'Umujyi wa Kigali.'
         },
         fr: {
             myLocation: 'Ma Position',
@@ -1590,11 +1588,7 @@ Andika ikibazo cyawe hano.`,
             download: 'Télécharger PDF',
             share: 'Partager',
             askPlaceholder: 'Questions sur le zonage, permis...',
-            connecting: 'Connexion...',
-            connected: 'Connecté',
-            offline: 'Hors ligne',
             loading: 'Vérification du zonage...',
-            analyzing: 'Analyse...',
             welcome: (zone) => `**Bienvenue sur ZoneAgent**
 
 Cette zone est classée:
@@ -1602,25 +1596,21 @@ Cette zone est classée:
 
 Questions Possibles:
 
-• Quels types de bâtiments sont autorisés ici?
-• Quelles sont les exigences de hauteur et de retrait?
-• Quels permis sont nécessaires pour construire?
-• Cette zone est-elle adaptée à un usage commercial?
-• Quelles sont les opportunités d'investissement?
+• Quels bâtiments sont autorisés ici?
+• Quelles sont les exigences de hauteur?
+• Quels permis sont nécessaires?
+• Zone adaptée à un usage commercial?
 
 Tapez votre question ci-dessous.`,
-            outsideKigali: 'Cet emplacement est en dehors de la zone de couverture de Kigali.\n\nVeuillez sélectionner un emplacement dans les limites de la ville de Kigali.',
-            error: 'Une erreur s\'est produite. Veuillez réessayer.',
-            noZoning: 'Aucune donnée de zonage disponible.',
+            outsideKigali: 'Emplacement en dehors de la zone de Kigali.',
+            error: 'Une erreur s\'est produite.',
+            noZoning: 'Aucune donnée de zonage.',
             reportTitle: 'RAPPORT DE ZONAGE',
             generatedBy: 'Généré par ZoneAgent',
-            locationLabel: 'Emplacement',
-            zoneLabel: 'Zone',
-            dateLabel: 'Date',
-            questionLabel: 'Question',
-            analysisLabel: 'Analyse',
+            locationLabel: 'Emplacement', zoneLabel: 'Zone', dateLabel: 'Date',
+            questionLabel: 'Question', analysisLabel: 'Analyse',
             contactLabel: 'Contacts Officiels',
-            disclaimer: 'Ce rapport est fourni à titre informatif. Vérifiez les informations auprès de la Ville de Kigali.'
+            disclaimer: 'Vérifiez les informations auprès de la Ville de Kigali.'
         }
     };
 
@@ -1631,8 +1621,7 @@ Tapez votre question ci-dessous.`,
 
     function updateUI() {
         document.querySelectorAll('[data-i18n]').forEach(el => {
-            const key = el.getAttribute('data-i18n');
-            el.textContent = t(key);
+            el.textContent = t(el.getAttribute('data-i18n'));
         });
         document.getElementById('chatInput').placeholder = t('askPlaceholder');
     }
@@ -1641,141 +1630,136 @@ Tapez votre question ci-dessous.`,
     // ZONE COLORS
     // =============================================================================
     const ZONE_COLORS = {
-        'A1-Agriculture zone': '#90EE90',
-        'C1-Mixed use zone': '#FFB6C1',
-        'C3-City commercial zone': '#CD5626',
-        'I1-Light industrial zone': '#DDA0DD',
-        'I2-General industrial zone': '#9370DB',
-        'I3-Mining/ Extraction/Quarry': '#8B4513',
-        'P1-Parks and open spaces zone': '#32CD32',
-        'P2-Sport and Eco tourism zone': '#00FA9A',
-        'P3B-Forest zone': '#006400',
-        'P3C-Steep slopes (> 30%) zone': '#2E8B57',
-        'PA-Public Administration zone': '#87CEEB',
-        'PF1-Education and research facilities': '#4169E1',
-        'PF2-Health facilities': '#0000FF',
-        'PF3-Religious facilities': '#191970',
-        'PF4-Cultural/ memorial sites': '#6495ED',
-        'PF5-Cemetery/ crematoria': '#B0C4DE',
-        'R1-Low density residential zone': '#FFFFE0',
-        'R1A-Low density residential densification zone': '#FFFACD',
-        'R1B-Rural residential zone': '#F0E68C',
-        'R2-Medium density residential - Improvement zone': '#F59E0B',
-        'R3-Medium density residential - Expansion zone': '#FF7F50',
-        'R4-High density residential zone': '#FF6347',
-        'T-Transportation zone': '#A9A9A9',
-        'U-Utility zone': '#D3D3D3',
-        'W2 - Rehabilitation': '#98FB98',
-        'W3 - Sustainable Exploitation': '#90EE90',
-        'W4 - Conservation': '#8FBC8F',
-        'W5 - Recreational': '#87CEEB',
-        'WR-Waterbody zone': '#87CEEB'
+        'A1-Agriculture zone': '#90EE90', 'C1-Mixed use zone': '#FFB6C1',
+        'C3-City commercial zone': '#CD5626', 'I1-Light industrial zone': '#DDA0DD',
+        'I2-General industrial zone': '#9370DB', 'I3-Mining/ Extraction/Quarry': '#8B4513',
+        'P1-Parks and open spaces zone': '#32CD32', 'P2-Sport and Eco tourism zone': '#00FA9A',
+        'P3B-Forest zone': '#006400', 'P3C-Steep slopes (> 30%) zone': '#2E8B57',
+        'PA-Public Administration zone': '#87CEEB', 'PF1-Education and research facilities': '#4169E1',
+        'PF2-Health facilities': '#0000FF', 'PF3-Religious facilities': '#191970',
+        'PF4-Cultural/ memorial sites': '#6495ED', 'PF5-Cemetery/ crematoria': '#B0C4DE',
+        'R1-Low density residential zone': '#FFFFE0', 'R1A-Low density residential densification zone': '#FFFACD',
+        'R1B-Rural residential zone': '#F0E68C', 'R2-Medium density residential - Improvement zone': '#F59E0B',
+        'R3-Medium density residential - Expansion zone': '#FF7F50', 'R4-High density residential zone': '#FF6347',
+        'T-Transportation zone': '#A9A9A9', 'U-Utility zone': '#D3D3D3',
+        'W2 - Rehabilitation': '#98FB98', 'W3 - Sustainable Exploitation': '#90EE90',
+        'W4 - Conservation': '#8FBC8F', 'W5 - Recreational': '#87CEEB', 'WR-Waterbody zone': '#87CEEB'
     };
 
     // =============================================================================
-    // APP INITIALIZATION - MAP PRELOADS BEFORE SPLASH DISMISSAL
+    // TYPEWRITER
     // =============================================================================
-    
-    // Start preloading map immediately
+    const Typewriter = {
+        activeTimer: null, sessionId: 0,
+        
+        stop() {
+            if (this.activeTimer) { clearTimeout(this.activeTimer); this.activeTimer = null; }
+            this.sessionId++;
+        },
+        
+        async type(element, text, speed = 12) {
+            this.stop();
+            const session = ++this.sessionId;
+            element.innerHTML = '<div class="message-content"></div><span class="typing-cursor"></span>';
+            const content = element.querySelector('.message-content');
+            const cursor = element.querySelector('.typing-cursor');
+            
+            return new Promise((resolve) => {
+                let index = 0;
+                const typeNext = () => {
+                    if (session !== this.sessionId) { resolve(false); return; }
+                    if (index < text.length) {
+                        content.innerHTML = this.formatText(text.substring(0, index + 1));
+                        const char = text[index++];
+                        let delay = speed;
+                        if (char === '\n') delay = speed * 3;
+                        else if ('.!?'.includes(char)) delay = speed * 4;
+                        else if (char === ',') delay = speed * 2;
+                        document.getElementById('chatMessages').scrollTop = document.getElementById('chatMessages').scrollHeight;
+                        this.activeTimer = setTimeout(typeNext, delay);
+                    } else {
+                        cursor.remove();
+                        content.innerHTML = this.formatText(text);
+                        this.activeTimer = null;
+                        resolve(true);
+                    }
+                };
+                typeNext();
+            });
+        },
+        
+        formatText(text) {
+            let f = text
+                .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+                .replace(/^[━═─-]{3,}$/gm, '<hr class="message-divider">')
+                .replace(/^(YES|PERMITTED|ALLOWED)\s*/gm, '<span class="status-badge-inline success">$1</span> ')
+                .replace(/^(NO|NOT PERMITTED|PROHIBITED)\s*/gm, '<span class="status-badge-inline error">$1</span> ')
+                .replace(/^(CONDITIONAL|REQUIRES APPROVAL)\s*/gm, '<span class="status-badge-inline warning">$1</span> ')
+                .replace(/^([A-Z][A-Za-z0-9 ]{2,40}):?\s*$/gm, '<h4>$1</h4>')
+                .replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>')
+                .replace(/^[•\-\*]\s+(.+)$/gm, '<li>$1</li>')
+                .replace(/^\d+[\.\)]\s+(.+)$/gm, '<li>$1</li>')
+                .replace(/((?:<li>.*<\/li>\s*)+)/g, '<ul>$1</ul>')
+                .replace(/\n\n+/g, '</p><p>').replace(/\n/g, '<br>');
+            if (!f.startsWith('<h4>') && !f.startsWith('<ul>') && !f.startsWith('<hr') && !f.startsWith('<span')) {
+                f = '<p>' + f + '</p>';
+            }
+            return f.replace(/<p><\/p>/g, '').replace(/<p>(<h4>)/g, '$1').replace(/(<\/h4>)<\/p>/g, '$1')
+                    .replace(/<p>(<ul>)/g, '$1').replace(/(<\/ul>)<\/p>/g, '$1');
+        }
+    };
+
+    // =============================================================================
+    // MAP INITIALIZATION
+    // =============================================================================
     let mapInitPromise = null;
-    
-    window.addEventListener('DOMContentLoaded', () => {
-        console.log('🚀 Preloading map...');
-        mapInitPromise = preloadMap();
-    });
+
+    window.addEventListener('DOMContentLoaded', () => { mapInitPromise = preloadMap(); });
 
     async function preloadMap() {
-        const startTime = performance.now();
-        
-        // Check backend health in parallel (non-blocking)
         const healthCheck = fetch(`${API_BASE_URL}/health`)
-            .then(r => r.json())
-            .then(d => {
-                console.log('✅ Backend connected');
-                return d.status === 'healthy';
-            })
-            .catch(() => {
-                console.warn('⚠️ Backend unavailable');
-                return false;
-            });
+            .then(r => r.json()).then(d => d.status === 'healthy').catch(() => false);
 
-        // Initialize Leaflet map
         map = L.map('mapDiv', {
-            center: [-1.9441, 30.0619],
-            zoom: 12, // Increased from 13 for wider view
-            minZoom: 10,
-            maxZoom: 20,
-            zoomControl: false, // Disable default position
-            attributionControl: true
+            center: [-1.9441, 30.0619], zoom: 13,
+            minZoom: 10, maxZoom: 20, zoomControl: false, attributionControl: true
         });
 
-        // Add zoom control to bottom right
-        L.control.zoom({
-            position: 'bottomright'
-        }).addTo(map);
+        L.control.zoom({ position: 'bottomright' }).addTo(map);
 
-        // Use Google Maps Satellite (much faster than Esri)
-        L.tileLayer('https://mt1.google.com/vt/lyrs=s&x={x}&y={y}&z={z}', {
-            attribution: 'Imagery &copy; Google',
+        // Google Hybrid (satellite + labels) - FASTEST
+        L.tileLayer('https://mt1.google.com/vt/lyrs=y&x={x}&y={y}&z={z}', {
+            attribution: 'Imagery © Google',
             maxZoom: 20,
-            minZoom: 10,
-            subdomains: ['mt0', 'mt1', 'mt2', 'mt3']
-        }).addTo(map);
-        
-        // Add road/label overlay for hybrid view
-        L.tileLayer('https://mt1.google.com/vt/lyrs=h&x={x}&y={y}&z={z}', {
-            attribution: '',
-            maxZoom: 20,
-            minZoom: 10,
             subdomains: ['mt0', 'mt1', 'mt2', 'mt3']
         }).addTo(map);
 
-        // CRITICAL: Force Leaflet to recalculate size and load all tiles
-        setTimeout(() => {
-            map.invalidateSize();
-            map.setView([-1.9441, 30.0619], 12);
-        }, 100);
-
-        // Wait for backend check
+        setTimeout(() => map.invalidateSize(), 100);
         backendConnected = await healthCheck;
-        
-        const endTime = performance.now();
-        console.log(`✨ Map ready in ${(endTime - startTime).toFixed(0)}ms`);
-        
         return map;
     }
 
+    // =============================================================================
+    // APP ENTRY
+    // =============================================================================
     document.getElementById('enterBtn').addEventListener('click', enterApp);
 
     async function enterApp() {
         document.getElementById('splash').classList.add('hidden');
         document.getElementById('app').classList.add('active');
         
-        // Initialize tracking
         await UsageTracker.init();
         DraggablePanel.init();
         
-        // Map is already loaded from preload
-        if (!map) {
-            console.log('⏳ Waiting for map...');
-            await mapInitPromise;
-        }
+        if (!map) await mapInitPromise;
+        setTimeout(() => map.invalidateSize(true), 200);
         
-        // CRITICAL: Force map to recognize its full size
-        setTimeout(() => {
-            map.invalidateSize(true);
-            console.log('✨ Map resized to full viewport');
-        }, 200);
-        
-        // Setup interactions
         map.on('click', handleMapClick);
         setupEventListeners();
-        
-        console.log('🎯 ZoneAgent ready');
     }
 
     function setupEventListeners() {
-        // Language buttons
+        // Language
         document.querySelectorAll('.lang-btn').forEach(btn => {
             btn.addEventListener('click', () => {
                 document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
@@ -1785,74 +1769,49 @@ Tapez votre question ci-dessous.`,
             });
         });
 
-        // Location button
         document.getElementById('locationBtn').addEventListener('click', useMyLocation);
-
-        // Close chat
+        document.getElementById('chatToggleBtn').addEventListener('click', openChat);
         document.getElementById('closeChat').addEventListener('click', closeChat);
 
-        // Chat input
         const chatInput = document.getElementById('chatInput');
-        chatInput.addEventListener('input', autoResize);
+        chatInput.addEventListener('input', () => {
+            chatInput.style.height = 'auto';
+            chatInput.style.height = Math.min(chatInput.scrollHeight, 100) + 'px';
+        });
         chatInput.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter' && !e.shiftKey) {
-                e.preventDefault();
-                sendMessage();
-            }
+            if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); }
         });
 
-        // Send button
         document.getElementById('sendBtn').addEventListener('click', sendMessage);
-
-        // Download button
         document.getElementById('downloadBtn').addEventListener('click', downloadPDF);
-
-        // Share button
         document.getElementById('shareBtn').addEventListener('click', shareReport);
 
-        // Search functionality
+        // Search
         const searchBtn = document.getElementById('searchBtn');
         const searchBox = document.getElementById('searchBox');
         const searchInput = document.getElementById('searchInput');
         const searchResults = document.getElementById('searchResults');
 
-        // Toggle search box
         searchBtn.addEventListener('click', () => {
             searchBox.classList.toggle('active');
-            if (searchBox.classList.contains('active')) {
-                searchInput.focus();
-            } else {
-                searchInput.value = '';
-                searchResults.classList.remove('active');
-            }
+            if (searchBox.classList.contains('active')) searchInput.focus();
+            else { searchInput.value = ''; searchResults.classList.remove('active'); }
         });
 
-        // Search input
         let searchTimeout;
         searchInput.addEventListener('input', (e) => {
             clearTimeout(searchTimeout);
             const query = e.target.value.trim();
-            
-            if (query.length < 3) {
-                searchResults.classList.remove('active');
-                return;
-            }
-
-            searchTimeout = setTimeout(() => {
-                performSearch(query);
-            }, 500);
+            if (query.length < 3) { searchResults.classList.remove('active'); return; }
+            searchTimeout = setTimeout(() => performSearch(query), 500);
         });
 
-        // Close search on escape
         document.addEventListener('keydown', (e) => {
             if (e.key === 'Escape') {
                 searchBox.classList.remove('active');
                 searchResults.classList.remove('active');
-                searchInput.value = '';
             }
         });
-
-        // Close search when clicking outside
         document.addEventListener('click', (e) => {
             if (!e.target.closest('.search-control')) {
                 searchBox.classList.remove('active');
@@ -1861,104 +1820,57 @@ Tapez votre question ci-dessous.`,
         });
     }
 
-    function autoResize() {
-        const input = document.getElementById('chatInput');
-        input.style.height = 'auto';
-        input.style.height = Math.min(input.scrollHeight, 120) + 'px';
-    }
-
     // =============================================================================
-    // LOCATION SEARCH
+    // SEARCH
     // =============================================================================
     async function performSearch(query) {
         const searchResults = document.getElementById('searchResults');
-        
-        // Show loading
         searchResults.innerHTML = '<div class="search-loading">Searching...</div>';
         searchResults.classList.add('active');
 
         try {
-            // Use Nominatim (OpenStreetMap) geocoding API
-            // Bias search towards Kigali, Rwanda
-            const url = `https://nominatim.openstreetmap.org/search?` +
-                `q=${encodeURIComponent(query)},Kigali,Rwanda&` +
-                `format=json&` +
-                `limit=5&` +
-                `countrycodes=rw&` +
-                `viewbox=29.8,-2.2,30.3,-1.7&` + // Kigali bounds
-                `bounded=1`;
-
-            const response = await fetch(url, {
-                headers: {
-                    'User-Agent': 'ZoneAgent/1.0'
-                }
-            });
-
+            const url = `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(query)},Kigali,Rwanda&format=json&limit=5&countrycodes=rw&viewbox=29.8,-2.2,30.3,-1.7&bounded=1`;
+            const response = await fetch(url, { headers: { 'User-Agent': 'ZoneAgent/1.0' } });
             const results = await response.json();
 
             if (results.length === 0) {
-                searchResults.innerHTML = '<div class="search-no-results">No locations found in Kigali</div>';
+                searchResults.innerHTML = '<div class="search-no-results">No locations found</div>';
                 return;
             }
 
-            // Display results
-            searchResults.innerHTML = results.map(result => `
-                <div class="search-result-item" data-lat="${result.lat}" data-lng="${result.lon}">
-                    <div class="search-result-name">${result.display_name.split(',')[0]}</div>
-                    <div class="search-result-address">${result.display_name}</div>
+            searchResults.innerHTML = results.map(r => `
+                <div class="search-result-item" data-lat="${r.lat}" data-lng="${r.lon}">
+                    <div class="search-result-name">${r.display_name.split(',')[0]}</div>
+                    <div class="search-result-address">${r.display_name}</div>
                 </div>
             `).join('');
 
-            // Add click handlers to results
             searchResults.querySelectorAll('.search-result-item').forEach(item => {
                 item.addEventListener('click', () => {
                     const lat = parseFloat(item.dataset.lat);
                     const lng = parseFloat(item.dataset.lng);
-                    
-                    // Fly to location
                     map.flyTo([lat, lng], 16);
-                    
-                    // Simulate click
-                    setTimeout(() => {
-                        handleMapClick({
-                            latlng: L.latLng(lat, lng)
-                        });
-                    }, 1000);
-
-                    // Close search
+                    setTimeout(() => handleMapClick({ latlng: L.latLng(lat, lng) }), 1000);
                     document.getElementById('searchBox').classList.remove('active');
                     searchResults.classList.remove('active');
                     document.getElementById('searchInput').value = '';
                 });
             });
-
-        } catch (error) {
-            console.error('Search error:', error);
-            searchResults.innerHTML = '<div class="search-no-results">Search failed. Please try again.</div>';
+        } catch (e) {
+            searchResults.innerHTML = '<div class="search-no-results">Search failed</div>';
         }
     }
 
     // =============================================================================
-    // MAP INTERACTIONS
+    // MAP CLICK
     // =============================================================================
     async function handleMapClick(e) {
         if (!backendConnected) return;
 
-        currentLocation = {
-            latitude: e.latlng.lat,
-            longitude: e.latlng.lng
-        };
-
-        // Hide hint
+        currentLocation = { latitude: e.latlng.lat, longitude: e.latlng.lng };
         document.getElementById('mapHint').classList.add('hidden');
-
-        // Add pin
         addPin(e.latlng);
-
-        // Open chat overlay
         openChat();
-
-        // Show loading
         clearMessages();
         addMessage('system', t('loading'));
 
@@ -1967,212 +1879,71 @@ Tapez votre question ci-dessous.`,
             const data = await res.json();
 
             if (data.success && data.data?.zoneData) {
-                currentZoning = {
-                    zoneName: data.data.zoneData.zone_name,
-                    properties: data.data.zoneData
-                };
+                currentZoning = { zoneName: data.data.zoneData.zone_name, properties: data.data.zoneData };
                 displayZoneInfo();
-                
-                // Track usage
-                UsageTracker.trackLocationQuery(
-                    currentLocation.latitude, 
-                    currentLocation.longitude, 
-                    currentZoning.zoneName
-                );
+                chatHasContent = true;
+                UsageTracker.trackLocationQuery(currentLocation.latitude, currentLocation.longitude, currentZoning.zoneName);
             } else {
                 clearMessages();
                 addMessage('assistant', t('noZoning'));
+                chatHasContent = true;
             }
-        } catch (error) {
+        } catch (e) {
             clearMessages();
             addMessage('assistant', t('error'));
+            chatHasContent = true;
         }
     }
 
     function addPin(latlng) {
-        // Remove existing marker
-        if (currentMarker) {
-            map.removeLayer(currentMarker);
-        }
-
-        // Create custom icon
+        if (currentMarker) map.removeLayer(currentMarker);
         const customIcon = L.divIcon({
             className: 'custom-marker',
-            html: `<div style="
-                width: 32px;
-                height: 32px;
-                background: #3B82F6;
-                border: 3px solid white;
-                border-radius: 50%;
-                box-shadow: 0 4px 12px rgba(59, 130, 246, 0.6);
-                display: flex;
-                align-items: center;
-                justify-content: center;
-            ">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="white">
-                    <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
-                </svg>
+            html: `<div style="width:28px;height:28px;background:#3B82F6;border:3px solid white;border-radius:50%;box-shadow:0 4px 12px rgba(59,130,246,0.6);display:flex;align-items:center;justify-content:center;">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="white"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
             </div>`,
-            iconSize: [32, 32],
-            iconAnchor: [16, 16]
+            iconSize: [28, 28], iconAnchor: [14, 14]
         });
-
-        // Add new marker
         currentMarker = L.marker(latlng, { icon: customIcon }).addTo(map);
     }
 
     function useMyLocation() {
-        if (!navigator.geolocation) {
-            alert('Geolocation not supported');
-            return;
-        }
-
+        if (!navigator.geolocation) { alert('Geolocation not supported'); return; }
         const btn = document.getElementById('locationBtn');
         btn.disabled = true;
 
         navigator.geolocation.getCurrentPosition(
             (pos) => {
                 const { latitude, longitude } = pos.coords;
-                
-                // Check if in Kigali bounds
                 if (latitude < -2.2 || latitude > -1.7 || longitude < 29.8 || longitude > 30.3) {
                     btn.disabled = false;
-                    openChat();
-                    clearMessages();
+                    openChat(); clearMessages();
                     addMessage('assistant', t('outsideKigali'));
+                    chatHasContent = true;
                     return;
                 }
-
                 map.setView([latitude, longitude], 16);
-
-                // Simulate click
-                handleMapClick({
-                    latlng: L.latLng(latitude, longitude)
-                });
-
+                handleMapClick({ latlng: L.latLng(latitude, longitude) });
                 btn.disabled = false;
             },
-            () => {
-                btn.disabled = false;
-                alert('Unable to get your location');
-            },
+            () => { btn.disabled = false; alert('Unable to get location'); },
             { enableHighAccuracy: true, timeout: 10000 }
         );
     }
 
     // =============================================================================
-    // TYPEWRITER CONTROLLER
-    // =============================================================================
-    const Typewriter = {
-        activeTimer: null,
-        sessionId: 0,
-        
-        stop() {
-            if (this.activeTimer) {
-                clearTimeout(this.activeTimer);
-                this.activeTimer = null;
-            }
-            this.sessionId++;
-        },
-        
-        async type(element, text, speed = 15) {
-            this.stop();
-            const session = ++this.sessionId;
-            
-            element.innerHTML = '<div class="message-content"></div><span class="typing-cursor"></span>';
-            const content = element.querySelector('.message-content');
-            const cursor = element.querySelector('.typing-cursor');
-            
-            return new Promise((resolve) => {
-                let index = 0;
-                
-                const typeNext = () => {
-                    if (session !== this.sessionId) {
-                        resolve(false);
-                        return;
-                    }
-                    
-                    if (index < text.length) {
-                        const char = text[index];
-                        content.innerHTML = this.formatText(text.substring(0, index + 1));
-                        index++;
-                        
-                        let delay = speed;
-                        if (char === '\n') delay = speed * 3;
-                        else if (char === '.' || char === '!' || char === '?') delay = speed * 4;
-                        else if (char === ',') delay = speed * 2;
-                        
-                        const container = document.getElementById('chatMessages');
-                        container.scrollTop = container.scrollHeight;
-                        
-                        this.activeTimer = setTimeout(typeNext, delay);
-                    } else {
-                        cursor.remove();
-                        content.innerHTML = this.formatText(text);
-                        this.activeTimer = null;
-                        resolve(true);
-                    }
-                };
-                
-                typeNext();
-            });
-        },
-        
-        instant(element, text) {
-            this.stop();
-            element.innerHTML = `<div class="message-content">${this.formatText(text)}</div>`;
-        },
-        
-        formatText(text) {
-            let formatted = text
-                .replace(/&/g, '&amp;')
-                .replace(/</g, '&lt;')
-                .replace(/>/g, '&gt;')
-                .replace(/📍/g, '<svg class="inline-icon" viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>')
-                .replace(/📋|📄/g, '<svg class="inline-icon" viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg>')
-                .replace(/[\u{1F300}-\u{1F9FF}]/gu, '')
-                .replace(/^[━═─]{3,}$/gm, '<hr class="message-divider">')
-                .replace(/^[-_]{3,}$/gm, '<hr class="message-divider">')
-                .replace(/^(YES|PERMITTED|ALLOWED)\s*[-–—]?\s*/gm, '<span class="status-badge-inline success">$1</span> ')
-                .replace(/^(NO|NOT PERMITTED|PROHIBITED)\s*[-–—]?\s*/gm, '<span class="status-badge-inline error">$1</span> ')
-                .replace(/^(CONDITIONAL|REQUIRES APPROVAL)\s*[-–—]?\s*/gm, '<span class="status-badge-inline warning">$1</span> ')
-                .replace(/^([A-Z][A-Za-z0-9 ]{2,40}):?\s*$/gm, '<h4>$1</h4>')
-                .replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>')
-                .replace(/^[•\-\*▪▸]\s+(.+)$/gm, '<li>$1</li>')
-                .replace(/^\d+[\.\)]\s+(.+)$/gm, '<li>$1</li>')
-                .replace(/((?:<li>.*<\/li>\s*)+)/g, '<ul>$1</ul>')
-                .replace(/^(Legal basis:.*?)$/gm, '<cite>$1</cite>')
-                .replace(/^(Note:.*?)$/gm, '<small class="note">$1</small>')
-                .replace(/\n\n+/g, '</p><p>')
-                .replace(/\n/g, '<br>');
-            
-            if (!formatted.startsWith('<h4>') && !formatted.startsWith('<ul>') && !formatted.startsWith('<hr') && !formatted.startsWith('<span class="status')) {
-                formatted = '<p>' + formatted + '</p>';
-            }
-            
-            formatted = formatted.replace(/<p><\/p>/g, '');
-            formatted = formatted.replace(/<p>(<h4>)/g, '$1');
-            formatted = formatted.replace(/(<\/h4>)<\/p>/g, '$1');
-            formatted = formatted.replace(/<p>(<ul>)/g, '$1');
-            formatted = formatted.replace(/(<\/ul>)<\/p>/g, '$1');
-            formatted = formatted.replace(/<p>(<hr)/g, '$1');
-            formatted = formatted.replace(/(class="message-divider">)<\/p>/g, '$1');
-            
-            return formatted;
-        }
-    };
-
-    // =============================================================================
-    // CHAT INTERFACE
+    // CHAT
     // =============================================================================
     function openChat() {
         document.getElementById('chatOverlay').classList.add('active');
+        document.getElementById('chatToggleBtn').classList.remove('visible');
     }
 
     function closeChat() {
         document.getElementById('chatOverlay').classList.remove('active');
-        document.getElementById('mapHint').classList.remove('hidden');
         Typewriter.stop();
+        if (chatHasContent) document.getElementById('chatToggleBtn').classList.add('visible');
+        if (!currentLocation) document.getElementById('mapHint').classList.remove('hidden');
     }
 
     function clearMessages() {
@@ -2202,46 +1973,35 @@ Tapez votre question ci-dessous.`,
         const indicator = document.createElement('div');
         indicator.className = 'typing-indicator';
         indicator.id = 'typingIndicator';
-        indicator.innerHTML = `
-            <div class="typing-dots">
-                <span></span>
-                <span></span>
-                <span></span>
-            </div>
-        `;
+        indicator.innerHTML = '<div class="typing-dots"><span></span><span></span><span></span></div>';
         container.appendChild(indicator);
         container.scrollTop = container.scrollHeight;
     }
 
     function hideTypingIndicator() {
-        const indicator = document.getElementById('typingIndicator');
-        if (indicator) indicator.remove();
+        const el = document.getElementById('typingIndicator');
+        if (el) el.remove();
     }
 
     function displayZoneInfo() {
         document.getElementById('zoneName').textContent = currentZoning.zoneName;
-        document.getElementById('zoneCoords').textContent = 
-            `${currentLocation.latitude.toFixed(6)}, ${currentLocation.longitude.toFixed(6)}`;
-        document.getElementById('zoneColor').style.background = 
-            ZONE_COLORS[currentZoning.zoneName] || '#64748B';
+        document.getElementById('zoneCoords').textContent = `${currentLocation.latitude.toFixed(6)}, ${currentLocation.longitude.toFixed(6)}`;
+        document.getElementById('zoneColor').style.background = ZONE_COLORS[currentZoning.zoneName] || '#64748B';
 
         clearMessages();
         const welcomeMsg = t('welcome', currentZoning.zoneName);
         currentResponse = { response: welcomeMsg, question: null };
-        
         addMessage('assistant', welcomeMsg, true);
     }
 
     async function sendMessage() {
         const input = document.getElementById('chatInput');
         const question = input.value.trim();
-        
         if (!question || !currentZoning || !currentLocation) return;
 
         addMessage('user', question);
         input.value = '';
         input.style.height = 'auto';
-
         showTypingIndicator();
         document.getElementById('sendBtn').disabled = true;
 
@@ -2250,34 +2010,25 @@ Tapez votre question ci-dessous.`,
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
-                    question,
-                    lat: currentLocation.latitude,
-                    lng: currentLocation.longitude,
-                    sessionId,
-                    language: currentLanguage
+                    question, lat: currentLocation.latitude, lng: currentLocation.longitude,
+                    sessionId, language: currentLanguage
                 })
             });
-
             const data = await res.json();
             hideTypingIndicator();
 
             if (data.success && data.data) {
-                currentResponse = {
-                    response: data.data.response,
-                    question
-                };
+                currentResponse = { response: data.data.response, question };
                 await addMessage('assistant', data.data.response, true);
                 document.getElementById('chatActions').style.display = 'flex';
-                
                 UsageTracker.trackQuestion(question, currentZoning.zoneName);
             } else {
                 addMessage('assistant', t('error'));
             }
-        } catch (error) {
+        } catch (e) {
             hideTypingIndicator();
             addMessage('assistant', t('error'));
         }
-
         document.getElementById('sendBtn').disabled = false;
     }
 
@@ -2286,7 +2037,6 @@ Tapez votre question ci-dessous.`,
     // =============================================================================
     async function downloadPDF() {
         if (!currentZoning || !currentResponse) return;
-
         const btn = document.getElementById('downloadBtn');
         btn.disabled = true;
 
@@ -2295,31 +2045,26 @@ Tapez votre question ci-dessous.`,
             const doc = new jsPDF();
             const pageWidth = doc.internal.pageSize.getWidth();
             const margin = 20;
-            const contentWidth = pageWidth - (margin * 2);
+            const contentWidth = pageWidth - margin * 2;
 
             doc.setFillColor(15, 23, 42);
             doc.rect(0, 0, pageWidth, 40, 'F');
-            
             doc.setTextColor(255, 255, 255);
             doc.setFontSize(22);
             doc.setFont('helvetica', 'bold');
             doc.text('ZoneAgent', margin, 18);
-            
             doc.setFontSize(11);
             doc.setFont('helvetica', 'normal');
             doc.text(t('reportTitle'), margin, 28);
-
             doc.setFillColor(59, 130, 246);
             doc.rect(0, 40, pageWidth, 3, 'F');
 
             let y = 55;
-
             doc.setTextColor(15, 23, 42);
             doc.setFontSize(12);
             doc.setFont('helvetica', 'bold');
             doc.text(t('locationLabel').toUpperCase(), margin, y);
             y += 8;
-
             doc.setTextColor(51, 65, 85);
             doc.setFontSize(10);
             doc.setFont('helvetica', 'normal');
@@ -2329,7 +2074,6 @@ Tapez votre question ci-dessous.`,
             y += 6;
             doc.text(`${t('dateLabel')}: ${new Date().toLocaleDateString()}`, margin, y);
             y += 12;
-
             doc.setDrawColor(226, 232, 240);
             doc.line(margin, y, pageWidth - margin, y);
             y += 12;
@@ -2340,14 +2084,12 @@ Tapez votre question ci-dessous.`,
                 doc.setFont('helvetica', 'bold');
                 doc.text(t('questionLabel').toUpperCase(), margin, y);
                 y += 8;
-
                 doc.setTextColor(51, 65, 85);
                 doc.setFontSize(10);
                 doc.setFont('helvetica', 'italic');
                 const qLines = doc.splitTextToSize(`"${currentResponse.question}"`, contentWidth);
                 doc.text(qLines, margin, y);
-                y += (qLines.length * 5) + 10;
-
+                y += qLines.length * 5 + 10;
                 doc.line(margin, y, pageWidth - margin, y);
                 y += 12;
             }
@@ -2357,111 +2099,74 @@ Tapez votre question ci-dessous.`,
             doc.setFont('helvetica', 'bold');
             doc.text(t('analysisLabel').toUpperCase(), margin, y);
             y += 10;
-
             doc.setTextColor(51, 65, 85);
             doc.setFontSize(10);
             doc.setFont('helvetica', 'normal');
 
             const cleanResponse = currentResponse.response.replace(/[^\x00-\x7F]/g, '').trim();
             const rLines = doc.splitTextToSize(cleanResponse, contentWidth);
-
             rLines.forEach(line => {
-                if (y > 260) {
-                    doc.addPage();
-                    y = 20;
-                }
+                if (y > 260) { doc.addPage(); y = 20; }
                 doc.text(line, margin, y);
                 y += 5;
             });
 
             y += 15;
-
-            if (y > 230) {
-                doc.addPage();
-                y = 20;
-            }
-
+            if (y > 230) { doc.addPage(); y = 20; }
             doc.setFillColor(241, 245, 249);
             doc.roundedRect(margin, y, contentWidth, 30, 3, 3, 'F');
             y += 10;
-
             doc.setTextColor(15, 23, 42);
             doc.setFontSize(10);
             doc.setFont('helvetica', 'bold');
             doc.text(t('contactLabel'), margin + 5, y);
             y += 6;
-
             doc.setFont('helvetica', 'normal');
             doc.setTextColor(51, 65, 85);
             doc.text('City of Kigali: 3260 | https://www.kigalicity.gov.rw/', margin + 5, y);
-
             y += 25;
-
             doc.setTextColor(148, 163, 184);
             doc.setFontSize(8);
-            const dLines = doc.splitTextToSize(t('disclaimer'), contentWidth);
-            doc.text(dLines, margin, y);
+            doc.text(doc.splitTextToSize(t('disclaimer'), contentWidth), margin, y);
 
             const pageCount = doc.internal.getNumberOfPages();
             for (let i = 1; i <= pageCount; i++) {
                 doc.setPage(i);
                 doc.setFontSize(8);
                 doc.setTextColor(148, 163, 184);
-                doc.text(
-                    `${t('generatedBy')} | Page ${i}/${pageCount}`,
-                    pageWidth / 2,
-                    doc.internal.pageSize.getHeight() - 10,
-                    { align: 'center' }
-                );
+                doc.text(`${t('generatedBy')} | Page ${i}/${pageCount}`, pageWidth / 2, doc.internal.pageSize.getHeight() - 10, { align: 'center' });
             }
 
-            const zoneSafe = currentZoning.zoneName.replace(/[^a-zA-Z0-9]/g, '_').substring(0, 20);
-            doc.save(`ZoneAgent_${zoneSafe}_${new Date().toISOString().split('T')[0]}.pdf`);
-            
+            doc.save(`ZoneAgent_${currentZoning.zoneName.replace(/[^a-zA-Z0-9]/g, '_').substring(0, 20)}_${new Date().toISOString().split('T')[0]}.pdf`);
             UsageTracker.trackDownload(currentZoning.zoneName);
-
-        } catch (error) {
-            console.error('PDF Error:', error);
+        } catch (e) {
+            console.error('PDF Error:', e);
             alert('Error generating PDF');
         }
-
         btn.disabled = false;
     }
 
     async function shareReport() {
         if (!currentZoning || !currentResponse) return;
-        
         UsageTracker.trackShare(currentZoning.zoneName);
 
-        const text = `ZoneAgent Report
-
-Zone: ${currentZoning.zoneName}
-Location: ${currentLocation.latitude.toFixed(4)}, ${currentLocation.longitude.toFixed(4)}
-
-${currentResponse.response.substring(0, 400)}...
-
-City of Kigali: Hotline:3260`;
+        const text = `ZoneAgent Report\n\nZone: ${currentZoning.zoneName}\nLocation: ${currentLocation.latitude.toFixed(4)}, ${currentLocation.longitude.toFixed(4)}\n\n${currentResponse.response.substring(0, 400)}...\n\nCity of Kigali: 3260`;
 
         if (navigator.share) {
-            try {
-                await navigator.share({ title: 'ZoneAgent Report', text });
-            } catch (e) {
-                if (e.name !== 'AbortError') copyText(text);
-            }
+            try { await navigator.share({ title: 'ZoneAgent Report', text }); }
+            catch (e) { if (e.name !== 'AbortError') copyText(text); }
         } else {
             copyText(text);
         }
     }
 
     function copyText(text) {
-        navigator.clipboard.writeText(text).then(() => {
-            alert('Copied to clipboard!');
-        }).catch(() => {
-            alert('Could not copy');
-        });
+        navigator.clipboard.writeText(text)
+            .then(() => alert('Copied to clipboard!'))
+            .catch(() => alert('Could not copy'));
     }
 
-    console.log('🗺️ ZoneAgent Leaflet - Zero Trips. Instant Compliance.');
+    console.log('🗺️ ZoneAgent - Zero Trips. Instant Compliance.');
     </script>
 </body>
 </html>
