@@ -246,9 +246,10 @@
             color: var(--z-accent) !important;
         }
 
-        /* Zoom controls - bottom left */
-        .leaflet-bottom.leaflet-left {
+        /* Zoom controls - bottom right */
+        .leaflet-bottom.leaflet-right {
             bottom: 80px;
+            right: 16px;
         }
 
         .leaflet-control-zoom {
@@ -273,16 +274,16 @@
 
         /* Search control */
         .search-control {
-            position: absolute;
-            top: 16px;
-            right: 16px;
-            z-index: 1000;
+            position: relative;
             display: flex;
             align-items: center;
             gap: 8px;
         }
 
         .search-box {
+            position: absolute;
+            right: 48px;
+            top: 0;
             display: flex;
             align-items: center;
             background: var(--z-space);
@@ -293,10 +294,11 @@
             width: 0;
             opacity: 0;
             overflow: hidden;
+            white-space: nowrap;
         }
 
         .search-box.active {
-            width: 300px;
+            width: 280px;
             opacity: 1;
         }
 
@@ -347,11 +349,12 @@
             background: var(--z-space);
             border: 1px solid var(--z-slate);
             border-radius: var(--z-radius);
-            min-width: 300px;
+            min-width: 320px;
             max-height: 400px;
             overflow-y: auto;
             box-shadow: var(--z-shadow);
             display: none;
+            z-index: 2000;
         }
 
         .search-results.active {
@@ -1186,13 +1189,13 @@
 
             <div class="header-actions">
                 <!-- Search Control -->
-                <div class="search-control">
-                    <div class="search-box" id="searchBox">
-                        <input type="text" class="search-input" id="searchInput" placeholder="Search location...">
-                    </div>
+                <div class="search-control" style="position: relative;">
                     <button class="search-icon-btn" id="searchBtn">
                         <svg viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
                     </button>
+                    <div class="search-box" id="searchBox">
+                        <input type="text" class="search-input" id="searchInput" placeholder="Search location...">
+                    </div>
                     <div class="search-results" id="searchResults"></div>
                 </div>
 
@@ -1694,16 +1697,16 @@ Tapez votre question ci-dessous.`,
         // Initialize Leaflet map
         map = L.map('mapDiv', {
             center: [-1.9441, 30.0619],
-            zoom: 13,
+            zoom: 12, // Increased from 13 for wider view
             minZoom: 10,
             maxZoom: 20,
             zoomControl: false, // Disable default position
             attributionControl: true
         });
 
-        // Add zoom control to bottom left
+        // Add zoom control to bottom right
         L.control.zoom({
-            position: 'bottomleft'
+            position: 'bottomright'
         }).addTo(map);
 
         // Use Esri World Imagery (satellite)
