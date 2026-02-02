@@ -5,566 +5,2463 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
     <meta name="theme-color" content="#0F172A">
     <meta name="apple-mobile-web-app-capable" content="yes">
-    <title>ZoneAgent - Zero Trips. Instant Compliance.</title>
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin=""/>
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <title>ZoneAgent</title>
+    
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" 
+          integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" 
+          crossorigin=""/>
+    
+    <!-- PDF Generation -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+    
     <style>
         :root {
-            --panel-bg: rgba(17, 17, 17, 0.95);
-            --panel-border: rgba(255, 255, 255, 0.1);
-            --text-primary: #ffffff;
-            --text-secondary: #a1a1aa;
-            --text-muted: #71717a;
-            --accent: #ec4899;
-            --accent-glow: rgba(236, 72, 153, 0.3);
-            --success: #10b981;
-            --warning: #f59e0b;
-            --radius: 8px;
-            --radius-lg: 12px;
-            --shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
-            --font: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            --z-void: #000000;
+            --z-deep: #0F172A;
+            --z-space: #1E293B;
+            --z-slate: #334155;
+            --z-muted: #64748B;
+            --z-light: #94A3B8;
+            --z-pale: #CBD5E1;
+            --z-white: #F8FAFC;
+            --z-accent: #3B82F6;
+            --z-accent-glow: rgba(59, 130, 246, 0.4);
+            --z-success: #10B981;
+            --z-warning: #F59E0B;
+            --z-error: #EF4444;
+            --z-purple: #8B5CF6;
+            --z-pink: #EC4899;
+            --z-font: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+            --z-mono: 'JetBrains Mono', monospace;
+            --z-radius: 12px;
+            --z-radius-sm: 8px;
+            --z-shadow: 0 4px 24px rgba(0, 0, 0, 0.4);
+            --z-transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
-        * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
-        html, body { height: 100%; overflow: hidden; }
-        body { font-family: var(--font); background: #000; color: var(--text-primary); }
 
-        /* SPLASH */
-        .splash { position: fixed; inset: 0; background: #111; display: flex; align-items: center; justify-content: center; z-index: 9999; transition: opacity 0.5s, visibility 0.5s; }
-        .splash.hidden { opacity: 0; visibility: hidden; pointer-events: none; }
-        .splash-content { max-width: 360px; padding: 24px; text-align: center; }
-        .splash-logo { width: 64px; height: 64px; background: linear-gradient(135deg, var(--accent) 0%, #8b5cf6 100%); border-radius: 16px; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; }
-        .splash-logo svg { width: 36px; height: 36px; fill: white; }
-        .splash-title { font-size: 28px; font-weight: 700; margin-bottom: 8px; }
-        .splash-tagline { color: var(--text-secondary); margin-bottom: 32px; }
-        .splash-steps { text-align: left; margin-bottom: 32px; }
-        .splash-step { display: flex; align-items: center; gap: 12px; padding: 12px; background: rgba(255,255,255,0.05); border-radius: var(--radius); margin-bottom: 8px; }
-        .step-num { width: 24px; height: 24px; background: var(--accent); border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 600; flex-shrink: 0; }
-        .step-text { font-size: 13px; }
-        .enter-btn { width: 100%; padding: 14px; background: var(--accent); border: none; border-radius: var(--radius); color: white; font-family: var(--font); font-size: 15px; font-weight: 600; cursor: pointer; transition: transform 0.2s, box-shadow 0.2s; }
-        .enter-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 24px var(--accent-glow); }
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            -webkit-tap-highlight-color: transparent;
+        }
 
-        /* MAP */
-        .app { position: fixed; inset: 0; display: none; }
-        .app.active { display: block; }
-        #map { width: 100%; height: 100%; }
-        .leaflet-container { background: #1a1a2e; }
-        .leaflet-control-attribution { background: var(--panel-bg) !important; color: var(--text-muted) !important; font-size: 10px !important; border-radius: 4px 0 0 0 !important; }
-        .leaflet-control-attribution a { color: var(--accent) !important; }
-        .leaflet-control-zoom { border: none !important; }
-        .leaflet-control-zoom a { background: var(--panel-bg) !important; border: 1px solid var(--panel-border) !important; color: var(--text-primary) !important; width: 32px !important; height: 32px !important; line-height: 32px !important; }
-        .leaflet-control-zoom a:hover { background: rgba(255,255,255,0.1) !important; }
-        .leaflet-control-zoom-in { border-radius: var(--radius) var(--radius) 0 0 !important; }
-        .leaflet-control-zoom-out { border-radius: 0 0 var(--radius) var(--radius) !important; border-top: none !important; }
+        html, body {
+            height: 100%;
+            overflow: hidden;
+        }
 
-        /* TOP-LEFT: Logo Badge (Felt style) */
-        .logo-badge { position: absolute; top: 16px; left: 16px; z-index: 1000; display: flex; align-items: center; gap: 8px; padding: 8px 14px 8px 8px; background: var(--panel-bg); border: 1px solid var(--panel-border); border-radius: 100px; backdrop-filter: blur(10px); }
-        .logo-badge-icon { width: 28px; height: 28px; background: linear-gradient(135deg, var(--accent) 0%, #8b5cf6 100%); border-radius: 8px; display: flex; align-items: center; justify-content: center; }
-        .logo-badge-icon svg { width: 16px; height: 16px; fill: white; }
-        .logo-badge-text { font-size: 14px; font-weight: 600; }
+        body {
+            font-family: var(--z-font);
+            background: var(--z-void);
+            color: var(--z-white);
+            line-height: 1.5;
+        }
 
-        /* TOP-RIGHT: Actions (Felt style) */
-        .top-actions { position: absolute; top: 16px; right: 16px; z-index: 1000; display: flex; gap: 8px; }
-        .action-pill { display: flex; align-items: center; gap: 6px; padding: 8px 14px; background: var(--panel-bg); border: 1px solid var(--panel-border); border-radius: 100px; color: var(--text-primary); font-family: var(--font); font-size: 13px; font-weight: 500; cursor: pointer; backdrop-filter: blur(10px); transition: all 0.2s; }
-        .action-pill:hover { background: rgba(255,255,255,0.1); border-color: var(--accent); }
-        .action-pill svg { width: 16px; height: 16px; fill: currentColor; }
-        .action-pill.primary { background: var(--accent); border-color: var(--accent); }
-        .action-pill.primary:hover { background: #db2777; }
-        .lang-pills { display: flex; background: var(--panel-bg); border: 1px solid var(--panel-border); border-radius: 100px; overflow: hidden; backdrop-filter: blur(10px); }
-        .lang-pill { padding: 8px 12px; background: transparent; border: none; color: var(--text-muted); font-family: var(--font); font-size: 12px; font-weight: 600; cursor: pointer; transition: all 0.2s; }
-        .lang-pill:hover { color: var(--text-primary); }
-        .lang-pill.active { background: var(--accent); color: white; }
+        /* ============================================
+           SPLASH SCREEN - Minimal & Professional
+           ============================================ */
+        .splash {
+            position: fixed;
+            inset: 0;
+            background: var(--z-deep);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            padding: 24px;
+            transition: opacity 0.5s ease, visibility 0.5s ease;
+        }
 
-        /* LEFT: Legend Panel (Felt style) */
-        .legend-panel { position: absolute; top: 70px; left: 16px; z-index: 1000; background: var(--panel-bg); border: 1px solid var(--panel-border); border-radius: var(--radius-lg); padding: 12px; min-width: 200px; backdrop-filter: blur(10px); }
-        .legend-title { font-size: 11px; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 10px; }
-        .legend-item { display: flex; align-items: center; gap: 8px; padding: 6px 0; font-size: 13px; }
-        .legend-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
-        .legend-item.clickable { cursor: pointer; padding: 8px; margin: -4px -8px; border-radius: var(--radius); transition: background 0.2s; }
-        .legend-item.clickable:hover { background: rgba(255,255,255,0.05); }
+        .splash.hidden {
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+        }
 
-        /* BOTTOM-LEFT: Map hint */
-        .map-hint { position: absolute; bottom: 24px; left: 50%; transform: translateX(-50%); z-index: 1000; padding: 10px 18px; background: var(--panel-bg); border: 1px solid var(--panel-border); border-radius: 100px; font-size: 13px; color: var(--text-secondary); backdrop-filter: blur(10px); transition: opacity 0.3s, transform 0.3s; }
-        .map-hint.hidden { opacity: 0; transform: translateX(-50%) translateY(10px); pointer-events: none; }
+        /* Subtle animated background */
+        .splash::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: 
+                radial-gradient(circle at 20% 80%, rgba(59, 130, 246, 0.08) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(139, 92, 246, 0.08) 0%, transparent 50%),
+                radial-gradient(circle at 50% 50%, rgba(236, 72, 153, 0.05) 0%, transparent 60%);
+            animation: ambientPulse 8s ease-in-out infinite;
+        }
 
-        /* RIGHT: Analysis Panel / Chat (Felt style) */
-        .analysis-panel { position: absolute; top: 16px; right: 16px; bottom: 16px; width: 340px; z-index: 1000; background: var(--panel-bg); border: 1px solid var(--panel-border); border-radius: var(--radius-lg); backdrop-filter: blur(10px); display: none; flex-direction: column; overflow: hidden; }
-        .analysis-panel.active { display: flex; }
-        .panel-header { display: flex; align-items: center; justify-content: space-between; padding: 16px; border-bottom: 1px solid var(--panel-border); }
-        .panel-title { font-size: 15px; font-weight: 600; }
-        .panel-subtitle { font-size: 12px; color: var(--text-muted); margin-top: 2px; font-family: monospace; }
-        .panel-close { width: 32px; height: 32px; background: transparent; border: 1px solid var(--panel-border); border-radius: var(--radius); color: var(--text-secondary); cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s; }
-        .panel-close:hover { background: rgba(255,255,255,0.1); color: var(--text-primary); }
-        .panel-close svg { width: 16px; height: 16px; fill: currentColor; }
+        @keyframes ambientPulse {
+            0%, 100% { opacity: 0.6; }
+            50% { opacity: 1; }
+        }
 
-        /* Zone Info Section */
-        .zone-info { padding: 16px; border-bottom: 1px solid var(--panel-border); }
-        .zone-badge { display: inline-flex; align-items: center; gap: 8px; padding: 8px 12px; background: rgba(255,255,255,0.05); border-radius: var(--radius); margin-bottom: 12px; }
-        .zone-color { width: 12px; height: 12px; border-radius: 4px; }
-        .zone-name { font-size: 13px; font-weight: 500; }
-        .zone-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
-        .stat-item { padding: 10px; background: rgba(255,255,255,0.03); border-radius: var(--radius); }
-        .stat-label { font-size: 11px; color: var(--text-muted); margin-bottom: 4px; }
-        .stat-value { font-size: 14px; font-weight: 600; }
+        .splash-content {
+            position: relative;
+            z-index: 1;
+            max-width: 400px;
+            width: 100%;
+            text-align: center;
+        }
+
+        .splash-logo {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, var(--z-accent) 0%, var(--z-purple) 100%);
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 24px;
+            box-shadow: 0 8px 32px var(--z-accent-glow);
+        }
+
+        .splash-logo svg {
+            width: 44px;
+            height: 44px;
+            fill: var(--z-white);
+        }
+
+        .splash-title {
+            font-size: 32px;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+            margin-bottom: 8px;
+        }
+
+        .splash-tagline {
+            font-size: 16px;
+            color: var(--z-light);
+            margin-bottom: 40px;
+        }
+
+        .splash-features {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            margin-bottom: 40px;
+            text-align: left;
+        }
+
+        .splash-feature {
+            display: flex;
+            align-items: flex-start;
+            gap: 16px;
+            padding: 16px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: var(--z-radius);
+        }
+
+        .feature-num {
+            width: 28px;
+            height: 28px;
+            background: var(--z-space);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--z-accent);
+            flex-shrink: 0;
+        }
+
+        .feature-text {
+            flex: 1;
+        }
+
+        .feature-title {
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 2px;
+        }
+
+        .feature-desc {
+            font-size: 13px;
+            color: var(--z-muted);
+        }
+
+        .enter-btn {
+            width: 100%;
+            padding: 16px 24px;
+            background: linear-gradient(135deg, var(--z-accent) 0%, var(--z-purple) 100%);
+            border: none;
+            border-radius: var(--z-radius);
+            color: var(--z-white);
+            font-family: var(--z-font);
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform var(--z-transition), box-shadow var(--z-transition);
+        }
+
+        .enter-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px var(--z-accent-glow);
+        }
+
+        .enter-btn:active {
+            transform: translateY(0);
+        }
+
+        /* ============================================
+           MAIN APP - Map Full Screen
+           ============================================ */
+        .app {
+            position: fixed;
+            inset: 0;
+            display: none;
+        }
+
+        .app.active {
+            display: block;
+        }
+
+        #mapDiv {
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+        }
+
+        /* Leaflet overrides for dark theme */
+        .leaflet-container {
+            background: #0a0e1a;
+        }
+
+        .leaflet-control-attribution {
+            background: rgba(15, 23, 42, 0.8) !important;
+            color: var(--z-light) !important;
+            font-size: 10px !important;
+        }
+
+        .leaflet-control-attribution a {
+            color: var(--z-accent) !important;
+        }
+
+        /* Zoom controls - bottom right */
+        .leaflet-bottom.leaflet-right {
+            bottom: 80px;
+            right: 16px;
+        }
+
+        .leaflet-control-zoom {
+            border: none !important;
+            box-shadow: var(--z-shadow) !important;
+        }
+
+        .leaflet-control-zoom a {
+            background: var(--z-space) !important;
+            border: 1px solid var(--z-slate) !important;
+            color: var(--z-white) !important;
+            width: 40px !important;
+            height: 40px !important;
+            line-height: 40px !important;
+            font-size: 20px !important;
+        }
+
+        .leaflet-control-zoom a:hover {
+            background: var(--z-slate) !important;
+            border-color: var(--z-accent) !important;
+        }
+
+        /* Search control */
+        .search-control {
+            position: relative;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .search-box {
+            position: absolute;
+            right: 48px;
+            top: 0;
+            display: flex;
+            align-items: center;
+            background: var(--z-space);
+            border: 1px solid var(--z-slate);
+            border-radius: 24px;
+            padding: 0 16px;
+            transition: all var(--z-transition);
+            width: 0;
+            opacity: 0;
+            overflow: hidden;
+            white-space: nowrap;
+        }
+
+        .search-box.active {
+            width: 280px;
+            opacity: 1;
+        }
+
+        .search-input {
+            flex: 1;
+            background: transparent;
+            border: none;
+            color: var(--z-white);
+            font-family: var(--z-font);
+            font-size: 14px;
+            padding: 10px 0;
+            outline: none;
+        }
+
+        .search-input::placeholder {
+            color: var(--z-muted);
+        }
+
+        .search-icon-btn {
+            width: 40px;
+            height: 40px;
+            background: var(--z-space);
+            border: 1px solid var(--z-slate);
+            border-radius: 50%;
+            color: var(--z-white);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all var(--z-transition);
+        }
+
+        .search-icon-btn:hover {
+            background: var(--z-slate);
+            border-color: var(--z-accent);
+        }
+
+        .search-icon-btn svg {
+            width: 18px;
+            height: 18px;
+            fill: currentColor;
+        }
+
+        .search-results {
+            position: absolute;
+            top: 48px;
+            right: 0;
+            background: var(--z-space);
+            border: 1px solid var(--z-slate);
+            border-radius: var(--z-radius);
+            min-width: 320px;
+            max-height: 400px;
+            overflow-y: auto;
+            box-shadow: var(--z-shadow);
+            display: none;
+            z-index: 2000;
+        }
+
+        .search-results.active {
+            display: block;
+        }
+
+        .search-result-item {
+            padding: 12px 16px;
+            border-bottom: 1px solid var(--z-slate);
+            cursor: pointer;
+            transition: background var(--z-transition);
+        }
+
+        .search-result-item:last-child {
+            border-bottom: none;
+        }
+
+        .search-result-item:hover {
+            background: var(--z-slate);
+        }
+
+        .search-result-name {
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--z-white);
+            margin-bottom: 4px;
+        }
+
+        .search-result-address {
+            font-size: 12px;
+            color: var(--z-muted);
+        }
+
+        .search-loading {
+            padding: 16px;
+            text-align: center;
+            color: var(--z-muted);
+            font-size: 13px;
+        }
+
+        .search-no-results {
+            padding: 16px;
+            text-align: center;
+            color: var(--z-muted);
+            font-size: 13px;
+        }
+
+        /* Map Overlay Header */
+        .map-header {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            padding: 16px;
+            background: linear-gradient(to bottom, rgba(15, 23, 42, 0.95) 0%, transparent 100%);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            z-index: 1000;
+            pointer-events: none;
+        }
+
+        .map-header > * {
+            pointer-events: auto;
+        }
+
+        .header-brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .header-logo {
+            width: 36px;
+            height: 36px;
+            background: linear-gradient(135deg, var(--z-accent) 0%, var(--z-purple) 100%);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .header-logo svg {
+            width: 20px;
+            height: 20px;
+            fill: var(--z-white);
+        }
+
+        .header-title {
+            font-size: 18px;
+            font-weight: 700;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .location-btn {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 10px 16px;
+            background: var(--z-space);
+            border: 1px solid var(--z-slate);
+            border-radius: 24px;
+            color: var(--z-white);
+            font-family: var(--z-font);
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all var(--z-transition);
+        }
+
+        .location-btn:hover {
+            background: var(--z-slate);
+            border-color: var(--z-accent);
+        }
+
+        .location-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .location-btn svg {
+            width: 16px;
+            height: 16px;
+            fill: currentColor;
+        }
+
+        /* Map Bottom Hint */
+        .map-hint {
+            position: absolute;
+            bottom: 24px;
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 12px 20px;
+            background: var(--z-deep);
+            border: 1px solid var(--z-slate);
+            border-radius: 24px;
+            font-size: 14px;
+            color: var(--z-pale);
+            z-index: 1000;
+            transition: opacity var(--z-transition), transform var(--z-transition);
+        }
+
+        .map-hint.hidden {
+            opacity: 0;
+            transform: translateX(-50%) translateY(20px);
+            pointer-events: none;
+        }
+
+        /* Status Indicator */
+        .status-badge {
+            position: absolute;
+            top: 16px;
+            right: 16px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 12px;
+            background: var(--z-space);
+            border: 1px solid var(--z-slate);
+            border-radius: 20px;
+            font-size: 12px;
+            color: var(--z-light);
+            z-index: 1000;
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--z-warning);
+            animation: pulse 2s infinite;
+        }
+
+        .status-dot.ready {
+            background: var(--z-success);
+            animation: none;
+        }
+
+        .status-dot.error {
+            background: var(--z-error);
+            animation: none;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.4; }
+        }
+
+        /* ============================================
+           CHAT OVERLAY - Full Screen on Mobile
+           ============================================ */
+        .chat-overlay {
+            position: fixed;
+            inset: 0;
+            background: var(--z-deep);
+            z-index: 2000;
+            display: flex;
+            flex-direction: column;
+            transform: translateY(100%);
+            transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .chat-overlay.active {
+            transform: translateY(0);
+        }
+
+        /* Chat Header */
+        .chat-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 16px 20px;
+            background: var(--z-space);
+            border-bottom: 1px solid var(--z-slate);
+            flex-shrink: 0;
+        }
+
+        .chat-zone-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .chat-zone-name {
+            font-size: 16px;
+            font-weight: 600;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .chat-zone-coords {
+            font-size: 12px;
+            color: var(--z-muted);
+            font-family: var(--z-mono);
+        }
+
+        .close-btn {
+            width: 40px;
+            height: 40px;
+            background: var(--z-slate);
+            border: none;
+            border-radius: 50%;
+            color: var(--z-white);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background var(--z-transition);
+            flex-shrink: 0;
+            margin-left: 16px;
+        }
+
+        .close-btn:hover {
+            background: var(--z-muted);
+        }
+
+        .close-btn svg {
+            width: 20px;
+            height: 20px;
+            fill: currentColor;
+        }
 
         /* Chat Messages */
-        .chat-messages { flex: 1; overflow-y: auto; padding: 16px; display: flex; flex-direction: column; gap: 12px; }
-        .message { max-width: 95%; padding: 12px; border-radius: var(--radius); font-size: 13px; line-height: 1.6; animation: fadeIn 0.3s; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
-        .message.assistant { background: rgba(255,255,255,0.05); align-self: flex-start; }
-        .message.user { background: var(--accent); align-self: flex-end; }
-        .message.system { background: transparent; border: 1px dashed var(--panel-border); color: var(--text-secondary); align-self: center; text-align: center; font-size: 12px; }
-        .message-content { white-space: pre-wrap; }
-        .message-content strong { font-weight: 600; }
-        .message-content ul { margin: 8px 0; padding-left: 16px; }
-        .message-content li { margin-bottom: 4px; }
-        .typing-dots { display: flex; gap: 4px; padding: 12px; background: rgba(255,255,255,0.05); border-radius: var(--radius); width: fit-content; }
-        .typing-dots span { width: 6px; height: 6px; background: var(--text-muted); border-radius: 50%; animation: typing 1.4s infinite; }
+        .chat-messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .message {
+            max-width: 90%;
+            padding: 14px 18px;
+            border-radius: 16px;
+            font-size: 14px;
+            line-height: 1.6;
+            animation: messageIn 0.3s ease-out;
+        }
+
+        @keyframes messageIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .message.assistant {
+            background: var(--z-space);
+            border: 1px solid var(--z-slate);
+            align-self: flex-start;
+            border-bottom-left-radius: 4px;
+        }
+
+        .message.user {
+            background: var(--z-accent);
+            align-self: flex-end;
+            border-bottom-right-radius: 4px;
+        }
+
+        .message.system {
+            background: transparent;
+            border: 1px dashed var(--z-slate);
+            color: var(--z-light);
+            align-self: center;
+            text-align: center;
+            font-size: 13px;
+        }
+
+        /* Formatted message content */
+        .message-content {
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+
+        .message-content h4 {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--z-accent);
+            margin: 16px 0 8px 0;
+            padding-bottom: 4px;
+            border-bottom: 1px solid var(--z-slate);
+        }
+
+        .message-content h4:first-child {
+            margin-top: 0;
+        }
+
+        .message-content p {
+            margin: 0 0 12px 0;
+        }
+
+        .message-content p:last-child {
+            margin-bottom: 0;
+        }
+
+        .message-content ul {
+            margin: 8px 0 12px 0;
+            padding-left: 20px;
+        }
+
+        .message-content li {
+            margin-bottom: 6px;
+            line-height: 1.5;
+        }
+
+        .message-content strong {
+            color: var(--z-white);
+            font-weight: 600;
+        }
+
+        .message-content code {
+            background: var(--z-deep);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: var(--z-mono);
+            font-size: 12px;
+        }
+
+        /* Inline SVG icons in messages */
+        .inline-icon {
+            width: 16px;
+            height: 16px;
+            fill: var(--z-light);
+            vertical-align: text-bottom;
+            margin-right: 6px;
+            flex-shrink: 0;
+            display: inline-block;
+        }
+
+        .inline-icon.icon-success {
+            fill: var(--z-success);
+        }
+
+        .inline-icon.icon-error {
+            fill: var(--z-error);
+        }
+
+        .inline-icon.icon-warning {
+            fill: var(--z-warning);
+        }
+
+        .inline-icon.icon-accent {
+            fill: var(--z-accent);
+        }
+
+        /* Message divider line */
+        .message-divider {
+            border: none;
+            height: 1px;
+            background: var(--z-slate);
+            margin: 16px 0;
+        }
+
+        /* Status badges inline */
+        .status-badge-inline {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            margin-right: 8px;
+            vertical-align: middle;
+        }
+
+        .status-badge-inline.success {
+            background: rgba(16, 185, 129, 0.2);
+            color: var(--z-success);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+        }
+
+        .status-badge-inline.error {
+            background: rgba(239, 68, 68, 0.2);
+            color: var(--z-error);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+        }
+
+        .status-badge-inline.warning {
+            background: rgba(245, 158, 11, 0.2);
+            color: var(--z-warning);
+            border: 1px solid rgba(245, 158, 11, 0.3);
+        }
+
+        /* Legal citation */
+        .message-content cite {
+            display: block;
+            font-style: italic;
+            font-size: 12px;
+            color: var(--z-muted);
+            margin-top: 12px;
+            padding-top: 8px;
+            border-top: 1px dashed var(--z-slate);
+        }
+
+        /* Note styling */
+        .message-content .note {
+            display: block;
+            font-size: 12px;
+            color: var(--z-light);
+            background: rgba(59, 130, 246, 0.1);
+            padding: 8px 12px;
+            border-radius: 6px;
+            border-left: 3px solid var(--z-accent);
+            margin: 12px 0;
+        }
+
+        /* Footer info section */
+        .message-content .footer-info {
+            font-size: 12px;
+            color: var(--z-muted);
+            line-height: 1.8;
+        }
+
+        /* Typing indicator */
+        .typing-indicator {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 14px 18px;
+            background: var(--z-space);
+            border: 1px solid var(--z-slate);
+            border-radius: 16px;
+            border-bottom-left-radius: 4px;
+            max-width: 120px;
+            animation: messageIn 0.3s ease-out;
+        }
+
+        .typing-dots {
+            display: flex;
+            gap: 4px;
+        }
+
+        .typing-dots span {
+            width: 8px;
+            height: 8px;
+            background: var(--z-muted);
+            border-radius: 50%;
+            animation: typingBounce 1.4s ease-in-out infinite;
+        }
+
+        .typing-dots span:nth-child(1) { animation-delay: 0s; }
         .typing-dots span:nth-child(2) { animation-delay: 0.2s; }
         .typing-dots span:nth-child(3) { animation-delay: 0.4s; }
-        @keyframes typing { 0%, 60%, 100% { transform: translateY(0); } 30% { transform: translateY(-6px); background: var(--accent); } }
+
+        @keyframes typingBounce {
+            0%, 60%, 100% { 
+                transform: translateY(0);
+                background: var(--z-muted);
+            }
+            30% { 
+                transform: translateY(-6px);
+                background: var(--z-accent);
+            }
+        }
+
+        /* Cursor blink for typewriter */
+        .typing-cursor {
+            display: inline-block;
+            width: 2px;
+            height: 1em;
+            background: var(--z-accent);
+            margin-left: 2px;
+            animation: cursorBlink 0.8s infinite;
+            vertical-align: text-bottom;
+        }
+
+        @keyframes cursorBlink {
+            0%, 50% { opacity: 1; }
+            51%, 100% { opacity: 0; }
+        }
 
         /* Chat Actions */
-        .chat-actions { display: flex; gap: 8px; padding: 12px 16px; border-top: 1px solid var(--panel-border); }
-        .chat-action-btn { flex: 1; display: flex; align-items: center; justify-content: center; gap: 6px; padding: 10px; background: rgba(255,255,255,0.05); border: 1px solid var(--panel-border); border-radius: var(--radius); color: var(--text-primary); font-family: var(--font); font-size: 12px; font-weight: 500; cursor: pointer; transition: all 0.2s; }
-        .chat-action-btn:hover { background: rgba(255,255,255,0.1); border-color: var(--accent); }
-        .chat-action-btn.primary { background: var(--success); border-color: var(--success); }
-        .chat-action-btn svg { width: 14px; height: 14px; fill: currentColor; }
+        .chat-actions {
+            display: flex;
+            gap: 8px;
+            padding: 12px 20px;
+            border-top: 1px solid var(--z-slate);
+            background: var(--z-space);
+            flex-shrink: 0;
+        }
+
+        .action-btn {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 12px 16px;
+            background: var(--z-slate);
+            border: none;
+            border-radius: var(--z-radius-sm);
+            color: var(--z-white);
+            font-family: var(--z-font);
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all var(--z-transition);
+        }
+
+        .action-btn:hover:not(:disabled) {
+            background: var(--z-muted);
+        }
+
+        .action-btn:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+
+        .action-btn svg {
+            width: 16px;
+            height: 16px;
+            fill: currentColor;
+        }
+
+        .action-btn.primary {
+            background: var(--z-success);
+        }
+
+        .action-btn.primary:hover:not(:disabled) {
+            background: #059669;
+        }
 
         /* Chat Input */
-        .chat-input-area { display: flex; gap: 8px; padding: 12px 16px; border-top: 1px solid var(--panel-border); }
-        .chat-input { flex: 1; padding: 10px 14px; background: rgba(255,255,255,0.05); border: 1px solid var(--panel-border); border-radius: 100px; color: var(--text-primary); font-family: var(--font); font-size: 13px; outline: none; resize: none; min-height: 40px; max-height: 80px; transition: border-color 0.2s; }
-        .chat-input:focus { border-color: var(--accent); }
-        .chat-input::placeholder { color: var(--text-muted); }
-        .send-btn { width: 40px; height: 40px; background: var(--accent); border: none; border-radius: 50%; color: white; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: transform 0.2s; flex-shrink: 0; }
-        .send-btn:hover { transform: scale(1.1); }
-        .send-btn:disabled { background: var(--panel-border); cursor: not-allowed; transform: none; }
-        .send-btn svg { width: 18px; height: 18px; fill: currentColor; }
-
-        /* Floating Chat Toggle (when panel closed) */
-        .chat-toggle { position: absolute; bottom: 24px; right: 24px; z-index: 1000; width: 56px; height: 56px; background: var(--accent); border: none; border-radius: 50%; color: white; cursor: pointer; display: none; align-items: center; justify-content: center; box-shadow: 0 4px 20px var(--accent-glow); transition: transform 0.2s; }
-        .chat-toggle:hover { transform: scale(1.1); }
-        .chat-toggle.visible { display: flex; }
-        .chat-toggle svg { width: 24px; height: 24px; fill: currentColor; }
-
-        /* Map Tooltip (Felt style) */
-        .map-tooltip { position: absolute; z-index: 1001; padding: 12px 16px; background: var(--panel-bg); border: 1px solid var(--panel-border); border-radius: var(--radius); font-size: 13px; max-width: 280px; pointer-events: none; backdrop-filter: blur(10px); box-shadow: var(--shadow); }
-        .tooltip-title { font-weight: 600; margin-bottom: 8px; }
-        .tooltip-row { display: flex; justify-content: space-between; padding: 4px 0; color: var(--text-secondary); }
-        .tooltip-row span:last-child { color: var(--text-primary); font-weight: 500; }
-
-        /* Mobile Responsive */
-        @media (max-width: 768px) {
-            .legend-panel { display: none; }
-            .top-actions { right: 12px; top: 12px; }
-            .logo-badge { left: 12px; top: 12px; }
-            .analysis-panel { top: 0; right: 0; bottom: 0; left: 0; width: 100%; border-radius: 0; }
-            .analysis-panel.active { animation: slideUp 0.3s ease-out; }
-            @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
-            .chat-toggle { bottom: 16px; right: 16px; }
-            .map-hint { bottom: 90px; font-size: 12px; }
+        .chat-input-area {
+            display: flex;
+            gap: 12px;
+            padding: 16px 20px;
+            background: var(--z-deep);
+            border-top: 1px solid var(--z-slate);
+            flex-shrink: 0;
         }
 
-        @media (max-width: 400px) {
-            .logo-badge-text { display: none; }
-            .action-pill span { display: none; }
+        .chat-input {
+            flex: 1;
+            padding: 14px 18px;
+            background: var(--z-space);
+            border: 1px solid var(--z-slate);
+            border-radius: 24px;
+            color: var(--z-white);
+            font-family: var(--z-font);
+            font-size: 14px;
+            resize: none;
+            min-height: 48px;
+            max-height: 120px;
+            outline: none;
+            transition: border-color var(--z-transition);
         }
 
-        /* Safe areas */
-        @supports (padding: env(safe-area-inset-top)) {
-            .logo-badge { top: calc(16px + env(safe-area-inset-top)); }
-            .top-actions { top: calc(16px + env(safe-area-inset-top)); }
-            .panel-header { padding-top: calc(16px + env(safe-area-inset-top)); }
-            .chat-input-area { padding-bottom: calc(12px + env(safe-area-inset-bottom)); }
+        .chat-input:focus {
+            border-color: var(--z-accent);
+        }
+
+        .chat-input::placeholder {
+            color: var(--z-muted);
+        }
+
+        .send-btn {
+            width: 48px;
+            height: 48px;
+            background: var(--z-accent);
+            border: none;
+            border-radius: 50%;
+            color: var(--z-white);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all var(--z-transition);
+            flex-shrink: 0;
+        }
+
+        .send-btn:hover:not(:disabled) {
+            background: var(--z-purple);
+            transform: scale(1.05);
+        }
+
+        .send-btn:disabled {
+            background: var(--z-slate);
+            cursor: not-allowed;
+        }
+
+        .send-btn svg {
+            width: 20px;
+            height: 20px;
+            fill: currentColor;
+        }
+
+        /* Language Selector */
+        .lang-selector {
+            display: flex;
+            gap: 4px;
+            background: var(--z-slate);
+            padding: 4px;
+            border-radius: 8px;
+        }
+
+        .lang-btn {
+            padding: 6px 12px;
+            background: transparent;
+            border: none;
+            border-radius: 6px;
+            color: var(--z-muted);
+            font-family: var(--z-font);
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all var(--z-transition);
+        }
+
+        .lang-btn:hover {
+            color: var(--z-white);
+        }
+
+        .lang-btn.active {
+            background: var(--z-accent);
+            color: var(--z-white);
+        }
+
+        /* Zone Color Badge */
+        .zone-color {
+            width: 12px;
+            height: 12px;
+            border-radius: 4px;
+            flex-shrink: 0;
+            margin-right: 8px;
+            display: inline-block;
+            vertical-align: middle;
+        }
+
+        /* Responsive - Desktop */
+        @media (min-width: 768px) {
+            .chat-overlay {
+                top: auto;
+                left: 24px;
+                right: auto;
+                bottom: 24px;
+                width: 420px;
+                height: 600px;
+                max-height: calc(100vh - 48px);
+                border-radius: var(--z-radius);
+                box-shadow: var(--z-shadow);
+                transform: translateX(-20px);
+                opacity: 0;
+                resize: both;
+                overflow: hidden;
+                min-width: 320px;
+                min-height: 400px;
+                max-width: 600px;
+            }
+
+            .chat-overlay.active {
+                transform: translateX(0);
+                opacity: 1;
+            }
+
+            .chat-overlay.dragging {
+                transition: none;
+                user-select: none;
+            }
+
+            .chat-header {
+                cursor: grab;
+            }
+
+            .chat-header:active {
+                cursor: grabbing;
+            }
+
+            /* Drag handle indicator */
+            .drag-indicator {
+                display: flex;
+                justify-content: center;
+                padding: 8px 0 0 0;
+            }
+
+            .drag-dots {
+                display: flex;
+                gap: 4px;
+            }
+
+            .drag-dots span {
+                width: 4px;
+                height: 4px;
+                background: var(--z-muted);
+                border-radius: 50%;
+            }
+
+            .map-hint {
+                bottom: 32px;
+            }
+        }
+
+        /* Hide drag indicator on mobile */
+        @media (max-width: 767px) {
+            .drag-indicator {
+                display: none;
+            }
+        }
+
+        /* Safe area for notched phones */
+        @supports (padding-top: env(safe-area-inset-top)) {
+            .map-header {
+                padding-top: calc(16px + env(safe-area-inset-top));
+            }
+
+            .chat-header {
+                padding-top: calc(16px + env(safe-area-inset-top));
+            }
+
+            .chat-input-area {
+                padding-bottom: calc(16px + env(safe-area-inset-bottom));
+            }
         }
     </style>
 </head>
 <body>
-    <!-- SPLASH -->
+
+    <!-- ============================================
+         SPLASH SCREEN
+         ============================================ -->
     <div class="splash" id="splash">
         <div class="splash-content">
-            <div class="splash-logo"><svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg></div>
+            <div class="splash-logo">
+                <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
+                </svg>
+            </div>
             <h1 class="splash-title">ZoneAgent</h1>
             <p class="splash-tagline">Zero Trips. Instant Compliance.</p>
-            <div class="splash-steps">
-                <div class="splash-step"><div class="step-num">1</div><div class="step-text">Tap any location on the map</div></div>
-                <div class="splash-step"><div class="step-num">2</div><div class="step-text">Get instant zoning analysis</div></div>
-                <div class="splash-step"><div class="step-num">3</div><div class="step-text">Download compliance report</div></div>
+
+            <div class="splash-features">
+                <div class="splash-feature">
+                    <div class="feature-num">1</div>
+                    <div class="feature-text">
+                        <div class="feature-title">Tap the Map</div>
+                        <div class="feature-desc">Select any location in Kigali</div>
+                    </div>
+                </div>
+                <div class="splash-feature">
+                    <div class="feature-num">2</div>
+                    <div class="feature-text">
+                        <div class="feature-title">Ask Questions</div>
+                        <div class="feature-desc">Get instant zoning and permit guidance</div>
+                    </div>
+                </div>
+                <div class="splash-feature">
+                    <div class="feature-num">3</div>
+                    <div class="feature-text">
+                        <div class="feature-title">Download Report</div>
+                        <div class="feature-desc">Save official compliance documentation</div>
+                    </div>
+                </div>
             </div>
+
             <button class="enter-btn" id="enterBtn">Enter ZoneAgent</button>
         </div>
     </div>
 
-    <!-- APP -->
+    <!-- ============================================
+         MAIN APP
+         ============================================ -->
     <div class="app" id="app">
-        <div id="map"></div>
+        <!-- Map -->
+        <div id="mapDiv"></div>
 
-        <!-- Top Left: Logo Badge -->
-        <div class="logo-badge">
-            <div class="logo-badge-icon"><svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg></div>
-            <span class="logo-badge-text">ZoneAgent</span>
-        </div>
-
-        <!-- Top Right: Actions -->
-        <div class="top-actions">
-            <div class="lang-pills">
-                <button class="lang-pill active" data-lang="en">EN</button>
-                <button class="lang-pill" data-lang="rw">RW</button>
-                <button class="lang-pill" data-lang="fr">FR</button>
-            </div>
-            <button class="action-pill" id="searchBtn">
-                <svg viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
-                <span>Search</span>
-            </button>
-            <button class="action-pill" id="locationBtn">
-                <svg viewBox="0 0 24 24"><path d="M12 8c-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4-1.79-4-4-4zm8.94 3c-.46-4.17-3.77-7.48-7.94-7.94V1h-2v2.06C6.83 3.52 3.52 6.83 3.06 11H1v2h2.06c.46 4.17 3.77 7.48 7.94 7.94V23h2v-2.06c4.17-.46 7.48-3.77 7.94-7.94H23v-2h-2.06zM12 19c-3.87 0-7-3.13-7-7s3.13-7 7-7 7 3.13 7 7-3.13 7-7 7z"/></svg>
-                <span>My Location</span>
-            </button>
-        </div>
-
-        <!-- Left: Legend -->
-        <div class="legend-panel" id="legendPanel">
-            <div class="legend-title">Zoning Layers</div>
-            <div class="legend-item clickable" data-zone="residential">
-                <div class="legend-dot" style="background: #FF7F50;"></div>
-                <span>Residential Zones</span>
-            </div>
-            <div class="legend-item clickable" data-zone="commercial">
-                <div class="legend-dot" style="background: #FFB6C1;"></div>
-                <span>Commercial Zones</span>
-            </div>
-            <div class="legend-item clickable" data-zone="industrial">
-                <div class="legend-dot" style="background: #9370DB;"></div>
-                <span>Industrial Zones</span>
-            </div>
-            <div class="legend-item clickable" data-zone="agriculture">
-                <div class="legend-dot" style="background: #90EE90;"></div>
-                <span>Agriculture Zones</span>
-            </div>
-        </div>
-
-        <!-- Bottom: Hint -->
-        <div class="map-hint" id="mapHint">Tap anywhere on the map to check zoning</div>
-
-        <!-- Right: Analysis Panel (Chat) -->
-        <div class="analysis-panel" id="analysisPanel">
-            <div class="panel-header">
-                <div>
-                    <div class="panel-title" id="panelTitle">Zoning Analysis</div>
-                    <div class="panel-subtitle" id="panelSubtitle">Select a location</div>
+        <!-- Map Header Overlay -->
+        <div class="map-header">
+            <div class="header-brand">
+                <div class="header-logo">
+                    <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
+                    </svg>
                 </div>
-                <button class="panel-close" id="panelClose">
-                    <svg viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
-                </button>
+                <span class="header-title">ZoneAgent</span>
+                <div class="lang-selector" style="margin-left: 12px;">
+                    <button class="lang-btn active" data-lang="en">EN</button>
+                    <button class="lang-btn" data-lang="rw">RW</button>
+                    <button class="lang-btn" data-lang="fr">FR</button>
+                </div>
             </div>
 
-            <div class="zone-info" id="zoneInfo" style="display: none;">
-                <div class="zone-badge">
-                    <div class="zone-color" id="zoneColor"></div>
-                    <span class="zone-name" id="zoneName"></span>
-                </div>
-                <div class="zone-stats">
-                    <div class="stat-item">
-                        <div class="stat-label">Latitude</div>
-                        <div class="stat-value" id="statLat">--</div>
+            <div class="header-actions">
+                <!-- Search Control -->
+                <div class="search-control" style="position: relative;">
+                    <button class="search-icon-btn" id="searchBtn">
+                        <svg viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
+                    </button>
+                    <div class="search-box" id="searchBox">
+                        <input type="text" class="search-input" id="searchInput" placeholder="Search location...">
                     </div>
-                    <div class="stat-item">
-                        <div class="stat-label">Longitude</div>
-                        <div class="stat-value" id="statLng">--</div>
-                    </div>
+                    <div class="search-results" id="searchResults"></div>
                 </div>
-            </div>
 
-            <div class="chat-messages" id="chatMessages"></div>
-
-            <div class="chat-actions" id="chatActions" style="display: none;">
-                <button class="chat-action-btn primary" id="downloadBtn">
-                    <svg viewBox="0 0 24 24"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>
-                    Download PDF
-                </button>
-                <button class="chat-action-btn" id="shareBtn">
-                    <svg viewBox="0 0 24 24"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92s2.92-1.31 2.92-2.92-1.31-2.92-2.92-2.92z"/></svg>
-                    Share
-                </button>
-            </div>
-
-            <div class="chat-input-area">
-                <textarea class="chat-input" id="chatInput" placeholder="Ask about zoning, permits..." rows="1"></textarea>
-                <button class="send-btn" id="sendBtn">
-                    <svg viewBox="0 0 24 24"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>
+                <button class="location-btn" id="locationBtn">
+                    <svg viewBox="0 0 24 24"><path d="M12 8c-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4-1.79-4-4-4zm8.94 3c-.46-4.17-3.77-7.48-7.94-7.94V1h-2v2.06C6.83 3.52 3.52 6.83 3.06 11H1v2h2.06c.46 4.17 3.77 7.48 7.94 7.94V23h2v-2.06c4.17-.46 7.48-3.77 7.94-7.94H23v-2h-2.06zM12 19c-3.87 0-7-3.13-7-7s3.13-7 7-7 7 3.13 7 7-3.13 7-7 7z"/></svg>
+                    <span data-i18n="myLocation">My Location</span>
                 </button>
             </div>
         </div>
 
-        <!-- Floating Chat Toggle -->
-        <button class="chat-toggle" id="chatToggle">
-            <svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 14H6l-2 2V4h16v12z"/></svg>
-        </button>
+        <!-- Map Hint -->
+        <div class="map-hint" id="mapHint" data-i18n="tapHint">Tap anywhere on the map to check zoning</div>
+
+        <!-- Status Badge (hidden by default, shown when loading) -->
+        <div class="status-badge" id="statusBadge" style="display: none;">
+            <div class="status-dot" id="statusDot"></div>
+            <span id="statusText">Connecting...</span>
+        </div>
     </div>
 
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
+    <!-- ============================================
+         CHAT OVERLAY
+         ============================================ -->
+    <div class="chat-overlay" id="chatOverlay">
+        <div class="drag-indicator">
+            <div class="drag-dots">
+                <span></span><span></span><span></span><span></span><span></span>
+            </div>
+        </div>
+        <div class="chat-header" id="chatHeader">
+            <div class="chat-zone-info">
+                <div class="chat-zone-name">
+                    <span class="zone-color" id="zoneColor"></span>
+                    <span id="zoneName">Loading...</span>
+                </div>
+                <div class="chat-zone-coords" id="zoneCoords">--.------, --.------</div>
+            </div>
+            <button class="close-btn" id="closeChat">
+                <svg viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+            </button>
+        </div>
+
+        <div class="chat-messages" id="chatMessages">
+            <!-- Messages will be inserted here -->
+        </div>
+
+        <div class="chat-actions" id="chatActions" style="display: none;">
+            <button class="action-btn primary" id="downloadBtn">
+                <svg viewBox="0 0 24 24"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>
+                <span data-i18n="download">Download PDF</span>
+            </button>
+            <button class="action-btn" id="shareBtn">
+                <svg viewBox="0 0 24 24"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92s2.92-1.31 2.92-2.92-1.31-2.92-2.92-2.92z"/></svg>
+                <span data-i18n="share">Share</span>
+            </button>
+        </div>
+
+        <div class="chat-input-area">
+            <textarea class="chat-input" id="chatInput" placeholder="Ask about zoning, permits, regulations..." rows="1"></textarea>
+            <button class="send-btn" id="sendBtn">
+                <svg viewBox="0 0 24 24"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>
+            </button>
+        </div>
+    </div>
+
+    <!-- Leaflet JS -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" 
+            integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" 
+            crossorigin=""></script>
+
     <script>
-    const API = 'https://cok-development-assistant.onrender.com/api';
+    // =============================================================================
+    // ANONYMOUS USAGE TRACKING (No Login Required)
+    // =============================================================================
+    const UsageTracker = {
+        visitorId: null,
+        
+        async init() {
+            this.visitorId = await this.generateFingerprint();
+            this.trackEvent('session_start');
+            console.log('Visitor ID:', this.visitorId);
+        },
+        
+        async generateFingerprint() {
+            let storedId = localStorage.getItem('za_visitor_id');
+            if (storedId) return storedId;
+            
+            const components = [
+                navigator.userAgent,
+                navigator.language,
+                screen.width + 'x' + screen.height,
+                screen.colorDepth,
+                new Date().getTimezoneOffset(),
+                navigator.hardwareConcurrency || 'unknown',
+                navigator.platform
+            ];
+            
+            const fingerprint = components.join('|');
+            const hash = await this.hashString(fingerprint);
+            const visitorId = hash.substring(0, 12) + '_' + Date.now().toString(36);
+            
+            localStorage.setItem('za_visitor_id', visitorId);
+            return visitorId;
+        },
+        
+        async hashString(str) {
+            const encoder = new TextEncoder();
+            const data = encoder.encode(str);
+            const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+            const hashArray = Array.from(new Uint8Array(hashBuffer));
+            return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+        },
+        
+        trackEvent(eventType, data = {}) {
+            const event = {
+                visitor_id: this.visitorId,
+                event: eventType,
+                timestamp: new Date().toISOString(),
+                session_id: sessionId,
+                language: currentLanguage,
+                ...data
+            };
+            
+            this.storeLocally(event);
+            this.sendToBackend(event);
+        },
+        
+        storeLocally(event) {
+            try {
+                const events = JSON.parse(localStorage.getItem('za_events') || '[]');
+                events.push(event);
+                if (events.length > 100) events.shift();
+                localStorage.setItem('za_events', JSON.stringify(events));
+            } catch (e) {
+                console.warn('Local storage unavailable');
+            }
+        },
+        
+        async sendToBackend(event) {
+            try {
+                await fetch(`${API_BASE_URL}/analytics/event`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(event)
+                }).catch(() => {});
+            } catch (e) {}
+        },
+        
+        trackLocationQuery(lat, lng, zoneName) {
+            this.trackEvent('location_query', {
+                lat: lat.toFixed(4),
+                lng: lng.toFixed(4),
+                zone: zoneName
+            });
+        },
+        
+        trackQuestion(question, zoneName) {
+            this.trackEvent('ai_question', {
+                question_length: question.length,
+                zone: zoneName
+            });
+        },
+        
+        trackDownload(zoneName) {
+            this.trackEvent('pdf_download', { zone: zoneName });
+        },
+        
+        trackShare(zoneName) {
+            this.trackEvent('share', { zone: zoneName });
+        }
+    };
+
+    // =============================================================================
+    // DRAGGABLE CHAT PANEL (Desktop Only)
+    // =============================================================================
+    const DraggablePanel = {
+        isDragging: false,
+        startX: 0,
+        startY: 0,
+        startLeft: 0,
+        startTop: 0,
+        
+        init() {
+            if (window.innerWidth < 768) return;
+            
+            const panel = document.getElementById('chatOverlay');
+            const header = document.getElementById('chatHeader');
+            const dragIndicator = document.querySelector('.drag-indicator');
+            
+            [header, dragIndicator].forEach(el => {
+                if (!el) return;
+                el.addEventListener('mousedown', (e) => this.startDrag(e, panel));
+            });
+            
+            document.addEventListener('mousemove', (e) => this.drag(e, panel));
+            document.addEventListener('mouseup', () => this.stopDrag(panel));
+            
+            [header, dragIndicator].forEach(el => {
+                if (!el) return;
+                el.addEventListener('touchstart', (e) => this.startDrag(e, panel), { passive: false });
+            });
+            document.addEventListener('touchmove', (e) => this.drag(e, panel), { passive: false });
+            document.addEventListener('touchend', () => this.stopDrag(panel));
+            
+            this.loadPosition(panel);
+        },
+        
+        startDrag(e, panel) {
+            if (window.innerWidth < 768) return;
+            if (e.target.closest('button')) return;
+            
+            this.isDragging = true;
+            panel.classList.add('dragging');
+            
+            const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+            const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+            
+            const rect = panel.getBoundingClientRect();
+            this.startX = clientX;
+            this.startY = clientY;
+            this.startLeft = rect.left;
+            this.startTop = rect.top;
+            
+            panel.style.left = rect.left + 'px';
+            panel.style.top = rect.top + 'px';
+            panel.style.bottom = 'auto';
+            panel.style.right = 'auto';
+            
+            e.preventDefault();
+        },
+        
+        drag(e, panel) {
+            if (!this.isDragging) return;
+            
+            const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+            const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+            
+            const deltaX = clientX - this.startX;
+            const deltaY = clientY - this.startY;
+            
+            let newLeft = this.startLeft + deltaX;
+            let newTop = this.startTop + deltaY;
+            
+            const rect = panel.getBoundingClientRect();
+            const maxLeft = window.innerWidth - rect.width;
+            const maxTop = window.innerHeight - rect.height;
+            
+            newLeft = Math.max(0, Math.min(newLeft, maxLeft));
+            newTop = Math.max(0, Math.min(newTop, maxTop));
+            
+            panel.style.left = newLeft + 'px';
+            panel.style.top = newTop + 'px';
+            
+            e.preventDefault();
+        },
+        
+        stopDrag(panel) {
+            if (!this.isDragging) return;
+            this.isDragging = false;
+            panel.classList.remove('dragging');
+            this.savePosition(panel);
+        },
+        
+        savePosition(panel) {
+            const rect = panel.getBoundingClientRect();
+            localStorage.setItem('za_panel_position', JSON.stringify({
+                left: rect.left,
+                top: rect.top,
+                width: rect.width,
+                height: rect.height
+            }));
+        },
+        
+        loadPosition(panel) {
+            try {
+                const saved = JSON.parse(localStorage.getItem('za_panel_position'));
+                if (saved && window.innerWidth >= 768) {
+                    if (saved.left < window.innerWidth - 100 && saved.top < window.innerHeight - 100) {
+                        panel.style.left = saved.left + 'px';
+                        panel.style.top = saved.top + 'px';
+                        panel.style.bottom = 'auto';
+                        panel.style.right = 'auto';
+                        if (saved.width) panel.style.width = saved.width + 'px';
+                        if (saved.height) panel.style.height = saved.height + 'px';
+                    }
+                }
+            } catch (e) {}
+        }
+    };
+
+    // =============================================================================
+    // STATE
+    // =============================================================================
+    let map = null;
+    let currentMarker = null;
+    let currentLocation = null;
+    let currentZoning = null;
+    let currentResponse = null;
+    let backendConnected = false;
+    let currentLanguage = 'en';
     const sessionId = 'web_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
-    let map, marker, location, zoning, response, connected = false, lang = 'en', hasContent = false;
 
-    const COLORS = {
-        'R1-Low density residential zone': '#FFFFE0', 'R2-Medium density residential - Improvement zone': '#F59E0B',
-        'R3-Medium density residential - Expansion zone': '#FF7F50', 'R4-High density residential zone': '#FF6347',
-        'C1-Mixed use zone': '#FFB6C1', 'C3-City commercial zone': '#CD5626',
-        'I1-Light industrial zone': '#DDA0DD', 'I2-General industrial zone': '#9370DB',
-        'A1-Agriculture zone': '#90EE90', 'PA-Public Administration zone': '#87CEEB'
-    };
+    const API_BASE_URL = 'https://cok-development-assistant.onrender.com/api';
 
+    // =============================================================================
+    // TRANSLATIONS
+    // =============================================================================
     const i18n = {
-        en: { loading: 'Analyzing location...', welcome: z => `**${z}**\n\nWhat would you like to know?\n\n• Building types permitted\n• Height & setback requirements\n• Required permits\n• Commercial use eligibility`, error: 'Something went wrong. Try again.', noZone: 'No zoning data for this location.' },
-        rw: { loading: 'Gusesengura aho hantu...', welcome: z => `**${z}**\n\nNi iki ushaka kumenya?\n\n• Ubwoko bw'inyubako bwemewe\n• Uburebure n'imipaka\n• Impushya zisabwa`, error: 'Habaye ikibazo. Ongera ugerageze.', noZone: 'Nta makuru y\'imiyoborere.' },
-        fr: { loading: 'Analyse en cours...', welcome: z => `**${z}**\n\nQue voulez-vous savoir?\n\n• Types de bâtiments autorisés\n• Exigences de hauteur\n• Permis requis`, error: 'Une erreur s\'est produite.', noZone: 'Aucune donnée de zonage.' }
-    };
-    const t = (k, ...a) => { const v = i18n[lang][k] || i18n.en[k]; return typeof v === 'function' ? v(...a) : v; };
+        en: {
+            myLocation: 'My Location',
+            tapHint: 'Tap anywhere on the map to check zoning',
+            download: 'Download PDF',
+            share: 'Share',
+            askPlaceholder: 'Ask about zoning, permits, regulations...',
+            connecting: 'Connecting...',
+            connected: 'Connected',
+            offline: 'Offline',
+            loading: 'Checking zoning...',
+            analyzing: 'Analyzing...',
+            welcome: (zone) => `**Welcome to ZoneAgent**
 
-    // Init
-    window.addEventListener('DOMContentLoaded', async () => {
-        connected = await fetch(`${API}/health`).then(r => r.json()).then(d => d.status === 'healthy').catch(() => false);
-        map = L.map('map', { center: [-1.9441, 30.0619], zoom: 13, zoomControl: false });
-        L.control.zoom({ position: 'bottomleft' }).addTo(map);
-        // Google Hybrid - fast!
-        L.tileLayer('https://mt1.google.com/vt/lyrs=y&x={x}&y={y}&z={z}', { attribution: '© Google', maxZoom: 20 }).addTo(map);
+This location is classified as:
+**${zone}**
+
+What You Can Ask:
+
+• What types of buildings are permitted here?
+• What are the height and setback requirements?
+• What permits do I need to build?
+• Is this zone suitable for commercial use?
+• What are the investment opportunities?
+
+Type your question below to get instant guidance.`,
+            outsideKigali: 'This location is outside the Kigali zoning coverage area.\n\nPlease select a location within Kigali City boundaries to check zoning information.',
+            error: 'Something went wrong. Please try again.',
+            noZoning: 'No zoning data available for this location.',
+            reportTitle: 'ZONING COMPLIANCE REPORT',
+            generatedBy: 'Generated by ZoneAgent',
+            locationLabel: 'Location',
+            zoneLabel: 'Zone',
+            dateLabel: 'Date',
+            questionLabel: 'Question',
+            analysisLabel: 'Analysis',
+            contactLabel: 'Official Contacts',
+            disclaimer: 'This report is for informational purposes only. Verify all information with City of Kigali authorities before making development decisions.'
+        },
+        rw: {
+            myLocation: 'Aho Ndi',
+            tapHint: 'Kanda ahantu kuri karita kureba imiyoborere',
+            download: 'Kuramo PDF',
+            share: 'Sangiza',
+            askPlaceholder: 'Baza ku miyoborere, uruhushya...',
+            connecting: 'Guhuza...',
+            connected: 'Byahujwe',
+            offline: 'Ntibihari',
+            loading: 'Kureba imiyoborere...',
+            analyzing: 'Gusesengura...',
+            welcome: (zone) => `**Murakaza neza kuri ZoneAgent**
+
+Aha hantu hafite imiyoborere:
+**${zone}**
+
+Ibyo Ushobora Kubaza:
+
+• Ni ubuhe bwubatsi bwemewe aha?
+• Ni izihe ntera n'imipaka isabwa?
+• Ni uruhe ruhushya nkeneye kubaka?
+• Ese aha hantu hashobora gukoreshwa mu bucuruzi?
+
+Andika ikibazo cyawe hano.`,
+            outsideKigali: 'Aha hantu ni inyuma y\'imiyoborere ya Kigali.\n\nHitamo aho hantu mu mujyi wa Kigali kugira urebe amakuru y\'imiyoborere.',
+            error: 'Habaye ikibazo. Ongera ugerageze.',
+            noZoning: 'Nta makuru y\'imiyoborere kuri aha hantu.',
+            reportTitle: 'RAPORO Y\'IMIYOBORERE',
+            generatedBy: 'Yakozwe na ZoneAgent',
+            locationLabel: 'Aho hantu',
+            zoneLabel: 'Akarere',
+            dateLabel: 'Itariki',
+            questionLabel: 'Ikibazo',
+            analysisLabel: 'Isesengura',
+            contactLabel: 'Aho Wakwiyambaza',
+            disclaimer: 'Iyi raporo ni iy\'amakuru gusa. Emeza amakuru yose n\'ubuyobozi bw\'Umujyi wa Kigali.'
+        },
+        fr: {
+            myLocation: 'Ma Position',
+            tapHint: 'Appuyez sur la carte pour vérifier le zonage',
+            download: 'Télécharger PDF',
+            share: 'Partager',
+            askPlaceholder: 'Questions sur le zonage, permis...',
+            connecting: 'Connexion...',
+            connected: 'Connecté',
+            offline: 'Hors ligne',
+            loading: 'Vérification du zonage...',
+            analyzing: 'Analyse...',
+            welcome: (zone) => `**Bienvenue sur ZoneAgent**
+
+Cette zone est classée:
+**${zone}**
+
+Questions Possibles:
+
+• Quels types de bâtiments sont autorisés ici?
+• Quelles sont les exigences de hauteur et de retrait?
+• Quels permis sont nécessaires pour construire?
+• Cette zone est-elle adaptée à un usage commercial?
+• Quelles sont les opportunités d'investissement?
+
+Tapez votre question ci-dessous.`,
+            outsideKigali: 'Cet emplacement est en dehors de la zone de couverture de Kigali.\n\nVeuillez sélectionner un emplacement dans les limites de la ville de Kigali.',
+            error: 'Une erreur s\'est produite. Veuillez réessayer.',
+            noZoning: 'Aucune donnée de zonage disponible.',
+            reportTitle: 'RAPPORT DE ZONAGE',
+            generatedBy: 'Généré par ZoneAgent',
+            locationLabel: 'Emplacement',
+            zoneLabel: 'Zone',
+            dateLabel: 'Date',
+            questionLabel: 'Question',
+            analysisLabel: 'Analyse',
+            contactLabel: 'Contacts Officiels',
+            disclaimer: 'Ce rapport est fourni à titre informatif. Vérifiez les informations auprès de la Ville de Kigali.'
+        }
+    };
+
+    function t(key, ...args) {
+        const val = i18n[currentLanguage][key] || i18n.en[key] || key;
+        return typeof val === 'function' ? val(...args) : val;
+    }
+
+    function updateUI() {
+        document.querySelectorAll('[data-i18n]').forEach(el => {
+            const key = el.getAttribute('data-i18n');
+            el.textContent = t(key);
+        });
+        document.getElementById('chatInput').placeholder = t('askPlaceholder');
+    }
+
+    // =============================================================================
+    // ZONE COLORS
+    // =============================================================================
+    const ZONE_COLORS = {
+        'A1-Agriculture zone': '#90EE90',
+        'C1-Mixed use zone': '#FFB6C1',
+        'C3-City commercial zone': '#CD5626',
+        'I1-Light industrial zone': '#DDA0DD',
+        'I2-General industrial zone': '#9370DB',
+        'I3-Mining/ Extraction/Quarry': '#8B4513',
+        'P1-Parks and open spaces zone': '#32CD32',
+        'P2-Sport and Eco tourism zone': '#00FA9A',
+        'P3B-Forest zone': '#006400',
+        'P3C-Steep slopes (> 30%) zone': '#2E8B57',
+        'PA-Public Administration zone': '#87CEEB',
+        'PF1-Education and research facilities': '#4169E1',
+        'PF2-Health facilities': '#0000FF',
+        'PF3-Religious facilities': '#191970',
+        'PF4-Cultural/ memorial sites': '#6495ED',
+        'PF5-Cemetery/ crematoria': '#B0C4DE',
+        'R1-Low density residential zone': '#FFFFE0',
+        'R1A-Low density residential densification zone': '#FFFACD',
+        'R1B-Rural residential zone': '#F0E68C',
+        'R2-Medium density residential - Improvement zone': '#F59E0B',
+        'R3-Medium density residential - Expansion zone': '#FF7F50',
+        'R4-High density residential zone': '#FF6347',
+        'T-Transportation zone': '#A9A9A9',
+        'U-Utility zone': '#D3D3D3',
+        'W2 - Rehabilitation': '#98FB98',
+        'W3 - Sustainable Exploitation': '#90EE90',
+        'W4 - Conservation': '#8FBC8F',
+        'W5 - Recreational': '#87CEEB',
+        'WR-Waterbody zone': '#87CEEB'
+    };
+
+    // =============================================================================
+    // APP INITIALIZATION - MAP PRELOADS BEFORE SPLASH DISMISSAL
+    // =============================================================================
+    
+    // Start preloading map immediately
+    let mapInitPromise = null;
+    
+    window.addEventListener('DOMContentLoaded', () => {
+        console.log('🚀 Preloading map...');
+        mapInitPromise = preloadMap();
     });
 
-    document.getElementById('enterBtn').onclick = () => {
-        document.getElementById('splash').classList.add('hidden');
-        document.getElementById('app').classList.add('active');
-        setTimeout(() => map.invalidateSize(), 100);
-        map.on('click', handleClick);
-        setupUI();
-    };
-
-    function setupUI() {
-        // Language
-        document.querySelectorAll('.lang-pill').forEach(b => b.onclick = () => {
-            document.querySelectorAll('.lang-pill').forEach(x => x.classList.remove('active'));
-            b.classList.add('active');
-            lang = b.dataset.lang;
-        });
-        // Location
-        document.getElementById('locationBtn').onclick = () => {
-            navigator.geolocation.getCurrentPosition(p => {
-                map.setView([p.coords.latitude, p.coords.longitude], 16);
-                handleClick({ latlng: L.latLng(p.coords.latitude, p.coords.longitude) });
-            }, () => alert('Could not get location'), { enableHighAccuracy: true });
-        };
-        // Panel close
-        document.getElementById('panelClose').onclick = closePanel;
-        document.getElementById('chatToggle').onclick = openPanel;
-        // Chat
-        const input = document.getElementById('chatInput');
-        input.oninput = () => { input.style.height = 'auto'; input.style.height = Math.min(input.scrollHeight, 80) + 'px'; };
-        input.onkeypress = e => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); } };
-        document.getElementById('sendBtn').onclick = sendMessage;
-        document.getElementById('downloadBtn').onclick = downloadPDF;
-        document.getElementById('shareBtn').onclick = shareReport;
-        // Search (simple)
-        document.getElementById('searchBtn').onclick = () => {
-            const q = prompt('Search location in Kigali:');
-            if (q) searchLocation(q);
-        };
-    }
-
-    async function searchLocation(query) {
-        try {
-            const res = await fetch(`https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(query)},Kigali,Rwanda&format=json&limit=1`);
-            const data = await res.json();
-            if (data[0]) {
-                map.flyTo([data[0].lat, data[0].lon], 16);
-                setTimeout(() => handleClick({ latlng: L.latLng(data[0].lat, data[0].lon) }), 1000);
-            }
-        } catch (e) { console.error(e); }
-    }
-
-    async function handleClick(e) {
-        if (!connected) return;
-        location = { lat: e.latlng.lat, lng: e.latlng.lng };
-        document.getElementById('mapHint').classList.add('hidden');
-
-        // Marker
-        if (marker) map.removeLayer(marker);
-        marker = L.marker(e.latlng, {
-            icon: L.divIcon({
-                className: '',
-                html: `<div style="width:24px;height:24px;background:#ec4899;border:3px solid white;border-radius:50%;box-shadow:0 2px 10px rgba(236,72,153,0.5);"></div>`,
-                iconSize: [24, 24], iconAnchor: [12, 12]
+    async function preloadMap() {
+        const startTime = performance.now();
+        
+        // Check backend health in parallel (non-blocking)
+        const healthCheck = fetch(`${API_BASE_URL}/health`)
+            .then(r => r.json())
+            .then(d => {
+                console.log('✅ Backend connected');
+                return d.status === 'healthy';
             })
+            .catch(() => {
+                console.warn('⚠️ Backend unavailable');
+                return false;
+            });
+
+        // Initialize Leaflet map
+        map = L.map('mapDiv', {
+            center: [-1.9441, 30.0619],
+            zoom: 12, // Increased from 13 for wider view
+            minZoom: 10,
+            maxZoom: 20,
+            zoomControl: false, // Disable default position
+            attributionControl: true
+        });
+
+        // Add zoom control to bottom right
+        L.control.zoom({
+            position: 'bottomright'
         }).addTo(map);
 
-        openPanel();
-        clearChat();
-        addMsg('system', t('loading'));
+        // Use Google Maps Satellite (much faster than Esri)
+        L.tileLayer('https://mt1.google.com/vt/lyrs=s&x={x}&y={y}&z={z}', {
+            attribution: 'Imagery &copy; Google',
+            maxZoom: 20,
+            minZoom: 10,
+            subdomains: ['mt0', 'mt1', 'mt2', 'mt3']
+        }).addTo(map);
+        
+        // Add road/label overlay for hybrid view
+        L.tileLayer('https://mt1.google.com/vt/lyrs=h&x={x}&y={y}&z={z}', {
+            attribution: '',
+            maxZoom: 20,
+            minZoom: 10,
+            subdomains: ['mt0', 'mt1', 'mt2', 'mt3']
+        }).addTo(map);
+
+        // CRITICAL: Force Leaflet to recalculate size and load all tiles
+        setTimeout(() => {
+            map.invalidateSize();
+            map.setView([-1.9441, 30.0619], 12);
+        }, 100);
+
+        // Wait for backend check
+        backendConnected = await healthCheck;
+        
+        const endTime = performance.now();
+        console.log(`✨ Map ready in ${(endTime - startTime).toFixed(0)}ms`);
+        
+        return map;
+    }
+
+    document.getElementById('enterBtn').addEventListener('click', enterApp);
+
+    async function enterApp() {
+        document.getElementById('splash').classList.add('hidden');
+        document.getElementById('app').classList.add('active');
+        
+        // Initialize tracking
+        await UsageTracker.init();
+        DraggablePanel.init();
+        
+        // Map is already loaded from preload
+        if (!map) {
+            console.log('⏳ Waiting for map...');
+            await mapInitPromise;
+        }
+        
+        // CRITICAL: Force map to recognize its full size
+        setTimeout(() => {
+            map.invalidateSize(true);
+            console.log('✨ Map resized to full viewport');
+        }, 200);
+        
+        // Setup interactions
+        map.on('click', handleMapClick);
+        setupEventListeners();
+        
+        console.log('🎯 ZoneAgent ready');
+    }
+
+    function setupEventListeners() {
+        // Language buttons
+        document.querySelectorAll('.lang-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                currentLanguage = btn.dataset.lang;
+                updateUI();
+            });
+        });
+
+        // Location button
+        document.getElementById('locationBtn').addEventListener('click', useMyLocation);
+
+        // Close chat
+        document.getElementById('closeChat').addEventListener('click', closeChat);
+
+        // Chat input
+        const chatInput = document.getElementById('chatInput');
+        chatInput.addEventListener('input', autoResize);
+        chatInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                sendMessage();
+            }
+        });
+
+        // Send button
+        document.getElementById('sendBtn').addEventListener('click', sendMessage);
+
+        // Download button
+        document.getElementById('downloadBtn').addEventListener('click', downloadPDF);
+
+        // Share button
+        document.getElementById('shareBtn').addEventListener('click', shareReport);
+
+        // Search functionality
+        const searchBtn = document.getElementById('searchBtn');
+        const searchBox = document.getElementById('searchBox');
+        const searchInput = document.getElementById('searchInput');
+        const searchResults = document.getElementById('searchResults');
+
+        // Toggle search box
+        searchBtn.addEventListener('click', () => {
+            searchBox.classList.toggle('active');
+            if (searchBox.classList.contains('active')) {
+                searchInput.focus();
+            } else {
+                searchInput.value = '';
+                searchResults.classList.remove('active');
+            }
+        });
+
+        // Search input
+        let searchTimeout;
+        searchInput.addEventListener('input', (e) => {
+            clearTimeout(searchTimeout);
+            const query = e.target.value.trim();
+            
+            if (query.length < 3) {
+                searchResults.classList.remove('active');
+                return;
+            }
+
+            searchTimeout = setTimeout(() => {
+                performSearch(query);
+            }, 500);
+        });
+
+        // Close search on escape
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                searchBox.classList.remove('active');
+                searchResults.classList.remove('active');
+                searchInput.value = '';
+            }
+        });
+
+        // Close search when clicking outside
+        document.addEventListener('click', (e) => {
+            if (!e.target.closest('.search-control')) {
+                searchBox.classList.remove('active');
+                searchResults.classList.remove('active');
+            }
+        });
+    }
+
+    function autoResize() {
+        const input = document.getElementById('chatInput');
+        input.style.height = 'auto';
+        input.style.height = Math.min(input.scrollHeight, 120) + 'px';
+    }
+
+    // =============================================================================
+    // LOCATION SEARCH
+    // =============================================================================
+    async function performSearch(query) {
+        const searchResults = document.getElementById('searchResults');
+        
+        // Show loading
+        searchResults.innerHTML = '<div class="search-loading">Searching...</div>';
+        searchResults.classList.add('active');
 
         try {
-            const res = await fetch(`${API}/zoning/location?lat=${location.lat}&lng=${location.lng}`);
-            const data = await res.json();
-            if (data.success && data.data?.zoneData) {
-                zoning = { name: data.data.zoneData.zone_name, props: data.data.zoneData };
-                showZoneInfo();
-                hasContent = true;
-            } else {
-                clearChat();
-                addMsg('assistant', t('noZone'));
-                hasContent = true;
+            // Use Nominatim (OpenStreetMap) geocoding API
+            // Bias search towards Kigali, Rwanda
+            const url = `https://nominatim.openstreetmap.org/search?` +
+                `q=${encodeURIComponent(query)},Kigali,Rwanda&` +
+                `format=json&` +
+                `limit=5&` +
+                `countrycodes=rw&` +
+                `viewbox=29.8,-2.2,30.3,-1.7&` + // Kigali bounds
+                `bounded=1`;
+
+            const response = await fetch(url, {
+                headers: {
+                    'User-Agent': 'ZoneAgent/1.0'
+                }
+            });
+
+            const results = await response.json();
+
+            if (results.length === 0) {
+                searchResults.innerHTML = '<div class="search-no-results">No locations found in Kigali</div>';
+                return;
             }
-        } catch (e) {
-            clearChat();
-            addMsg('assistant', t('error'));
-            hasContent = true;
+
+            // Display results
+            searchResults.innerHTML = results.map(result => `
+                <div class="search-result-item" data-lat="${result.lat}" data-lng="${result.lon}">
+                    <div class="search-result-name">${result.display_name.split(',')[0]}</div>
+                    <div class="search-result-address">${result.display_name}</div>
+                </div>
+            `).join('');
+
+            // Add click handlers to results
+            searchResults.querySelectorAll('.search-result-item').forEach(item => {
+                item.addEventListener('click', () => {
+                    const lat = parseFloat(item.dataset.lat);
+                    const lng = parseFloat(item.dataset.lng);
+                    
+                    // Fly to location
+                    map.flyTo([lat, lng], 16);
+                    
+                    // Simulate click
+                    setTimeout(() => {
+                        handleMapClick({
+                            latlng: L.latLng(lat, lng)
+                        });
+                    }, 1000);
+
+                    // Close search
+                    document.getElementById('searchBox').classList.remove('active');
+                    searchResults.classList.remove('active');
+                    document.getElementById('searchInput').value = '';
+                });
+            });
+
+        } catch (error) {
+            console.error('Search error:', error);
+            searchResults.innerHTML = '<div class="search-no-results">Search failed. Please try again.</div>';
         }
     }
 
-    function openPanel() {
-        document.getElementById('analysisPanel').classList.add('active');
-        document.getElementById('chatToggle').classList.remove('visible');
-        document.getElementById('top-actions')?.style.setProperty('right', '370px');
+    // =============================================================================
+    // MAP INTERACTIONS
+    // =============================================================================
+    async function handleMapClick(e) {
+        if (!backendConnected) return;
+
+        currentLocation = {
+            latitude: e.latlng.lat,
+            longitude: e.latlng.lng
+        };
+
+        // Hide hint
+        document.getElementById('mapHint').classList.add('hidden');
+
+        // Add pin
+        addPin(e.latlng);
+
+        // Open chat overlay
+        openChat();
+
+        // Show loading
+        clearMessages();
+        addMessage('system', t('loading'));
+
+        try {
+            const res = await fetch(`${API_BASE_URL}/zoning/location?lat=${currentLocation.latitude}&lng=${currentLocation.longitude}`);
+            const data = await res.json();
+
+            if (data.success && data.data?.zoneData) {
+                currentZoning = {
+                    zoneName: data.data.zoneData.zone_name,
+                    properties: data.data.zoneData
+                };
+                displayZoneInfo();
+                
+                // Track usage
+                UsageTracker.trackLocationQuery(
+                    currentLocation.latitude, 
+                    currentLocation.longitude, 
+                    currentZoning.zoneName
+                );
+            } else {
+                clearMessages();
+                addMessage('assistant', t('noZoning'));
+            }
+        } catch (error) {
+            clearMessages();
+            addMessage('assistant', t('error'));
+        }
     }
 
-    function closePanel() {
-        document.getElementById('analysisPanel').classList.remove('active');
-        if (hasContent) document.getElementById('chatToggle').classList.add('visible');
-        if (!location) document.getElementById('mapHint').classList.remove('hidden');
+    function addPin(latlng) {
+        // Remove existing marker
+        if (currentMarker) {
+            map.removeLayer(currentMarker);
+        }
+
+        // Create custom icon
+        const customIcon = L.divIcon({
+            className: 'custom-marker',
+            html: `<div style="
+                width: 32px;
+                height: 32px;
+                background: #3B82F6;
+                border: 3px solid white;
+                border-radius: 50%;
+                box-shadow: 0 4px 12px rgba(59, 130, 246, 0.6);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            ">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="white">
+                    <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
+                </svg>
+            </div>`,
+            iconSize: [32, 32],
+            iconAnchor: [16, 16]
+        });
+
+        // Add new marker
+        currentMarker = L.marker(latlng, { icon: customIcon }).addTo(map);
     }
 
-    function showZoneInfo() {
-        document.getElementById('zoneInfo').style.display = 'block';
-        document.getElementById('zoneName').textContent = zoning.name;
-        document.getElementById('zoneColor').style.background = COLORS[zoning.name] || '#64748B';
-        document.getElementById('statLat').textContent = location.lat.toFixed(5);
-        document.getElementById('statLng').textContent = location.lng.toFixed(5);
-        document.getElementById('panelTitle').textContent = 'Zoning Analysis';
-        document.getElementById('panelSubtitle').textContent = `${location.lat.toFixed(4)}, ${location.lng.toFixed(4)}`;
-        clearChat();
-        response = { text: t('welcome', zoning.name), question: null };
-        addMsg('assistant', response.text, true);
+    function useMyLocation() {
+        if (!navigator.geolocation) {
+            alert('Geolocation not supported');
+            return;
+        }
+
+        const btn = document.getElementById('locationBtn');
+        btn.disabled = true;
+
+        navigator.geolocation.getCurrentPosition(
+            (pos) => {
+                const { latitude, longitude } = pos.coords;
+                
+                // Check if in Kigali bounds
+                if (latitude < -2.2 || latitude > -1.7 || longitude < 29.8 || longitude > 30.3) {
+                    btn.disabled = false;
+                    openChat();
+                    clearMessages();
+                    addMessage('assistant', t('outsideKigali'));
+                    return;
+                }
+
+                map.setView([latitude, longitude], 16);
+
+                // Simulate click
+                handleMapClick({
+                    latlng: L.latLng(latitude, longitude)
+                });
+
+                btn.disabled = false;
+            },
+            () => {
+                btn.disabled = false;
+                alert('Unable to get your location');
+            },
+            { enableHighAccuracy: true, timeout: 10000 }
+        );
     }
 
-    function clearChat() {
+    // =============================================================================
+    // TYPEWRITER CONTROLLER
+    // =============================================================================
+    const Typewriter = {
+        activeTimer: null,
+        sessionId: 0,
+        
+        stop() {
+            if (this.activeTimer) {
+                clearTimeout(this.activeTimer);
+                this.activeTimer = null;
+            }
+            this.sessionId++;
+        },
+        
+        async type(element, text, speed = 15) {
+            this.stop();
+            const session = ++this.sessionId;
+            
+            element.innerHTML = '<div class="message-content"></div><span class="typing-cursor"></span>';
+            const content = element.querySelector('.message-content');
+            const cursor = element.querySelector('.typing-cursor');
+            
+            return new Promise((resolve) => {
+                let index = 0;
+                
+                const typeNext = () => {
+                    if (session !== this.sessionId) {
+                        resolve(false);
+                        return;
+                    }
+                    
+                    if (index < text.length) {
+                        const char = text[index];
+                        content.innerHTML = this.formatText(text.substring(0, index + 1));
+                        index++;
+                        
+                        let delay = speed;
+                        if (char === '\n') delay = speed * 3;
+                        else if (char === '.' || char === '!' || char === '?') delay = speed * 4;
+                        else if (char === ',') delay = speed * 2;
+                        
+                        const container = document.getElementById('chatMessages');
+                        container.scrollTop = container.scrollHeight;
+                        
+                        this.activeTimer = setTimeout(typeNext, delay);
+                    } else {
+                        cursor.remove();
+                        content.innerHTML = this.formatText(text);
+                        this.activeTimer = null;
+                        resolve(true);
+                    }
+                };
+                
+                typeNext();
+            });
+        },
+        
+        instant(element, text) {
+            this.stop();
+            element.innerHTML = `<div class="message-content">${this.formatText(text)}</div>`;
+        },
+        
+        formatText(text) {
+            let formatted = text
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/📍/g, '<svg class="inline-icon" viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>')
+                .replace(/📋|📄/g, '<svg class="inline-icon" viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg>')
+                .replace(/[\u{1F300}-\u{1F9FF}]/gu, '')
+                .replace(/^[━═─]{3,}$/gm, '<hr class="message-divider">')
+                .replace(/^[-_]{3,}$/gm, '<hr class="message-divider">')
+                .replace(/^(YES|PERMITTED|ALLOWED)\s*[-–—]?\s*/gm, '<span class="status-badge-inline success">$1</span> ')
+                .replace(/^(NO|NOT PERMITTED|PROHIBITED)\s*[-–—]?\s*/gm, '<span class="status-badge-inline error">$1</span> ')
+                .replace(/^(CONDITIONAL|REQUIRES APPROVAL)\s*[-–—]?\s*/gm, '<span class="status-badge-inline warning">$1</span> ')
+                .replace(/^([A-Z][A-Za-z0-9 ]{2,40}):?\s*$/gm, '<h4>$1</h4>')
+                .replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>')
+                .replace(/^[•\-\*▪▸]\s+(.+)$/gm, '<li>$1</li>')
+                .replace(/^\d+[\.\)]\s+(.+)$/gm, '<li>$1</li>')
+                .replace(/((?:<li>.*<\/li>\s*)+)/g, '<ul>$1</ul>')
+                .replace(/^(Legal basis:.*?)$/gm, '<cite>$1</cite>')
+                .replace(/^(Note:.*?)$/gm, '<small class="note">$1</small>')
+                .replace(/\n\n+/g, '</p><p>')
+                .replace(/\n/g, '<br>');
+            
+            if (!formatted.startsWith('<h4>') && !formatted.startsWith('<ul>') && !formatted.startsWith('<hr') && !formatted.startsWith('<span class="status')) {
+                formatted = '<p>' + formatted + '</p>';
+            }
+            
+            formatted = formatted.replace(/<p><\/p>/g, '');
+            formatted = formatted.replace(/<p>(<h4>)/g, '$1');
+            formatted = formatted.replace(/(<\/h4>)<\/p>/g, '$1');
+            formatted = formatted.replace(/<p>(<ul>)/g, '$1');
+            formatted = formatted.replace(/(<\/ul>)<\/p>/g, '$1');
+            formatted = formatted.replace(/<p>(<hr)/g, '$1');
+            formatted = formatted.replace(/(class="message-divider">)<\/p>/g, '$1');
+            
+            return formatted;
+        }
+    };
+
+    // =============================================================================
+    // CHAT INTERFACE
+    // =============================================================================
+    function openChat() {
+        document.getElementById('chatOverlay').classList.add('active');
+    }
+
+    function closeChat() {
+        document.getElementById('chatOverlay').classList.remove('active');
+        document.getElementById('mapHint').classList.remove('hidden');
+        Typewriter.stop();
+    }
+
+    function clearMessages() {
         document.getElementById('chatMessages').innerHTML = '';
         document.getElementById('chatActions').style.display = 'none';
     }
 
-    function addMsg(type, text, animate = false) {
+    function addMessage(type, content, animate = false) {
         const container = document.getElementById('chatMessages');
         const msg = document.createElement('div');
         msg.className = `message ${type}`;
-        msg.innerHTML = `<div class="message-content">${formatText(text)}</div>`;
-        container.appendChild(msg);
+        
+        if (animate && type === 'assistant') {
+            container.appendChild(msg);
+            container.scrollTop = container.scrollHeight;
+            return Typewriter.type(msg, content);
+        } else {
+            msg.innerHTML = `<div class="message-content">${Typewriter.formatText(content)}</div>`;
+            container.appendChild(msg);
+            container.scrollTop = container.scrollHeight;
+            return Promise.resolve();
+        }
+    }
+
+    function showTypingIndicator() {
+        const container = document.getElementById('chatMessages');
+        const indicator = document.createElement('div');
+        indicator.className = 'typing-indicator';
+        indicator.id = 'typingIndicator';
+        indicator.innerHTML = `
+            <div class="typing-dots">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        `;
+        container.appendChild(indicator);
         container.scrollTop = container.scrollHeight;
     }
 
-    function formatText(text) {
-        return text.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
-            .replace(/^[•\-]\s+(.+)$/gm, '<li>$1</li>')
-            .replace(/((?:<li>.+<\/li>\s*)+)/g, '<ul>$1</ul>')
-            .replace(/\n/g, '<br>');
+    function hideTypingIndicator() {
+        const indicator = document.getElementById('typingIndicator');
+        if (indicator) indicator.remove();
+    }
+
+    function displayZoneInfo() {
+        document.getElementById('zoneName').textContent = currentZoning.zoneName;
+        document.getElementById('zoneCoords').textContent = 
+            `${currentLocation.latitude.toFixed(6)}, ${currentLocation.longitude.toFixed(6)}`;
+        document.getElementById('zoneColor').style.background = 
+            ZONE_COLORS[currentZoning.zoneName] || '#64748B';
+
+        clearMessages();
+        const welcomeMsg = t('welcome', currentZoning.zoneName);
+        currentResponse = { response: welcomeMsg, question: null };
+        
+        addMessage('assistant', welcomeMsg, true);
     }
 
     async function sendMessage() {
         const input = document.getElementById('chatInput');
-        const q = input.value.trim();
-        if (!q || !zoning) return;
+        const question = input.value.trim();
+        
+        if (!question || !currentZoning || !currentLocation) return;
 
-        addMsg('user', q);
+        addMessage('user', question);
         input.value = '';
         input.style.height = 'auto';
 
-        const dots = document.createElement('div');
-        dots.className = 'typing-dots';
-        dots.innerHTML = '<span></span><span></span><span></span>';
-        document.getElementById('chatMessages').appendChild(dots);
+        showTypingIndicator();
+        document.getElementById('sendBtn').disabled = true;
 
         try {
-            const res = await fetch(`${API}/ai/question`, {
+            const res = await fetch(`${API_BASE_URL}/ai/question`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ question: q, lat: location.lat, lng: location.lng, sessionId, language: lang })
+                body: JSON.stringify({
+                    question,
+                    lat: currentLocation.latitude,
+                    lng: currentLocation.longitude,
+                    sessionId,
+                    language: currentLanguage
+                })
             });
+
             const data = await res.json();
-            dots.remove();
+            hideTypingIndicator();
+
             if (data.success && data.data) {
-                response = { text: data.data.response, question: q };
-                addMsg('assistant', data.data.response);
+                currentResponse = {
+                    response: data.data.response,
+                    question
+                };
+                await addMessage('assistant', data.data.response, true);
                 document.getElementById('chatActions').style.display = 'flex';
+                
+                UsageTracker.trackQuestion(question, currentZoning.zoneName);
             } else {
-                addMsg('assistant', t('error'));
+                addMessage('assistant', t('error'));
             }
-        } catch (e) {
-            dots.remove();
-            addMsg('assistant', t('error'));
+        } catch (error) {
+            hideTypingIndicator();
+            addMessage('assistant', t('error'));
         }
+
+        document.getElementById('sendBtn').disabled = false;
     }
 
+    // =============================================================================
+    // PDF & SHARE
+    // =============================================================================
     async function downloadPDF() {
-        if (!zoning || !response) return;
+        if (!currentZoning || !currentResponse) return;
+
         const btn = document.getElementById('downloadBtn');
         btn.disabled = true;
+
         try {
             const { jsPDF } = window.jspdf;
             const doc = new jsPDF();
-            const w = doc.internal.pageSize.getWidth(), m = 20;
+            const pageWidth = doc.internal.pageSize.getWidth();
+            const margin = 20;
+            const contentWidth = pageWidth - (margin * 2);
 
-            doc.setFillColor(17, 17, 17);
-            doc.rect(0, 0, w, 35, 'F');
+            doc.setFillColor(15, 23, 42);
+            doc.rect(0, 0, pageWidth, 40, 'F');
+            
             doc.setTextColor(255, 255, 255);
-            doc.setFontSize(20);
+            doc.setFontSize(22);
             doc.setFont('helvetica', 'bold');
-            doc.text('ZoneAgent Report', m, 22);
+            doc.text('ZoneAgent', margin, 18);
+            
+            doc.setFontSize(11);
+            doc.setFont('helvetica', 'normal');
+            doc.text(t('reportTitle'), margin, 28);
 
-            doc.setFillColor(236, 72, 153);
-            doc.rect(0, 35, w, 3, 'F');
+            doc.setFillColor(59, 130, 246);
+            doc.rect(0, 40, pageWidth, 3, 'F');
 
-            let y = 50;
-            doc.setTextColor(17, 17, 17);
+            let y = 55;
+
+            doc.setTextColor(15, 23, 42);
             doc.setFontSize(12);
             doc.setFont('helvetica', 'bold');
-            doc.text('LOCATION', m, y);
+            doc.text(t('locationLabel').toUpperCase(), margin, y);
             y += 8;
-            doc.setFont('helvetica', 'normal');
-            doc.setFontSize(10);
-            doc.text(`Zone: ${zoning.name}`, m, y); y += 5;
-            doc.text(`Coordinates: ${location.lat.toFixed(6)}, ${location.lng.toFixed(6)}`, m, y); y += 5;
-            doc.text(`Date: ${new Date().toLocaleDateString()}`, m, y); y += 12;
 
-            if (response.question) {
-                doc.setFont('helvetica', 'bold');
+            doc.setTextColor(51, 65, 85);
+            doc.setFontSize(10);
+            doc.setFont('helvetica', 'normal');
+            doc.text(`${t('zoneLabel')}: ${currentZoning.zoneName}`, margin, y);
+            y += 6;
+            doc.text(`Coordinates: ${currentLocation.latitude.toFixed(6)}, ${currentLocation.longitude.toFixed(6)}`, margin, y);
+            y += 6;
+            doc.text(`${t('dateLabel')}: ${new Date().toLocaleDateString()}`, margin, y);
+            y += 12;
+
+            doc.setDrawColor(226, 232, 240);
+            doc.line(margin, y, pageWidth - margin, y);
+            y += 12;
+
+            if (currentResponse.question) {
+                doc.setTextColor(15, 23, 42);
                 doc.setFontSize(12);
-                doc.text('QUESTION', m, y); y += 8;
-                doc.setFont('helvetica', 'italic');
+                doc.setFont('helvetica', 'bold');
+                doc.text(t('questionLabel').toUpperCase(), margin, y);
+                y += 8;
+
+                doc.setTextColor(51, 65, 85);
                 doc.setFontSize(10);
-                doc.text(doc.splitTextToSize(`"${response.question}"`, w - m * 2), m, y);
-                y += 15;
+                doc.setFont('helvetica', 'italic');
+                const qLines = doc.splitTextToSize(`"${currentResponse.question}"`, contentWidth);
+                doc.text(qLines, margin, y);
+                y += (qLines.length * 5) + 10;
+
+                doc.line(margin, y, pageWidth - margin, y);
+                y += 12;
             }
 
-            doc.setFont('helvetica', 'bold');
+            doc.setTextColor(15, 23, 42);
             doc.setFontSize(12);
-            doc.text('ANALYSIS', m, y); y += 8;
-            doc.setFont('helvetica', 'normal');
+            doc.setFont('helvetica', 'bold');
+            doc.text(t('analysisLabel').toUpperCase(), margin, y);
+            y += 10;
+
+            doc.setTextColor(51, 65, 85);
             doc.setFontSize(10);
-            const lines = doc.splitTextToSize(response.text.replace(/[^\x00-\x7F]/g, ''), w - m * 2);
-            lines.forEach(line => { if (y > 270) { doc.addPage(); y = 20; } doc.text(line, m, y); y += 5; });
+            doc.setFont('helvetica', 'normal');
 
+            const cleanResponse = currentResponse.response.replace(/[^\x00-\x7F]/g, '').trim();
+            const rLines = doc.splitTextToSize(cleanResponse, contentWidth);
+
+            rLines.forEach(line => {
+                if (y > 260) {
+                    doc.addPage();
+                    y = 20;
+                }
+                doc.text(line, margin, y);
+                y += 5;
+            });
+
+            y += 15;
+
+            if (y > 230) {
+                doc.addPage();
+                y = 20;
+            }
+
+            doc.setFillColor(241, 245, 249);
+            doc.roundedRect(margin, y, contentWidth, 30, 3, 3, 'F');
+            y += 10;
+
+            doc.setTextColor(15, 23, 42);
+            doc.setFontSize(10);
+            doc.setFont('helvetica', 'bold');
+            doc.text(t('contactLabel'), margin + 5, y);
+            y += 6;
+
+            doc.setFont('helvetica', 'normal');
+            doc.setTextColor(51, 65, 85);
+            doc.text('City of Kigali: 3260 | https://www.kigalicity.gov.rw/', margin + 5, y);
+
+            y += 25;
+
+            doc.setTextColor(148, 163, 184);
             doc.setFontSize(8);
-            doc.setTextColor(128, 128, 128);
-            doc.text('Generated by ZoneAgent | City of Kigali: 3260', w / 2, 290, { align: 'center' });
+            const dLines = doc.splitTextToSize(t('disclaimer'), contentWidth);
+            doc.text(dLines, margin, y);
 
-            doc.save(`ZoneAgent_${zoning.name.replace(/[^a-zA-Z0-9]/g, '_').slice(0, 20)}.pdf`);
-        } catch (e) { console.error(e); alert('Error generating PDF'); }
+            const pageCount = doc.internal.getNumberOfPages();
+            for (let i = 1; i <= pageCount; i++) {
+                doc.setPage(i);
+                doc.setFontSize(8);
+                doc.setTextColor(148, 163, 184);
+                doc.text(
+                    `${t('generatedBy')} | Page ${i}/${pageCount}`,
+                    pageWidth / 2,
+                    doc.internal.pageSize.getHeight() - 10,
+                    { align: 'center' }
+                );
+            }
+
+            const zoneSafe = currentZoning.zoneName.replace(/[^a-zA-Z0-9]/g, '_').substring(0, 20);
+            doc.save(`ZoneAgent_${zoneSafe}_${new Date().toISOString().split('T')[0]}.pdf`);
+            
+            UsageTracker.trackDownload(currentZoning.zoneName);
+
+        } catch (error) {
+            console.error('PDF Error:', error);
+            alert('Error generating PDF');
+        }
+
         btn.disabled = false;
     }
 
-    function shareReport() {
-        if (!zoning || !response) return;
-        const text = `ZoneAgent Report\n\nZone: ${zoning.name}\nLocation: ${location.lat.toFixed(4)}, ${location.lng.toFixed(4)}\n\n${response.text.slice(0, 300)}...\n\nCity of Kigali: 3260`;
-        if (navigator.share) navigator.share({ title: 'ZoneAgent', text }).catch(() => {});
-        else navigator.clipboard.writeText(text).then(() => alert('Copied!')).catch(() => {});
+    async function shareReport() {
+        if (!currentZoning || !currentResponse) return;
+        
+        UsageTracker.trackShare(currentZoning.zoneName);
+
+        const text = `ZoneAgent Report
+
+Zone: ${currentZoning.zoneName}
+Location: ${currentLocation.latitude.toFixed(4)}, ${currentLocation.longitude.toFixed(4)}
+
+${currentResponse.response.substring(0, 400)}...
+
+City of Kigali: Hotline:3260`;
+
+        if (navigator.share) {
+            try {
+                await navigator.share({ title: 'ZoneAgent Report', text });
+            } catch (e) {
+                if (e.name !== 'AbortError') copyText(text);
+            }
+        } else {
+            copyText(text);
+        }
     }
+
+    function copyText(text) {
+        navigator.clipboard.writeText(text).then(() => {
+            alert('Copied to clipboard!');
+        }).catch(() => {
+            alert('Could not copy');
+        });
+    }
+
+    console.log('🗺️ ZoneAgent Leaflet - Zero Trips. Instant Compliance.');
     </script>
 </body>
 </html>
