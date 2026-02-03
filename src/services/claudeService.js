@@ -1,6 +1,5 @@
 // =============================================================================
-// IMPROVED CLAUDE SERVICE - AUTHORITATIVE ZONING RESPONSES
-// Designed for "Zero Trips, Zero Paper" - World Bank Mission
+//  "Zero Trips, Zero Paper" 
 // =============================================================================
 
 const crypto = require('crypto');
@@ -31,9 +30,9 @@ class ClaudeService {
                 instruction: 'Subiza mu Kinyarwanda gusa. Koresha amagambo yoroshye yumvikana.',
                 footer: {
                     location: 'Aho hantu',
-                    contact: 'Umujyi wa Kigali - Imiyoborere',
+                    contact: 'Umujyi wa Kigali - Imikoreshereze yubutaka ',
                     moreInfo: 'Amakuru yinyongera',
-                    source: 'Ibyavuye'
+                    source: 'Aho amakuru yaturutse'
                 }
             },
             fr: {
@@ -67,7 +66,7 @@ class ClaudeService {
             `, [cacheKey]);
             
             if (result.rows.length > 0) {
-                console.log('✅ Found cached AI response');
+                console.log('Found cached AI response');
                 return {
                     response: result.rows[0].response,
                     metadata: result.rows[0].response_metadata,
@@ -201,9 +200,9 @@ PARKING REQUIREMENTS (Article 6.7):
 `;
 
         // Build the full prompt
-        return `You are TerraNebular, an AUTHORITATIVE spatial intelligence assistant for Kigali, Rwanda.
+        return `You are Zoning Agent, an AUTHORITATIVE spatial intelligence assistant for Kigali, Rwanda.
 
-YOUR MISSION: "Zero Trips, Zero Paper"
+MISSION: "Zero Trips, Zero Paper"
 Provide definitive answers so citizens don't need to visit government offices. Every response must be legally accurate and citable.
 
 LANGUAGE INSTRUCTION: ${langConfig.instruction}
@@ -325,12 +324,12 @@ You have been provided with the complete, authoritative zoning regulations. Use 
             }
 
             const data = await response.json();
-            console.log('✅ Claude API response received');
+            console.log('Claude API response received');
             
             return data.content[0].text;
 
         } catch (error) {
-            console.error('❌ Claude API error:', error.message);
+            console.error('API error:', error.message);
             throw error;
         }
     }
@@ -371,8 +370,8 @@ You have been provided with the complete, authoritative zoning regulations. Use 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 📍 ${footer.location}: ${location.lat.toFixed(4)}°, ${location.lng.toFixed(4)}°
 📋 ${footer.source}: Kigali City Zoning Regulations (August 2020)${authZone ? `, ${authZone.article}, ${authZone.table}` : ''}
-📞 ${footer.contact}: +250 788 000 000
-🌐 Kubaka: https://kubaka.gov.rw/| CoK: kigalicity.gov.rw`;
+📞 ${footer.contact}: +250789448873
+🌐 Kubaka: https://kubaka.gov.rw/| https://kigalicity.gov.rw`;
 
             // Cache the response
             const metadata = {
@@ -439,7 +438,7 @@ Permitted Uses: ${authZone.uses?.permitted?.slice(0, 3).join(', ') || 'Contact O
 ${zoneInfo}
 
 For your specific question about "${question}", please contact:
-📞 City of Kigali OSC: +250 788 000 000
+📞 City of Kigali OSC: +250789448873
 🌐 Online permits: https://kubaka.gov.rw/
 📋 Source: Kigali City Zoning Regulations (August 2020)`,
             
@@ -450,11 +449,11 @@ Kubaza ku "${question}", hamagara:
 📞 Umujyi wa Kigali OSC: +250 788 000 000
 🌐 Uruhushya kuri interineti: https://kubaka.gov.rw/`,
             
-            fr: `TerraNebular ne peut pas générer une réponse détaillée pour le moment, mais voici les informations réglementaires pour votre emplacement:
+            fr: ` Zone Agent ne peut pas générer une réponse détaillée pour le moment, mais voici les informations réglementaires pour votre emplacement:
 ${zoneInfo}
 
 Pour votre question sur "${question}", contactez:
-📞 Ville de Kigali OSC: +250 788 000 000
+📞 Ville de Kigali OSC: +250789448873
 🌐 Permis en ligne:https://kubaka.gov.rw/`
         };
         
