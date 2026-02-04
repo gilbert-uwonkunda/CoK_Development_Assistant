@@ -198,8 +198,11 @@
         }
 
         .lang-card .flag {
-            font-size: 28px;
-            line-height: 1;
+            width: 32px;
+            height: 20px;
+            border-radius: 4px;
+            overflow: hidden;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.3);
         }
 
         .lang-card .lang-name {
@@ -1136,15 +1139,64 @@
                 <div class="lang-label" data-i18n="chooseLanguage">Choose Language</div>
                 <div class="lang-options">
                     <div class="lang-card active" data-lang="en">
-                        <span class="flag">🇬🇧</span>
+                        <svg class="flag" viewBox="0 0 60 30" width="32" height="16">
+                            <clipPath id="t"><path d="M30,15 h30 v15 z v15 h-30 z h-30 v-15 z v-15 h30 z"/></clipPath>
+                            <path d="M0,0 v30 h60 v-30 z" fill="#00247d"/>
+                            <path d="M0,0 L60,30 M60,0 L0,30" stroke="#fff" stroke-width="6"/>
+                            <path d="M0,0 L60,30 M60,0 L0,30" clip-path="url(#t)" stroke="#cf142b" stroke-width="4"/>
+                            <path d="M30,0 v30 M0,15 h60" stroke="#fff" stroke-width="10"/>
+                            <path d="M30,0 v30 M0,15 h60" stroke="#cf142b" stroke-width="6"/>
+                        </svg>
                         <span class="lang-name">English</span>
                     </div>
                     <div class="lang-card" data-lang="rw">
-                        <span class="flag">🇷🇼</span>
+                        <svg class="flag" viewBox="0 0 60 40" width="32" height="21">
+                            <!-- Blue top (sky blue, takes half) -->
+                            <rect width="60" height="20" fill="#00A1DE"/>
+                            <!-- Yellow middle stripe -->
+                            <rect y="20" width="60" height="10" fill="#FAD201"/>
+                            <!-- Green bottom -->
+                            <rect y="30" width="60" height="10" fill="#20603D"/>
+                            <!-- Sun in top right - yellow with rays -->
+                            <g transform="translate(47, 10)">
+                                <circle r="5" fill="#FAD201"/>
+                                <!-- 24 rays -->
+                                <g fill="#FAD201">
+                                    <rect x="-0.5" y="-9" width="1" height="4"/>
+                                    <rect x="-0.5" y="-9" width="1" height="4" transform="rotate(15)"/>
+                                    <rect x="-0.5" y="-9" width="1" height="4" transform="rotate(30)"/>
+                                    <rect x="-0.5" y="-9" width="1" height="4" transform="rotate(45)"/>
+                                    <rect x="-0.5" y="-9" width="1" height="4" transform="rotate(60)"/>
+                                    <rect x="-0.5" y="-9" width="1" height="4" transform="rotate(75)"/>
+                                    <rect x="-0.5" y="-9" width="1" height="4" transform="rotate(90)"/>
+                                    <rect x="-0.5" y="-9" width="1" height="4" transform="rotate(105)"/>
+                                    <rect x="-0.5" y="-9" width="1" height="4" transform="rotate(120)"/>
+                                    <rect x="-0.5" y="-9" width="1" height="4" transform="rotate(135)"/>
+                                    <rect x="-0.5" y="-9" width="1" height="4" transform="rotate(150)"/>
+                                    <rect x="-0.5" y="-9" width="1" height="4" transform="rotate(165)"/>
+                                    <rect x="-0.5" y="-9" width="1" height="4" transform="rotate(180)"/>
+                                    <rect x="-0.5" y="-9" width="1" height="4" transform="rotate(195)"/>
+                                    <rect x="-0.5" y="-9" width="1" height="4" transform="rotate(210)"/>
+                                    <rect x="-0.5" y="-9" width="1" height="4" transform="rotate(225)"/>
+                                    <rect x="-0.5" y="-9" width="1" height="4" transform="rotate(240)"/>
+                                    <rect x="-0.5" y="-9" width="1" height="4" transform="rotate(255)"/>
+                                    <rect x="-0.5" y="-9" width="1" height="4" transform="rotate(270)"/>
+                                    <rect x="-0.5" y="-9" width="1" height="4" transform="rotate(285)"/>
+                                    <rect x="-0.5" y="-9" width="1" height="4" transform="rotate(300)"/>
+                                    <rect x="-0.5" y="-9" width="1" height="4" transform="rotate(315)"/>
+                                    <rect x="-0.5" y="-9" width="1" height="4" transform="rotate(330)"/>
+                                    <rect x="-0.5" y="-9" width="1" height="4" transform="rotate(345)"/>
+                                </g>
+                            </g>
+                        </svg>
                         <span class="lang-name">Kinyarwanda</span>
                     </div>
                     <div class="lang-card" data-lang="fr">
-                        <span class="flag">🇫🇷</span>
+                        <svg class="flag" viewBox="0 0 30 20" width="32" height="21">
+                            <rect width="10" height="20" fill="#002395"/>
+                            <rect x="10" width="10" height="20" fill="#fff"/>
+                            <rect x="20" width="10" height="20" fill="#ED2939"/>
+                        </svg>
                         <span class="lang-name">Français</span>
                     </div>
                 </div>
