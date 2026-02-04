@@ -306,7 +306,7 @@
         }
 
         /* ============================================
-           HEADER
+           HEADER - Ultra clean with persistent search
            ============================================ */
         .header {
             position: absolute;
@@ -1028,6 +1028,14 @@
                 opacity: 1;
             }
 
+            .chat-header {
+                cursor: grab;
+            }
+
+            .chat-header:active {
+                cursor: grabbing;
+            }
+
             .fab {
                 bottom: 32px;
                 left: 32px;
@@ -1300,11 +1308,11 @@ Type your question below.`,
             disclaimer: 'This report is for informational purposes only. Verify with City of Kigali authorities.'
         },
         rw: {
-            tapHint: 'Kanda ahantu kureba imiyoborere',
-            download: 'Kuramo PDF',
+            tapHint: 'Kanda ahantu urebe icyo hagenewe gukoreshwa',
+            download: 'Kuramo Raporo',
             share: 'Sangiza',
-            askPlaceholder: 'Baza ku miyoborere...',
-            loading: 'Kureba imiyoborere...',
+            askPlaceholder: 'Baza ku mikoreshereze yubutaka...',
+            loading: 'Kureba icyo ubutaka bwagenewe gukoreshwa...',
             step1Title: 'Kanda Ikarita',
             step1Desc: 'Hitamo aho hantu muri Kigali',
             step2Title: 'Baza Ibibazo',
@@ -1314,7 +1322,7 @@ Type your question below.`,
             enterApp: 'Tangira',
             welcome: (zone) => `**Murakaza neza kuri ZoneAgent**
 
-Aha hantu hafite imiyoborere:
+Aha hantu icyo hagenewe gukoreshwa:
 **${zone}**
 
 Ibyo Ushobora Kubaza:
@@ -1325,10 +1333,10 @@ Ibyo Ushobora Kubaza:
 • Ese hashobora gukoreshwa mu bucuruzi?
 
 Andika ikibazo cyawe hano.`,
-            outsideKigali: 'Aha hantu ni inyuma y\'imiyoborere ya Kigali.',
+            outsideKigali: 'Aha hantu ni inyuma y\' ya Kigali.',
             error: 'Habaye ikibazo. Ongera ugerageze.',
-            noZoning: 'Nta makuru y\'imiyoborere.',
-            reportTitle: 'RAPORO Y\'IMIYOBORERE',
+            noZoning: 'Nta makuru y\'imikoreshereze kubutaka abonetse.',
+            reportTitle: 'RAPORO Y\'IMIKORESHEREZE YUBUTAKA',
             generatedBy: 'Yakozwe na ZoneAgent',
             locationLabel: 'Aho hantu',
             dateLabel: 'Itariki',
@@ -1508,6 +1516,115 @@ Tapez votre question.`,
     }
 
     // =============================================================================
+    // DRAGGABLE PANEL (Desktop only)
+    // =============================================================================
+    const DraggablePanel = {
+        isDragging: false,
+        startX: 0,
+        startY: 0,
+        startLeft: 0,
+        startTop: 0,
+
+        init() {
+            if (window.innerWidth < 768) return;
+            
+            const panel = document.getElementById('chatPanel');
+            const header = document.getElementById('chatHeader');
+            
+            header.addEventListener('mousedown', (e) => this.startDrag(e, panel));
+            document.addEventListener('mousemove', (e) => this.drag(e, panel));
+            document.addEventListener('mouseup', () => this.stopDrag(panel));
+            
+            // Load saved position
+            this.loadPosition(panel);
+        },
+
+        startDrag(e, panel) {
+            // Don't drag if clicking buttons or on mobile
+            if (window.innerWidth < 768) return;
+            if (e.target.closest('button')) return;
+            
+            this.isDragging = true;
+            panel.style.transition = 'none';
+            
+            const rect = panel.getBoundingClientRect();
+            this.startX = e.clientX;
+            this.startY = e.clientY;
+            this.startLeft = rect.left;
+            this.startTop = rect.top;
+            
+            // Switch from bottom/left positioning to top/left
+            panel.style.left = rect.left + 'px';
+            panel.style.top = rect.top + 'px';
+            panel.style.bottom = 'auto';
+            panel.style.right = 'auto';
+            
+            document.body.style.userSelect = 'none';
+            e.preventDefault();
+        },
+
+        drag(e, panel) {
+            if (!this.isDragging) return;
+            
+            let newLeft = this.startLeft + (e.clientX - this.startX);
+            let newTop = this.startTop + (e.clientY - this.startY);
+            
+            // Keep panel within viewport
+            const rect = panel.getBoundingClientRect();
+            const maxLeft = window.innerWidth - rect.width;
+            const maxTop = window.innerHeight - rect.height;
+            
+            newLeft = Math.max(0, Math.min(newLeft, maxLeft));
+            newTop = Math.max(0, Math.min(newTop, maxTop));
+            
+            panel.style.left = newLeft + 'px';
+            panel.style.top = newTop + 'px';
+        },
+
+        stopDrag(panel) {
+            if (!this.isDragging) return;
+            
+            this.isDragging = false;
+            panel.style.transition = '';
+            document.body.style.userSelect = '';
+            
+            this.savePosition(panel);
+        },
+
+        savePosition(panel) {
+            const rect = panel.getBoundingClientRect();
+            localStorage.setItem('zoneagent_panel_pos', JSON.stringify({
+                left: rect.left,
+                top: rect.top
+            }));
+        },
+
+        loadPosition(panel) {
+            try {
+                const saved = JSON.parse(localStorage.getItem('zoneagent_panel_pos'));
+                if (saved && window.innerWidth >= 768) {
+                    // Validate position is still on screen
+                    if (saved.left < window.innerWidth - 100 && saved.top < window.innerHeight - 100) {
+                        panel.style.left = saved.left + 'px';
+                        panel.style.top = saved.top + 'px';
+                        panel.style.bottom = 'auto';
+                        panel.style.right = 'auto';
+                    }
+                }
+            } catch (e) {}
+        },
+
+        // Reset to default position
+        reset(panel) {
+            localStorage.removeItem('zoneagent_panel_pos');
+            panel.style.left = '24px';
+            panel.style.bottom = '24px';
+            panel.style.top = 'auto';
+            panel.style.right = 'auto';
+        }
+    };
+
+    // =============================================================================
     // APP ENTRY
     // =============================================================================
     document.getElementById('enterBtn').addEventListener('click', enterApp);
@@ -1521,6 +1638,9 @@ Tapez votre question.`,
         
         map.on('click', handleMapClick);
         setupEvents();
+        
+        // Initialize draggable panel for desktop
+        DraggablePanel.init();
     }
 
     function setupEvents() {
