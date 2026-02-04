@@ -16,34 +16,43 @@
     <!-- PDF Generation -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     
-    <!-- Fonts -->
+    <!-- Font -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     
     <style>
         :root {
-            --z-void: #000000;
-            --z-deep: #0F172A;
-            --z-space: #1E293B;
-            --z-slate: #334155;
-            --z-muted: #64748B;
-            --z-light: #94A3B8;
-            --z-pale: #CBD5E1;
-            --z-white: #F8FAFC;
-            --z-accent: #3B82F6;
-            --z-accent-glow: rgba(59, 130, 246, 0.4);
-            --z-success: #10B981;
-            --z-warning: #F59E0B;
-            --z-error: #EF4444;
-            --z-purple: #8B5CF6;
-            --z-pink: #EC4899;
-            --z-font: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
-            --z-mono: 'JetBrains Mono', monospace;
-            --z-radius: 12px;
-            --z-radius-sm: 8px;
-            --z-shadow: 0 4px 24px rgba(0, 0, 0, 0.4);
-            --z-transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            /* Dark theme palette */
+            --bg: #0F172A;
+            --surface: #1E293B;
+            --surface-hover: #273449;
+            --border: rgba(255, 255, 255, 0.08);
+            --border-hover: rgba(255, 255, 255, 0.15);
+            
+            /* Text */
+            --text: #FFFFFF;
+            --text-secondary: #94A3B8;
+            --text-muted: #64748B;
+            
+            /* Brand - Teal/Emerald - matches dark theme beautifully */
+            --brand: #14B8A6;
+            --brand-hover: #0D9488;
+            --brand-light: #5EEAD4;
+            --brand-glow: rgba(20, 184, 166, 0.25);
+            
+            /* Status */
+            --success: #22C55E;
+            --warning: #F59E0B;
+            --error: #EF4444;
+            
+            /* System */
+            --font: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            --radius: 12px;
+            --radius-sm: 8px;
+            --radius-full: 100px;
+            --shadow: 0 4px 24px rgba(0, 0, 0, 0.3);
+            --transition: 0.2s ease;
         }
 
         * {
@@ -59,10 +68,40 @@
         }
 
         body {
-            font-family: var(--z-font);
-            background: var(--z-void);
-            color: var(--z-white);
+            font-family: var(--font);
+            background: #000;
+            color: var(--text);
             line-height: 1.5;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* ============================================
+           LOGO
+           ============================================ */
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo-mark {
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .logo-mark svg {
+            width: 36px;
+            height: 36px;
+        }
+
+        .logo-text {
+            font-size: 18px;
+            font-weight: 600;
+            letter-spacing: -0.3px;
+            color: var(--text);
         }
 
         /* ============================================
@@ -71,14 +110,14 @@
         .splash {
             position: fixed;
             inset: 0;
-            background: var(--z-deep);
+            background: var(--bg);
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
             z-index: 9999;
             padding: 24px;
-            transition: opacity 0.5s ease, visibility 0.5s ease;
+            transition: opacity 0.4s ease, visibility 0.4s ease;
         }
 
         .splash.hidden {
@@ -87,62 +126,43 @@
             pointer-events: none;
         }
 
-        .splash::before {
-            content: '';
-            position: absolute;
-            inset: 0;
-            background: 
-                radial-gradient(circle at 20% 80%, rgba(59, 130, 246, 0.08) 0%, transparent 50%),
-                radial-gradient(circle at 80% 20%, rgba(139, 92, 246, 0.08) 0%, transparent 50%),
-                radial-gradient(circle at 50% 50%, rgba(236, 72, 153, 0.05) 0%, transparent 60%);
-            animation: ambientPulse 8s ease-in-out infinite;
-        }
-
-        @keyframes ambientPulse {
-            0%, 100% { opacity: 0.6; }
-            50% { opacity: 1; }
-        }
-
         .splash-content {
-            position: relative;
-            z-index: 1;
-            max-width: 400px;
+            max-width: 380px;
             width: 100%;
             text-align: center;
         }
 
         .splash-logo {
+            margin-bottom: 24px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .splash-logo .logo-mark {
             width: 72px;
             height: 72px;
-            background: linear-gradient(135deg, var(--z-accent) 0%, var(--z-purple) 100%);
-            border-radius: 18px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 0 auto 20px;
-            box-shadow: 0 8px 32px var(--z-accent-glow);
         }
 
-        .splash-logo svg {
-            width: 40px;
-            height: 40px;
-            fill: var(--z-white);
+        .splash-logo .logo-mark svg {
+            width: 72px;
+            height: 72px;
         }
 
-        .splash-title {
-            font-size: 28px;
+        .splash-logo .logo-text {
+            font-size: 32px;
             font-weight: 700;
             letter-spacing: -0.5px;
-            margin-bottom: 6px;
         }
 
         .splash-tagline {
-            font-size: 15px;
-            color: var(--z-light);
-            margin-bottom: 32px;
+            font-size: 16px;
+            color: var(--text-secondary);
+            margin-bottom: 48px;
         }
 
-        .splash-features {
+        .splash-steps {
             display: flex;
             flex-direction: column;
             gap: 12px;
@@ -150,66 +170,76 @@
             text-align: left;
         }
 
-        .splash-feature {
+        .splash-step {
             display: flex;
-            align-items: flex-start;
-            gap: 14px;
-            padding: 14px;
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid rgba(255, 255, 255, 0.06);
-            border-radius: var(--z-radius);
+            align-items: center;
+            gap: 16px;
+            padding: 16px;
+            background: var(--surface);
+            border-radius: var(--radius);
         }
 
-        .feature-num {
-            width: 26px;
-            height: 26px;
-            background: var(--z-space);
-            border-radius: 8px;
+        .step-num {
+            width: 32px;
+            height: 32px;
+            background: var(--brand);
+            border-radius: var(--radius-sm);
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 12px;
-            font-weight: 600;
-            color: var(--z-accent);
+            font-size: 14px;
+            font-weight: 700;
+            color: white;
             flex-shrink: 0;
         }
 
-        .feature-text {
+        .step-text {
             flex: 1;
         }
 
-        .feature-title {
-            font-size: 13px;
+        .step-title {
+            font-size: 14px;
             font-weight: 600;
             margin-bottom: 2px;
         }
 
-        .feature-desc {
-            font-size: 12px;
-            color: var(--z-muted);
+        .step-desc {
+            font-size: 13px;
+            color: var(--text-secondary);
         }
 
         .enter-btn {
             width: 100%;
-            padding: 14px 24px;
-            background: linear-gradient(135deg, var(--z-accent) 0%, var(--z-purple) 100%);
+            padding: 16px 24px;
+            background: var(--brand);
             border: none;
-            border-radius: var(--z-radius);
-            color: var(--z-white);
-            font-family: var(--z-font);
-            font-size: 15px;
+            border-radius: var(--radius);
+            color: white;
+            font-family: var(--font);
+            font-size: 16px;
             font-weight: 600;
             cursor: pointer;
-            transition: transform var(--z-transition), box-shadow var(--z-transition);
+            transition: all var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
         }
 
         .enter-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 24px var(--z-accent-glow);
+            background: var(--brand-hover);
+            transform: translateY(-1px);
+            box-shadow: 0 8px 24px var(--brand-glow);
         }
 
         .enter-btn:active {
             transform: translateY(0);
+        }
+
+        .enter-btn svg {
+            width: 20px;
+            height: 20px;
+            fill: currentColor;
         }
 
         /* ============================================
@@ -229,10 +259,7 @@
             width: 100%;
             height: 100%;
             position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
+            inset: 0;
         }
 
         .leaflet-container {
@@ -240,225 +267,153 @@
         }
 
         .leaflet-control-attribution {
-            background: rgba(15, 23, 42, 0.85) !important;
-            color: var(--z-light) !important;
+            background: rgba(15, 23, 42, 0.9) !important;
+            color: var(--text-secondary) !important;
             font-size: 10px !important;
             padding: 4px 8px !important;
-        }
-
-        .leaflet-control-attribution a {
-            color: var(--z-accent) !important;
-        }
-
-        .leaflet-bottom.leaflet-right {
-            bottom: 100px;
-            right: 12px;
+            border-radius: 6px 0 0 0 !important;
         }
 
         .leaflet-control-zoom {
             border: none !important;
-            box-shadow: var(--z-shadow) !important;
+            box-shadow: var(--shadow) !important;
+            border-radius: var(--radius) !important;
+            overflow: hidden;
         }
 
         .leaflet-control-zoom a {
-            background: var(--z-space) !important;
-            border: 1px solid var(--z-slate) !important;
-            color: var(--z-white) !important;
-            width: 36px !important;
-            height: 36px !important;
-            line-height: 36px !important;
+            background: var(--surface) !important;
+            border: none !important;
+            border-bottom: 1px solid var(--border) !important;
+            color: var(--text) !important;
+            width: 44px !important;
+            height: 44px !important;
+            line-height: 44px !important;
             font-size: 18px !important;
         }
 
+        .leaflet-control-zoom a:last-child {
+            border-bottom: none !important;
+        }
+
         .leaflet-control-zoom a:hover {
-            background: var(--z-slate) !important;
-            border-color: var(--z-accent) !important;
+            background: var(--surface-hover) !important;
+        }
+
+        .leaflet-bottom.leaflet-right {
+            bottom: 100px;
+            right: 16px;
         }
 
         /* ============================================
-           MAP HEADER - Mobile Optimized
+           HEADER
            ============================================ */
-        .map-header {
+        .header {
             position: absolute;
             top: 0;
             left: 0;
             right: 0;
-            padding: 12px;
-            background: linear-gradient(to bottom, rgba(15, 23, 42, 0.95) 0%, rgba(15, 23, 42, 0.8) 70%, transparent 100%);
+            height: 64px;
+            padding: 0 16px;
+            background: rgba(15, 23, 42, 0.85);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border);
             display: flex;
             align-items: center;
-            justify-content: space-between;
+            gap: 16px;
             z-index: 1000;
-            pointer-events: none;
-            gap: 8px;
         }
 
-        .map-header > * {
-            pointer-events: auto;
-        }
-
-        .header-brand {
-            display: flex;
-            align-items: center;
-            gap: 8px;
+        .header-left {
             flex-shrink: 0;
         }
 
-        .header-logo {
-            width: 32px;
-            height: 32px;
-            background: linear-gradient(135deg, var(--z-accent) 0%, var(--z-purple) 100%);
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-shrink: 0;
-        }
-
-        .header-logo svg {
-            width: 18px;
-            height: 18px;
-            fill: var(--z-white);
-        }
-
-        .header-title {
-            font-size: 16px;
-            font-weight: 700;
-        }
-
-        .lang-selector {
-            display: flex;
-            gap: 2px;
-            background: var(--z-slate);
-            padding: 3px;
-            border-radius: 6px;
-            margin-left: 8px;
-        }
-
-        .lang-btn {
-            padding: 4px 8px;
-            background: transparent;
-            border: none;
-            border-radius: 4px;
-            color: var(--z-muted);
-            font-family: var(--z-font);
-            font-size: 11px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all var(--z-transition);
-        }
-
-        .lang-btn:hover {
-            color: var(--z-white);
-        }
-
-        .lang-btn.active {
-            background: var(--z-accent);
-            color: var(--z-white);
-        }
-
-        .header-actions {
-            display: flex;
-            gap: 6px;
-            align-items: center;
-        }
-
-        /* Search Control */
-        .search-control {
+        /* Search Bar - Always visible, centered flex-grow */
+        .search-container {
+            flex: 1;
+            max-width: 400px;
             position: relative;
-            display: flex;
-            align-items: center;
         }
 
-        .search-box {
-            position: absolute;
-            right: 40px;
-            top: 0;
+        .search-bar {
+            width: 100%;
+            height: 44px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
             display: flex;
             align-items: center;
-            background: var(--z-space);
-            border: 1px solid var(--z-slate);
-            border-radius: 20px;
-            padding: 0 12px;
-            transition: all var(--z-transition);
-            width: 0;
-            opacity: 0;
-            overflow: hidden;
-            white-space: nowrap;
+            padding: 0 4px 0 14px;
+            transition: border-color var(--transition);
         }
 
-        .search-box.active {
-            width: 200px;
-            opacity: 1;
+        .search-bar:focus-within {
+            border-color: var(--brand);
         }
 
         .search-input {
             flex: 1;
+            height: 100%;
             background: transparent;
             border: none;
-            color: var(--z-white);
-            font-family: var(--z-font);
-            font-size: 13px;
-            padding: 8px 0;
+            color: var(--text);
+            font-family: var(--font);
+            font-size: 14px;
             outline: none;
-            min-width: 0;
         }
 
         .search-input::placeholder {
-            color: var(--z-muted);
+            color: var(--text-muted);
         }
 
-        .icon-btn {
+        .search-icon {
             width: 36px;
             height: 36px;
-            background: var(--z-space);
-            border: 1px solid var(--z-slate);
-            border-radius: 50%;
-            color: var(--z-white);
-            cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
-            transition: all var(--z-transition);
+            color: var(--text-muted);
             flex-shrink: 0;
         }
 
-        .icon-btn:hover {
-            background: var(--z-slate);
-            border-color: var(--z-accent);
-        }
-
-        .icon-btn svg {
-            width: 16px;
-            height: 16px;
+        .search-icon svg {
+            width: 18px;
+            height: 18px;
             fill: currentColor;
         }
 
+        /* Search Results */
         .search-results {
             position: absolute;
-            top: 44px;
+            top: calc(100% + 8px);
+            left: 0;
             right: 0;
-            background: var(--z-space);
-            border: 1px solid var(--z-slate);
-            border-radius: var(--z-radius);
-            min-width: 280px;
-            max-width: calc(100vw - 24px);
-            max-height: 350px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            max-height: 360px;
             overflow-y: auto;
-            box-shadow: var(--z-shadow);
             display: none;
-            z-index: 2000;
+            z-index: 100;
         }
 
         .search-results.active {
             display: block;
+            animation: dropIn 0.2s ease;
+        }
+
+        @keyframes dropIn {
+            from { opacity: 0; transform: translateY(-8px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
         .search-result-item {
-            padding: 10px 14px;
-            border-bottom: 1px solid var(--z-slate);
+            padding: 14px 16px;
+            border-bottom: 1px solid var(--border);
             cursor: pointer;
-            transition: background var(--z-transition);
+            transition: background var(--transition);
         }
 
         .search-result-item:last-child {
@@ -466,86 +421,105 @@
         }
 
         .search-result-item:hover {
-            background: var(--z-slate);
+            background: var(--surface-hover);
         }
 
         .search-result-name {
-            font-size: 13px;
+            font-size: 14px;
             font-weight: 500;
-            color: var(--z-white);
-            margin-bottom: 2px;
+            margin-bottom: 4px;
         }
 
         .search-result-address {
-            font-size: 11px;
-            color: var(--z-muted);
+            font-size: 12px;
+            color: var(--text-muted);
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
         }
 
-        .search-loading, .search-no-results {
-            padding: 14px;
+        .search-status {
+            padding: 20px;
             text-align: center;
-            color: var(--z-muted);
-            font-size: 12px;
+            color: var(--text-muted);
+            font-size: 13px;
         }
 
-        /* Location Button */
-        .location-btn {
+        /* Header Right */
+        .header-right {
+            flex-shrink: 0;
+        }
+
+        .icon-btn {
+            width: 44px;
+            height: 44px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            color: var(--text-secondary);
+            cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 6px;
-            padding: 8px 12px;
-            background: var(--z-space);
-            border: 1px solid var(--z-slate);
-            border-radius: 20px;
-            color: var(--z-white);
-            font-family: var(--z-font);
-            font-size: 12px;
-            font-weight: 500;
-            cursor: pointer;
-            transition: all var(--z-transition);
-            white-space: nowrap;
+            transition: all var(--transition);
         }
 
-        .location-btn:hover {
-            background: var(--z-slate);
-            border-color: var(--z-accent);
+        .icon-btn:hover {
+            background: var(--surface-hover);
+            border-color: var(--border-hover);
+            color: var(--text);
         }
 
-        .location-btn:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
+        .icon-btn:active {
+            transform: scale(0.96);
         }
 
-        .location-btn svg {
-            width: 14px;
-            height: 14px;
+        .icon-btn svg {
+            width: 20px;
+            height: 20px;
             fill: currentColor;
         }
 
-        .location-btn .btn-text {
-            display: none;
+        .icon-btn.active {
+            border-color: var(--brand);
+            color: var(--brand);
         }
 
-        /* Map Hint */
+        /* ============================================
+           MAP HINT
+           ============================================ */
         .map-hint {
             position: absolute;
             bottom: 24px;
             left: 50%;
             transform: translateX(-50%);
-            padding: 10px 16px;
-            background: var(--z-deep);
-            border: 1px solid var(--z-slate);
-            border-radius: 20px;
-            font-size: 13px;
-            color: var(--z-pale);
+            padding: 14px 24px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-full);
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--text);
             z-index: 1000;
-            transition: opacity var(--z-transition), transform var(--z-transition);
-            text-align: center;
+            box-shadow: var(--shadow);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: all 0.3s ease;
             max-width: calc(100% - 48px);
+        }
+
+        .map-hint svg {
+            width: 20px;
+            height: 20px;
+            fill: var(--brand);
+            flex-shrink: 0;
+            animation: bounce 2s ease-in-out infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-4px); }
         }
 
         .map-hint.hidden {
@@ -555,139 +529,166 @@
         }
 
         /* ============================================
-           FLOATING CHAT TOGGLE BUTTON
+           FAB
            ============================================ */
-        .chat-toggle-btn {
+        .fab {
             position: fixed;
             bottom: 24px;
             left: 24px;
-            width: 56px;
-            height: 56px;
-            background: linear-gradient(135deg, var(--z-accent) 0%, var(--z-purple) 100%);
+            width: 60px;
+            height: 60px;
+            background: var(--brand);
             border: none;
             border-radius: 50%;
-            color: var(--z-white);
+            color: white;
             cursor: pointer;
             display: none;
             align-items: center;
             justify-content: center;
-            box-shadow: 0 4px 20px var(--z-accent-glow);
+            box-shadow: 0 4px 20px var(--brand-glow);
             z-index: 1500;
-            transition: all var(--z-transition);
+            transition: all var(--transition);
         }
 
-        .chat-toggle-btn:hover {
-            transform: scale(1.1);
-            box-shadow: 0 6px 28px var(--z-accent-glow);
+        .fab:hover {
+            transform: scale(1.08);
+            box-shadow: 0 8px 32px var(--brand-glow);
         }
 
-        .chat-toggle-btn svg {
-            width: 24px;
-            height: 24px;
+        .fab:active {
+            transform: scale(1);
+        }
+
+        .fab svg {
+            width: 26px;
+            height: 26px;
             fill: currentColor;
         }
 
-        .chat-toggle-btn.visible {
+        .fab.visible {
             display: flex;
-            animation: popIn 0.3s ease-out;
+            animation: popIn 0.3s ease;
         }
 
         @keyframes popIn {
-            from {
-                transform: scale(0);
-                opacity: 0;
-            }
-            to {
-                transform: scale(1);
-                opacity: 1;
-            }
+            from { transform: scale(0); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
         }
 
         /* ============================================
-           CHAT OVERLAY
+           CHAT PANEL
            ============================================ */
-        .chat-overlay {
+        .chat-panel {
             position: fixed;
             inset: 0;
-            background: var(--z-deep);
+            background: var(--bg);
             z-index: 2000;
             display: flex;
             flex-direction: column;
             transform: translateY(100%);
-            transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: transform 0.35s ease;
         }
 
-        .chat-overlay.active {
+        .chat-panel.active {
             transform: translateY(0);
         }
 
+        /* Chat Header */
         .chat-header {
             display: flex;
             align-items: center;
-            justify-content: space-between;
-            padding: 12px 16px;
-            background: var(--z-space);
-            border-bottom: 1px solid var(--z-slate);
-            flex-shrink: 0;
             gap: 12px;
+            padding: 16px;
+            background: var(--surface);
+            border-bottom: 1px solid var(--border);
+            flex-shrink: 0;
         }
 
-        .chat-zone-info {
+        .chat-back {
+            width: 40px;
+            height: 40px;
+            background: transparent;
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            color: var(--text);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all var(--transition);
+            flex-shrink: 0;
+        }
+
+        .chat-back:hover {
+            background: var(--surface-hover);
+            border-color: var(--border-hover);
+        }
+
+        .chat-back svg {
+            width: 20px;
+            height: 20px;
+            fill: currentColor;
+        }
+
+        .chat-info {
             flex: 1;
             min-width: 0;
         }
 
         .chat-zone-name {
-            font-size: 14px;
+            font-size: 15px;
             font-weight: 600;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
             display: flex;
             align-items: center;
+            gap: 8px;
         }
 
-        .chat-zone-coords {
-            font-size: 11px;
-            color: var(--z-muted);
-            font-family: var(--z-mono);
-        }
-
-        .zone-color {
+        .zone-dot {
             width: 10px;
             height: 10px;
             border-radius: 3px;
             flex-shrink: 0;
-            margin-right: 8px;
-            display: inline-block;
         }
 
-        .close-btn {
-            width: 36px;
-            height: 36px;
-            background: var(--z-slate);
-            border: none;
-            border-radius: 50%;
-            color: var(--z-white);
-            cursor: pointer;
+        .chat-zone-coords {
+            font-size: 12px;
+            color: var(--text-muted);
+            font-family: monospace;
+            margin-top: 2px;
+        }
+
+        /* Language Toggle */
+        .lang-toggle {
             display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: background var(--z-transition);
-            flex-shrink: 0;
+            background: var(--bg);
+            border-radius: var(--radius-sm);
+            padding: 3px;
+            gap: 2px;
         }
 
-        .close-btn:hover {
-            background: var(--z-muted);
+        .lang-opt {
+            padding: 6px 10px;
+            background: transparent;
+            border: none;
+            border-radius: 6px;
+            color: var(--text-muted);
+            font-family: var(--font);
+            font-size: 11px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all var(--transition);
         }
 
-        .close-btn svg {
-            width: 18px;
-            height: 18px;
-            fill: currentColor;
+        .lang-opt:hover {
+            color: var(--text);
         }
 
-        /* Chat Messages */
+        .lang-opt.active {
+            background: var(--brand);
+            color: white;
+        }
+
+        /* Messages */
         .chat-messages {
             flex: 1;
             overflow-y: auto;
@@ -698,46 +699,41 @@
         }
 
         .message {
-            max-width: 88%;
-            padding: 12px 14px;
-            border-radius: 14px;
-            font-size: 13px;
+            max-width: 85%;
+            padding: 14px 16px;
+            border-radius: 16px;
+            font-size: 14px;
             line-height: 1.6;
-            animation: messageIn 0.3s ease-out;
+            animation: msgIn 0.25s ease;
         }
 
-        @keyframes messageIn {
-            from {
-                opacity: 0;
-                transform: translateY(10px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+        @keyframes msgIn {
+            from { opacity: 0; transform: translateY(8px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
         .message.assistant {
-            background: var(--z-space);
-            border: 1px solid var(--z-slate);
+            background: var(--surface);
+            border: 1px solid var(--border);
             align-self: flex-start;
             border-bottom-left-radius: 4px;
         }
 
         .message.user {
-            background: var(--z-accent);
+            background: var(--brand);
             align-self: flex-end;
             border-bottom-right-radius: 4px;
         }
 
         .message.system {
             background: transparent;
-            border: 1px dashed var(--z-slate);
-            color: var(--z-light);
+            border: 1px dashed var(--border);
+            color: var(--text-secondary);
             align-self: center;
             text-align: center;
-            font-size: 12px;
-            padding: 10px 16px;
+            font-size: 13px;
+            padding: 12px 20px;
+            border-radius: var(--radius-full);
         }
 
         /* Message Content */
@@ -747,12 +743,12 @@
         }
 
         .message-content h4 {
-            font-size: 13px;
+            font-size: 14px;
             font-weight: 600;
-            color: var(--z-accent);
-            margin: 14px 0 6px 0;
+            color: var(--brand-light);
+            margin: 16px 0 8px 0;
             padding-bottom: 4px;
-            border-bottom: 1px solid var(--z-slate);
+            border-bottom: 1px solid var(--border);
         }
 
         .message-content h4:first-child {
@@ -760,7 +756,7 @@
         }
 
         .message-content p {
-            margin: 0 0 10px 0;
+            margin: 0 0 12px 0;
         }
 
         .message-content p:last-child {
@@ -768,152 +764,102 @@
         }
 
         .message-content ul {
-            margin: 6px 0 10px 0;
-            padding-left: 18px;
+            margin: 8px 0 12px 0;
+            padding-left: 20px;
         }
 
         .message-content li {
-            margin-bottom: 4px;
-            line-height: 1.5;
+            margin-bottom: 6px;
         }
 
         .message-content strong {
-            color: var(--z-white);
             font-weight: 600;
-        }
-
-        .message-content code {
-            background: var(--z-deep);
-            padding: 2px 5px;
-            border-radius: 4px;
-            font-family: var(--z-mono);
-            font-size: 11px;
-        }
-
-        .inline-icon {
-            width: 14px;
-            height: 14px;
-            fill: var(--z-light);
-            vertical-align: text-bottom;
-            margin-right: 4px;
-            display: inline-block;
         }
 
         .message-divider {
             border: none;
             height: 1px;
-            background: var(--z-slate);
-            margin: 14px 0;
+            background: var(--border);
+            margin: 16px 0;
         }
 
-        .status-badge-inline {
+        .status-badge {
             display: inline-block;
-            padding: 3px 8px;
-            border-radius: 4px;
-            font-size: 10px;
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 11px;
             font-weight: 700;
-            letter-spacing: 0.5px;
+            letter-spacing: 0.3px;
             text-transform: uppercase;
             margin-right: 6px;
         }
 
-        .status-badge-inline.success {
-            background: rgba(16, 185, 129, 0.2);
-            color: var(--z-success);
-            border: 1px solid rgba(16, 185, 129, 0.3);
+        .status-badge.success {
+            background: rgba(34, 197, 94, 0.15);
+            color: var(--success);
         }
 
-        .status-badge-inline.error {
-            background: rgba(239, 68, 68, 0.2);
-            color: var(--z-error);
-            border: 1px solid rgba(239, 68, 68, 0.3);
+        .status-badge.error {
+            background: rgba(239, 68, 68, 0.15);
+            color: var(--error);
         }
 
-        .status-badge-inline.warning {
-            background: rgba(245, 158, 11, 0.2);
-            color: var(--z-warning);
-            border: 1px solid rgba(245, 158, 11, 0.3);
+        .status-badge.warning {
+            background: rgba(245, 158, 11, 0.15);
+            color: var(--warning);
         }
 
-        .message-content cite {
-            display: block;
-            font-style: italic;
-            font-size: 11px;
-            color: var(--z-muted);
-            margin-top: 10px;
-            padding-top: 6px;
-            border-top: 1px dashed var(--z-slate);
-        }
-
-        .message-content .note {
-            display: block;
-            font-size: 11px;
-            color: var(--z-light);
-            background: rgba(59, 130, 246, 0.1);
-            padding: 6px 10px;
-            border-radius: 6px;
-            border-left: 3px solid var(--z-accent);
-            margin: 10px 0;
-        }
-
-        /* Typing Indicator */
+        /* Typing */
         .typing-indicator {
             display: flex;
-            align-items: center;
-            gap: 8px;
-            padding: 12px 14px;
-            background: var(--z-space);
-            border: 1px solid var(--z-slate);
-            border-radius: 14px;
-            border-bottom-left-radius: 4px;
-            max-width: 100px;
-            animation: messageIn 0.3s ease-out;
-        }
-
-        .typing-dots {
-            display: flex;
             gap: 4px;
+            padding: 14px 16px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            border-bottom-left-radius: 4px;
+            max-width: 70px;
         }
 
-        .typing-dots span {
-            width: 7px;
-            height: 7px;
-            background: var(--z-muted);
+        .typing-indicator span {
+            width: 8px;
+            height: 8px;
+            background: var(--text-muted);
             border-radius: 50%;
-            animation: typingBounce 1.4s ease-in-out infinite;
+            animation: typing 1.4s ease-in-out infinite;
         }
 
-        .typing-dots span:nth-child(1) { animation-delay: 0s; }
-        .typing-dots span:nth-child(2) { animation-delay: 0.2s; }
-        .typing-dots span:nth-child(3) { animation-delay: 0.4s; }
+        .typing-indicator span:nth-child(1) { animation-delay: 0s; }
+        .typing-indicator span:nth-child(2) { animation-delay: 0.2s; }
+        .typing-indicator span:nth-child(3) { animation-delay: 0.4s; }
 
-        @keyframes typingBounce {
-            0%, 60%, 100% { transform: translateY(0); background: var(--z-muted); }
-            30% { transform: translateY(-5px); background: var(--z-accent); }
+        @keyframes typing {
+            0%, 60%, 100% { transform: translateY(0); opacity: 0.5; }
+            30% { transform: translateY(-6px); opacity: 1; }
         }
 
         .typing-cursor {
             display: inline-block;
             width: 2px;
             height: 1em;
-            background: var(--z-accent);
+            background: var(--brand);
             margin-left: 2px;
-            animation: cursorBlink 0.8s infinite;
+            animation: blink 0.7s infinite;
             vertical-align: text-bottom;
         }
 
-        @keyframes cursorBlink {
+        @keyframes blink {
             0%, 50% { opacity: 1; }
             51%, 100% { opacity: 0; }
         }
 
-        /* Chat Actions */
+        /* Actions */
         .chat-actions {
             display: flex;
             gap: 8px;
-            padding: 10px 16px;
-            border-top: 1px solid var(--z-slate);
-            background: var(--z-space);
+            padding: 12px 16px;
+            border-top: 1px solid var(--border);
+            background: var(--surface);
             flex-shrink: 0;
         }
 
@@ -922,21 +868,22 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 6px;
-            padding: 10px 12px;
-            background: var(--z-slate);
-            border: none;
-            border-radius: var(--z-radius-sm);
-            color: var(--z-white);
-            font-family: var(--z-font);
-            font-size: 12px;
+            gap: 8px;
+            padding: 12px;
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            color: var(--text);
+            font-family: var(--font);
+            font-size: 13px;
             font-weight: 500;
             cursor: pointer;
-            transition: all var(--z-transition);
+            transition: all var(--transition);
         }
 
         .action-btn:hover:not(:disabled) {
-            background: var(--z-muted);
+            background: var(--surface-hover);
+            border-color: var(--border-hover);
         }
 
         .action-btn:disabled {
@@ -945,201 +892,143 @@
         }
 
         .action-btn svg {
-            width: 14px;
-            height: 14px;
+            width: 16px;
+            height: 16px;
             fill: currentColor;
         }
 
         .action-btn.primary {
-            background: var(--z-success);
+            background: var(--success);
+            border-color: var(--success);
         }
 
         .action-btn.primary:hover:not(:disabled) {
-            background: #059669;
+            background: #16A34A;
         }
 
-        /* Chat Input */
+        /* Input */
         .chat-input-area {
             display: flex;
-            gap: 10px;
+            gap: 12px;
             padding: 12px 16px;
-            background: var(--z-deep);
-            border-top: 1px solid var(--z-slate);
+            background: var(--bg);
+            border-top: 1px solid var(--border);
             flex-shrink: 0;
         }
 
         .chat-input {
             flex: 1;
-            padding: 12px 14px;
-            background: var(--z-space);
-            border: 1px solid var(--z-slate);
-            border-radius: 20px;
-            color: var(--z-white);
-            font-family: var(--z-font);
-            font-size: 13px;
+            padding: 14px 18px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-full);
+            color: var(--text);
+            font-family: var(--font);
+            font-size: 14px;
             resize: none;
-            min-height: 44px;
-            max-height: 100px;
+            min-height: 48px;
+            max-height: 120px;
             outline: none;
-            transition: border-color var(--z-transition);
+            transition: border-color var(--transition);
         }
 
         .chat-input:focus {
-            border-color: var(--z-accent);
+            border-color: var(--brand);
         }
 
         .chat-input::placeholder {
-            color: var(--z-muted);
+            color: var(--text-muted);
         }
 
         .send-btn {
-            width: 44px;
-            height: 44px;
-            background: var(--z-accent);
+            width: 48px;
+            height: 48px;
+            background: var(--brand);
             border: none;
             border-radius: 50%;
-            color: var(--z-white);
+            color: white;
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
-            transition: all var(--z-transition);
+            transition: all var(--transition);
             flex-shrink: 0;
         }
 
         .send-btn:hover:not(:disabled) {
-            background: var(--z-purple);
+            background: var(--brand-hover);
             transform: scale(1.05);
         }
 
         .send-btn:disabled {
-            background: var(--z-slate);
+            background: var(--text-muted);
             cursor: not-allowed;
         }
 
         .send-btn svg {
-            width: 18px;
-            height: 18px;
+            width: 20px;
+            height: 20px;
             fill: currentColor;
         }
 
         /* ============================================
-           DESKTOP STYLES
+           DESKTOP
            ============================================ */
         @media (min-width: 768px) {
-            .map-header {
-                padding: 16px 20px;
+            .header {
+                height: 72px;
+                padding: 0 24px;
+                gap: 24px;
             }
 
-            .header-logo {
-                width: 36px;
-                height: 36px;
-            }
-
-            .header-logo svg {
-                width: 20px;
-                height: 20px;
-            }
-
-            .header-title {
-                font-size: 18px;
-            }
-
-            .lang-btn {
-                padding: 5px 10px;
-                font-size: 12px;
-            }
-
-            .location-btn {
-                padding: 10px 16px;
-                font-size: 13px;
-            }
-
-            .location-btn .btn-text {
-                display: inline;
-            }
-
-            .icon-btn {
+            .logo-mark {
                 width: 40px;
                 height: 40px;
             }
 
-            .icon-btn svg {
-                width: 18px;
-                height: 18px;
+            .logo-mark svg {
+                width: 40px;
+                height: 40px;
             }
 
-            .search-box.active {
-                width: 280px;
+            .logo-text {
+                font-size: 20px;
             }
 
-            .chat-overlay {
+            .search-container {
+                max-width: 480px;
+            }
+
+            .search-bar {
+                height: 48px;
+            }
+
+            .icon-btn {
+                width: 48px;
+                height: 48px;
+            }
+
+            .chat-panel {
                 top: auto;
                 left: 24px;
                 right: auto;
                 bottom: 24px;
-                width: 400px;
-                height: 560px;
+                width: 420px;
+                height: 620px;
                 max-height: calc(100vh - 48px);
-                border-radius: var(--z-radius);
-                box-shadow: var(--z-shadow);
+                border-radius: var(--radius);
+                box-shadow: var(--shadow);
+                border: 1px solid var(--border);
                 transform: translateX(-20px);
                 opacity: 0;
-                resize: both;
-                overflow: hidden;
-                min-width: 320px;
-                min-height: 400px;
-                max-width: 560px;
             }
 
-            .chat-overlay.active {
+            .chat-panel.active {
                 transform: translateX(0);
                 opacity: 1;
             }
 
-            .chat-overlay.dragging {
-                transition: none;
-                user-select: none;
-            }
-
-            .chat-header {
-                cursor: grab;
-                padding: 14px 20px;
-            }
-
-            .chat-header:active {
-                cursor: grabbing;
-            }
-
-            .drag-indicator {
-                display: flex;
-                justify-content: center;
-                padding: 8px 0 0 0;
-            }
-
-            .drag-dots {
-                display: flex;
-                gap: 4px;
-            }
-
-            .drag-dots span {
-                width: 4px;
-                height: 4px;
-                background: var(--z-muted);
-                border-radius: 50%;
-            }
-
-            .chat-messages {
-                padding: 20px;
-                gap: 14px;
-            }
-
-            .message {
-                font-size: 14px;
-                padding: 14px 16px;
-            }
-
-            .chat-toggle-btn {
+            .fab {
                 bottom: 32px;
                 left: 32px;
             }
@@ -1149,45 +1038,27 @@
             }
 
             .leaflet-bottom.leaflet-right {
-                bottom: 80px;
-                right: 16px;
+                bottom: 100px;
+                right: 24px;
             }
         }
 
-        /* Mobile - hide drag indicator */
-        @media (max-width: 767px) {
-            .drag-indicator {
-                display: none;
-            }
-
-            .leaflet-bottom.leaflet-right {
-                bottom: 90px;
-                right: 10px;
-            }
-
-            .leaflet-control-zoom a {
-                width: 32px !important;
-                height: 32px !important;
-                line-height: 32px !important;
-                font-size: 16px !important;
-            }
-        }
-
-        /* Safe area for notched phones */
+        /* Safe areas */
         @supports (padding-top: env(safe-area-inset-top)) {
-            .map-header {
-                padding-top: calc(12px + env(safe-area-inset-top));
+            .header {
+                padding-top: env(safe-area-inset-top);
+                height: calc(64px + env(safe-area-inset-top));
             }
 
             .chat-header {
-                padding-top: calc(12px + env(safe-area-inset-top));
+                padding-top: calc(16px + env(safe-area-inset-top));
             }
 
             .chat-input-area {
                 padding-bottom: calc(12px + env(safe-area-inset-bottom));
             }
 
-            .chat-toggle-btn {
+            .fab {
                 bottom: calc(24px + env(safe-area-inset-bottom));
             }
 
@@ -1197,63 +1068,71 @@
         }
 
         /* Small phones */
-        @media (max-width: 380px) {
-            .header-title {
+        @media (max-width: 420px) {
+            .logo-text {
                 display: none;
             }
 
-            .lang-selector {
-                margin-left: 0;
-            }
-
-            .splash-title {
-                font-size: 24px;
-            }
-
-            .splash-tagline {
-                font-size: 14px;
+            .header {
+                padding: 0 12px;
+                gap: 12px;
             }
         }
     </style>
 </head>
 <body>
 
-    <!-- SPLASH SCREEN -->
+    <!-- SPLASH -->
     <div class="splash" id="splash">
         <div class="splash-content">
             <div class="splash-logo">
-                <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
-                </svg>
+                <div class="logo-mark">
+                    <!-- ZoneAgent Logo: Teal/Emerald theme -->
+                    <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="24" cy="24" r="22" stroke="url(#tealGrad)" stroke-width="2" stroke-dasharray="4 2" opacity="0.4"/>
+                        <path d="M14 14H34L20 24L34 34H14" stroke="url(#tealGrad)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+                        <circle cx="24" cy="24" r="3" fill="url(#tealGrad)"/>
+                        <circle cx="24" cy="24" r="6" stroke="url(#tealGrad)" stroke-width="1.5" opacity="0.6"/>
+                        <defs>
+                            <linearGradient id="tealGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                                <stop offset="0%" stop-color="#14B8A6"/>
+                                <stop offset="100%" stop-color="#5EEAD4"/>
+                            </linearGradient>
+                        </defs>
+                    </svg>
+                </div>
+                <span class="logo-text">ZoneAgent</span>
             </div>
-            <h1 class="splash-title">ZoneAgent</h1>
             <p class="splash-tagline">Zero Trips. Instant Compliance.</p>
 
-            <div class="splash-features">
-                <div class="splash-feature">
-                    <div class="feature-num">1</div>
-                    <div class="feature-text">
-                        <div class="feature-title">Tap the Map</div>
-                        <div class="feature-desc">Select any location in Kigali</div>
+            <div class="splash-steps">
+                <div class="splash-step">
+                    <div class="step-num">1</div>
+                    <div class="step-text">
+                        <div class="step-title" data-i18n="step1Title">Tap the Map</div>
+                        <div class="step-desc" data-i18n="step1Desc">Select any location in Kigali</div>
                     </div>
                 </div>
-                <div class="splash-feature">
-                    <div class="feature-num">2</div>
-                    <div class="feature-text">
-                        <div class="feature-title">Ask Questions</div>
-                        <div class="feature-desc">Get instant zoning and permit guidance</div>
+                <div class="splash-step">
+                    <div class="step-num">2</div>
+                    <div class="step-text">
+                        <div class="step-title" data-i18n="step2Title">Ask Questions</div>
+                        <div class="step-desc" data-i18n="step2Desc">Get instant zoning guidance</div>
                     </div>
                 </div>
-                <div class="splash-feature">
-                    <div class="feature-num">3</div>
-                    <div class="feature-text">
-                        <div class="feature-title">Download Report</div>
-                        <div class="feature-desc">Save official compliance documentation</div>
+                <div class="splash-step">
+                    <div class="step-num">3</div>
+                    <div class="step-text">
+                        <div class="step-title" data-i18n="step3Title">Download Report</div>
+                        <div class="step-desc" data-i18n="step3Desc">Save official documentation</div>
                     </div>
                 </div>
             </div>
 
-            <button class="enter-btn" id="enterBtn">Enter ZoneAgent</button>
+            <button class="enter-btn" id="enterBtn">
+                <span data-i18n="enterApp">Start</span>
+                <svg viewBox="0 0 24 24"><path d="M12 4l-1.41 1.41L16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8z"/></svg>
+            </button>
         </div>
     </div>
 
@@ -1261,67 +1140,76 @@
     <div class="app" id="app">
         <div id="mapDiv"></div>
 
-        <!-- Map Header -->
-        <div class="map-header">
-            <div class="header-brand">
-                <div class="header-logo">
-                    <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
-                    </svg>
-                </div>
-                <span class="header-title">ZoneAgent</span>
-                <div class="lang-selector">
-                    <button class="lang-btn active" data-lang="en">EN</button>
-                    <button class="lang-btn" data-lang="rw">RW</button>
-                    <button class="lang-btn" data-lang="fr">FR</button>
+        <!-- Header -->
+        <div class="header">
+            <div class="header-left">
+                <div class="logo">
+                    <div class="logo-mark">
+                        <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <circle cx="24" cy="24" r="22" stroke="url(#tealGrad2)" stroke-width="2" stroke-dasharray="4 2" opacity="0.4"/>
+                            <path d="M14 14H34L20 24L34 34H14" stroke="url(#tealGrad2)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+                            <circle cx="24" cy="24" r="3" fill="url(#tealGrad2)"/>
+                            <circle cx="24" cy="24" r="6" stroke="url(#tealGrad2)" stroke-width="1.5" opacity="0.6"/>
+                            <defs>
+                                <linearGradient id="tealGrad2" x1="0%" y1="0%" x2="100%" y2="100%">
+                                    <stop offset="0%" stop-color="#14B8A6"/>
+                                    <stop offset="100%" stop-color="#5EEAD4"/>
+                                </linearGradient>
+                            </defs>
+                        </svg>
+                    </div>
+                    <span class="logo-text">ZoneAgent</span>
                 </div>
             </div>
 
-            <div class="header-actions">
-                <div class="search-control">
-                    <div class="search-box" id="searchBox">
-                        <input type="text" class="search-input" id="searchInput" placeholder="Search location...">
-                    </div>
-                    <button class="icon-btn" id="searchBtn" title="Search">
+            <!-- Search - Always visible -->
+            <div class="search-container">
+                <div class="search-bar">
+                    <input type="text" class="search-input" id="searchInput" placeholder="Search Kigali...">
+                    <div class="search-icon">
                         <svg viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
-                    </button>
-                    <div class="search-results" id="searchResults"></div>
+                    </div>
                 </div>
+                <div class="search-results" id="searchResults"></div>
+            </div>
 
-                <button class="location-btn" id="locationBtn" title="My Location">
+            <div class="header-right">
+                <button class="icon-btn" id="locationBtn" title="My Location">
                     <svg viewBox="0 0 24 24"><path d="M12 8c-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4-1.79-4-4-4zm8.94 3c-.46-4.17-3.77-7.48-7.94-7.94V1h-2v2.06C6.83 3.52 3.52 6.83 3.06 11H1v2h2.06c.46 4.17 3.77 7.48 7.94 7.94V23h2v-2.06c4.17-.46 7.48-3.77 7.94-7.94H23v-2h-2.06zM12 19c-3.87 0-7-3.13-7-7s3.13-7 7-7 7 3.13 7 7-3.13 7-7 7z"/></svg>
-                    <span class="btn-text" data-i18n="myLocation">My Location</span>
                 </button>
             </div>
         </div>
 
         <!-- Map Hint -->
-        <div class="map-hint" id="mapHint" data-i18n="tapHint">Tap anywhere on the map to check zoning</div>
+        <div class="map-hint" id="mapHint">
+            <svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
+            <span data-i18n="tapHint">Tap anywhere to check zoning</span>
+        </div>
 
-        <!-- Floating Chat Toggle Button -->
-        <button class="chat-toggle-btn" id="chatToggleBtn" title="Open Chat">
+        <!-- FAB -->
+        <button class="fab" id="fab" title="Open Chat">
             <svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 14H6l-2 2V4h16v12z"/></svg>
         </button>
     </div>
 
-    <!-- CHAT OVERLAY -->
-    <div class="chat-overlay" id="chatOverlay">
-        <div class="drag-indicator">
-            <div class="drag-dots">
-                <span></span><span></span><span></span><span></span><span></span>
-            </div>
-        </div>
-        <div class="chat-header" id="chatHeader">
-            <div class="chat-zone-info">
+    <!-- CHAT PANEL -->
+    <div class="chat-panel" id="chatPanel">
+        <div class="chat-header">
+            <button class="chat-back" id="closeChat">
+                <svg viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg>
+            </button>
+            <div class="chat-info">
                 <div class="chat-zone-name">
-                    <span class="zone-color" id="zoneColor"></span>
+                    <span class="zone-dot" id="zoneDot"></span>
                     <span id="zoneName">Loading...</span>
                 </div>
                 <div class="chat-zone-coords" id="zoneCoords">--.------, --.------</div>
             </div>
-            <button class="close-btn" id="closeChat" title="Close (view map)">
-                <svg viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
-            </button>
+            <div class="lang-toggle">
+                <button class="lang-opt active" data-lang="en">EN</button>
+                <button class="lang-opt" data-lang="rw">RW</button>
+                <button class="lang-opt" data-lang="fr">FR</button>
+            </div>
         </div>
 
         <div class="chat-messages" id="chatMessages"></div>
@@ -1338,7 +1226,7 @@
         </div>
 
         <div class="chat-input-area">
-            <textarea class="chat-input" id="chatInput" placeholder="Ask about zoning, permits, regulations..." rows="1"></textarea>
+            <textarea class="chat-input" id="chatInput" placeholder="Ask about zoning, permits..." rows="1"></textarea>
             <button class="send-btn" id="sendBtn">
                 <svg viewBox="0 0 24 24"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>
             </button>
@@ -1352,7 +1240,7 @@
 
     <script>
     // =============================================================================
-    // CONFIGURATION
+    // CONFIG
     // =============================================================================
     const API_BASE_URL = 'https://cok-development-assistant.onrender.com/api';
     const sessionId = 'web_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
@@ -1370,165 +1258,22 @@
     let chatHasContent = false;
 
     // =============================================================================
-    // USAGE TRACKER
-    // =============================================================================
-    const UsageTracker = {
-        visitorId: null,
-        
-        async init() {
-            this.visitorId = await this.generateFingerprint();
-            this.trackEvent('session_start');
-        },
-        
-        async generateFingerprint() {
-            let storedId = localStorage.getItem('za_visitor_id');
-            if (storedId) return storedId;
-            
-            const components = [
-                navigator.userAgent, navigator.language,
-                screen.width + 'x' + screen.height, screen.colorDepth,
-                new Date().getTimezoneOffset(),
-                navigator.hardwareConcurrency || 'unknown', navigator.platform
-            ];
-            
-            const fingerprint = components.join('|');
-            const hash = await this.hashString(fingerprint);
-            const visitorId = hash.substring(0, 12) + '_' + Date.now().toString(36);
-            
-            localStorage.setItem('za_visitor_id', visitorId);
-            return visitorId;
-        },
-        
-        async hashString(str) {
-            const encoder = new TextEncoder();
-            const data = encoder.encode(str);
-            const hashBuffer = await crypto.subtle.digest('SHA-256', data);
-            const hashArray = Array.from(new Uint8Array(hashBuffer));
-            return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
-        },
-        
-        trackEvent(eventType, data = {}) {
-            const event = {
-                visitor_id: this.visitorId, event: eventType,
-                timestamp: new Date().toISOString(),
-                session_id: sessionId, language: currentLanguage, ...data
-            };
-            this.storeLocally(event);
-            this.sendToBackend(event);
-        },
-        
-        storeLocally(event) {
-            try {
-                const events = JSON.parse(localStorage.getItem('za_events') || '[]');
-                events.push(event);
-                if (events.length > 100) events.shift();
-                localStorage.setItem('za_events', JSON.stringify(events));
-            } catch (e) {}
-        },
-        
-        async sendToBackend(event) {
-            try {
-                await fetch(`${API_BASE_URL}/analytics/event`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(event)
-                }).catch(() => {});
-            } catch (e) {}
-        },
-        
-        trackLocationQuery(lat, lng, zoneName) {
-            this.trackEvent('location_query', { lat: lat.toFixed(4), lng: lng.toFixed(4), zone: zoneName });
-        },
-        trackQuestion(question, zoneName) {
-            this.trackEvent('ai_question', { question_length: question.length, zone: zoneName });
-        },
-        trackDownload(zoneName) { this.trackEvent('pdf_download', { zone: zoneName }); },
-        trackShare(zoneName) { this.trackEvent('share', { zone: zoneName }); }
-    };
-
-    // =============================================================================
-    // DRAGGABLE PANEL (Desktop)
-    // =============================================================================
-    const DraggablePanel = {
-        isDragging: false, startX: 0, startY: 0, startLeft: 0, startTop: 0,
-        
-        init() {
-            if (window.innerWidth < 768) return;
-            const panel = document.getElementById('chatOverlay');
-            const header = document.getElementById('chatHeader');
-            const dragIndicator = document.querySelector('.drag-indicator');
-            
-            [header, dragIndicator].forEach(el => {
-                if (!el) return;
-                el.addEventListener('mousedown', (e) => this.startDrag(e, panel));
-            });
-            document.addEventListener('mousemove', (e) => this.drag(e, panel));
-            document.addEventListener('mouseup', () => this.stopDrag(panel));
-            this.loadPosition(panel);
-        },
-        
-        startDrag(e, panel) {
-            if (window.innerWidth < 768 || e.target.closest('button')) return;
-            this.isDragging = true;
-            panel.classList.add('dragging');
-            const rect = panel.getBoundingClientRect();
-            this.startX = e.clientX; this.startY = e.clientY;
-            this.startLeft = rect.left; this.startTop = rect.top;
-            panel.style.left = rect.left + 'px';
-            panel.style.top = rect.top + 'px';
-            panel.style.bottom = 'auto'; panel.style.right = 'auto';
-            e.preventDefault();
-        },
-        
-        drag(e, panel) {
-            if (!this.isDragging) return;
-            let newLeft = this.startLeft + (e.clientX - this.startX);
-            let newTop = this.startTop + (e.clientY - this.startY);
-            const rect = panel.getBoundingClientRect();
-            newLeft = Math.max(0, Math.min(newLeft, window.innerWidth - rect.width));
-            newTop = Math.max(0, Math.min(newTop, window.innerHeight - rect.height));
-            panel.style.left = newLeft + 'px'; panel.style.top = newTop + 'px';
-            e.preventDefault();
-        },
-        
-        stopDrag(panel) {
-            if (!this.isDragging) return;
-            this.isDragging = false;
-            panel.classList.remove('dragging');
-            this.savePosition(panel);
-        },
-        
-        savePosition(panel) {
-            const rect = panel.getBoundingClientRect();
-            localStorage.setItem('za_panel_position', JSON.stringify({
-                left: rect.left, top: rect.top, width: rect.width, height: rect.height
-            }));
-        },
-        
-        loadPosition(panel) {
-            try {
-                const saved = JSON.parse(localStorage.getItem('za_panel_position'));
-                if (saved && window.innerWidth >= 768 && saved.left < window.innerWidth - 100 && saved.top < window.innerHeight - 100) {
-                    panel.style.left = saved.left + 'px'; panel.style.top = saved.top + 'px';
-                    panel.style.bottom = 'auto'; panel.style.right = 'auto';
-                    if (saved.width) panel.style.width = saved.width + 'px';
-                    if (saved.height) panel.style.height = saved.height + 'px';
-                }
-            } catch (e) {}
-        }
-    };
-
-    // =============================================================================
     // TRANSLATIONS
     // =============================================================================
     const i18n = {
         en: {
-            myLocation: 'My Location',
-            tapHint: 'Tap anywhere on the map to check zoning',
+            tapHint: 'Tap anywhere to check zoning',
             download: 'Download PDF',
             share: 'Share',
-            askPlaceholder: 'Ask about zoning, permits, regulations...',
+            askPlaceholder: 'Ask about zoning, permits...',
             loading: 'Checking zoning...',
+            step1Title: 'Tap the Map',
+            step1Desc: 'Select any location in Kigali',
+            step2Title: 'Ask Questions',
+            step2Desc: 'Get instant zoning guidance',
+            step3Title: 'Download Report',
+            step3Desc: 'Save official documentation',
+            enterApp: 'Start',
             welcome: (zone) => `**Welcome to ZoneAgent**
 
 This location is classified as:
@@ -1541,24 +1286,32 @@ What You Can Ask:
 • What permits do I need to build?
 • Is this zone suitable for commercial use?
 
-Type your question below to get instant guidance.`,
-            outsideKigali: 'This location is outside the Kigali zoning coverage area.\n\nPlease select a location within Kigali City boundaries.',
+Type your question below.`,
+            outsideKigali: 'This location is outside Kigali zoning coverage.\n\nPlease select a location within Kigali City.',
             error: 'Something went wrong. Please try again.',
             noZoning: 'No zoning data available for this location.',
             reportTitle: 'ZONING COMPLIANCE REPORT',
             generatedBy: 'Generated by ZoneAgent',
-            locationLabel: 'Location', zoneLabel: 'Zone', dateLabel: 'Date',
-            questionLabel: 'Question', analysisLabel: 'Analysis',
+            locationLabel: 'Location',
+            dateLabel: 'Date',
+            questionLabel: 'Question',
+            analysisLabel: 'Analysis',
             contactLabel: 'Official Contacts',
             disclaimer: 'This report is for informational purposes only. Verify with City of Kigali authorities.'
         },
         rw: {
-            myLocation: 'Aho Ndi',
-            tapHint: 'Kanda ahantu kuri karita kureba imiyoborere',
+            tapHint: 'Kanda ahantu kureba imiyoborere',
             download: 'Kuramo PDF',
             share: 'Sangiza',
-            askPlaceholder: 'Baza ku miyoborere, uruhushya...',
+            askPlaceholder: 'Baza ku miyoborere...',
             loading: 'Kureba imiyoborere...',
+            step1Title: 'Kanda Ikarita',
+            step1Desc: 'Hitamo aho hantu muri Kigali',
+            step2Title: 'Baza Ibibazo',
+            step2Desc: 'Kubona amakuru vuba',
+            step3Title: 'Kuramo Raporo',
+            step3Desc: 'Kubika inyandiko',
+            enterApp: 'Tangira',
             welcome: (zone) => `**Murakaza neza kuri ZoneAgent**
 
 Aha hantu hafite imiyoborere:
@@ -1577,18 +1330,26 @@ Andika ikibazo cyawe hano.`,
             noZoning: 'Nta makuru y\'imiyoborere.',
             reportTitle: 'RAPORO Y\'IMIYOBORERE',
             generatedBy: 'Yakozwe na ZoneAgent',
-            locationLabel: 'Aho hantu', zoneLabel: 'Akarere', dateLabel: 'Itariki',
-            questionLabel: 'Ikibazo', analysisLabel: 'Isesengura',
+            locationLabel: 'Aho hantu',
+            dateLabel: 'Itariki',
+            questionLabel: 'Ikibazo',
+            analysisLabel: 'Isesengura',
             contactLabel: 'Aho Wakwiyambaza',
             disclaimer: 'Emeza amakuru yose n\'ubuyobozi bw\'Umujyi wa Kigali.'
         },
         fr: {
-            myLocation: 'Ma Position',
-            tapHint: 'Appuyez sur la carte pour vérifier le zonage',
+            tapHint: 'Appuyez pour vérifier le zonage',
             download: 'Télécharger PDF',
             share: 'Partager',
-            askPlaceholder: 'Questions sur le zonage, permis...',
-            loading: 'Vérification du zonage...',
+            askPlaceholder: 'Questions sur le zonage...',
+            loading: 'Vérification...',
+            step1Title: 'Appuyez sur la Carte',
+            step1Desc: 'Sélectionnez un lieu à Kigali',
+            step2Title: 'Posez des Questions',
+            step2Desc: 'Conseils instantanés',
+            step3Title: 'Téléchargez',
+            step3Desc: 'Sauvegardez le rapport',
+            enterApp: 'Commencer',
             welcome: (zone) => `**Bienvenue sur ZoneAgent**
 
 Cette zone est classée:
@@ -1596,21 +1357,23 @@ Cette zone est classée:
 
 Questions Possibles:
 
-• Quels bâtiments sont autorisés ici?
-• Quelles sont les exigences de hauteur?
-• Quels permis sont nécessaires?
-• Zone adaptée à un usage commercial?
+• Quels bâtiments sont autorisés?
+• Exigences de hauteur?
+• Permis nécessaires?
+• Usage commercial possible?
 
-Tapez votre question ci-dessous.`,
-            outsideKigali: 'Emplacement en dehors de la zone de Kigali.',
-            error: 'Une erreur s\'est produite.',
-            noZoning: 'Aucune donnée de zonage.',
+Tapez votre question.`,
+            outsideKigali: 'Hors zone de Kigali.',
+            error: 'Erreur. Réessayez.',
+            noZoning: 'Pas de données.',
             reportTitle: 'RAPPORT DE ZONAGE',
             generatedBy: 'Généré par ZoneAgent',
-            locationLabel: 'Emplacement', zoneLabel: 'Zone', dateLabel: 'Date',
-            questionLabel: 'Question', analysisLabel: 'Analyse',
-            contactLabel: 'Contacts Officiels',
-            disclaimer: 'Vérifiez les informations auprès de la Ville de Kigali.'
+            locationLabel: 'Emplacement',
+            dateLabel: 'Date',
+            questionLabel: 'Question',
+            analysisLabel: 'Analyse',
+            contactLabel: 'Contacts',
+            disclaimer: 'Vérifiez auprès de la Ville de Kigali.'
         }
     };
 
@@ -1650,51 +1413,52 @@ Tapez votre question ci-dessous.`,
     // TYPEWRITER
     // =============================================================================
     const Typewriter = {
-        activeTimer: null, sessionId: 0,
+        timer: null,
+        session: 0,
         
         stop() {
-            if (this.activeTimer) { clearTimeout(this.activeTimer); this.activeTimer = null; }
-            this.sessionId++;
+            if (this.timer) { clearTimeout(this.timer); this.timer = null; }
+            this.session++;
         },
         
-        async type(element, text, speed = 12) {
+        async type(el, text, speed = 8) {
             this.stop();
-            const session = ++this.sessionId;
-            element.innerHTML = '<div class="message-content"></div><span class="typing-cursor"></span>';
-            const content = element.querySelector('.message-content');
-            const cursor = element.querySelector('.typing-cursor');
+            const session = ++this.session;
+            el.innerHTML = '<div class="message-content"></div><span class="typing-cursor"></span>';
+            const content = el.querySelector('.message-content');
+            const cursor = el.querySelector('.typing-cursor');
             
             return new Promise((resolve) => {
-                let index = 0;
-                const typeNext = () => {
-                    if (session !== this.sessionId) { resolve(false); return; }
-                    if (index < text.length) {
-                        content.innerHTML = this.formatText(text.substring(0, index + 1));
-                        const char = text[index++];
-                        let delay = speed;
-                        if (char === '\n') delay = speed * 3;
-                        else if ('.!?'.includes(char)) delay = speed * 4;
-                        else if (char === ',') delay = speed * 2;
+                let i = 0;
+                const next = () => {
+                    if (session !== this.session) { resolve(false); return; }
+                    if (i < text.length) {
+                        content.innerHTML = this.format(text.substring(0, i + 1));
+                        const c = text[i++];
+                        let d = speed;
+                        if (c === '\n') d = speed * 3;
+                        else if ('.!?'.includes(c)) d = speed * 4;
+                        else if (c === ',') d = speed * 2;
                         document.getElementById('chatMessages').scrollTop = document.getElementById('chatMessages').scrollHeight;
-                        this.activeTimer = setTimeout(typeNext, delay);
+                        this.timer = setTimeout(next, d);
                     } else {
                         cursor.remove();
-                        content.innerHTML = this.formatText(text);
-                        this.activeTimer = null;
+                        content.innerHTML = this.format(text);
+                        this.timer = null;
                         resolve(true);
                     }
                 };
-                typeNext();
+                next();
             });
         },
         
-        formatText(text) {
+        format(text) {
             let f = text
                 .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
                 .replace(/^[━═─-]{3,}$/gm, '<hr class="message-divider">')
-                .replace(/^(YES|PERMITTED|ALLOWED)\s*/gm, '<span class="status-badge-inline success">$1</span> ')
-                .replace(/^(NO|NOT PERMITTED|PROHIBITED)\s*/gm, '<span class="status-badge-inline error">$1</span> ')
-                .replace(/^(CONDITIONAL|REQUIRES APPROVAL)\s*/gm, '<span class="status-badge-inline warning">$1</span> ')
+                .replace(/^(YES|PERMITTED|ALLOWED)\s*/gm, '<span class="status-badge success">$1</span> ')
+                .replace(/^(NO|NOT PERMITTED|PROHIBITED)\s*/gm, '<span class="status-badge error">$1</span> ')
+                .replace(/^(CONDITIONAL|REQUIRES APPROVAL)\s*/gm, '<span class="status-badge warning">$1</span> ')
                 .replace(/^([A-Z][A-Za-z0-9 ]{2,40}):?\s*$/gm, '<h4>$1</h4>')
                 .replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>')
                 .replace(/^[•\-\*]\s+(.+)$/gm, '<li>$1</li>')
@@ -1710,32 +1474,36 @@ Tapez votre question ci-dessous.`,
     };
 
     // =============================================================================
-    // MAP INITIALIZATION
+    // MAP
     // =============================================================================
-    let mapInitPromise = null;
+    let mapReady = null;
 
-    window.addEventListener('DOMContentLoaded', () => { mapInitPromise = preloadMap(); });
+    window.addEventListener('DOMContentLoaded', () => {
+        mapReady = initMap();
+    });
 
-    async function preloadMap() {
-        const healthCheck = fetch(`${API_BASE_URL}/health`)
+    async function initMap() {
+        const health = fetch(`${API_BASE_URL}/health`)
             .then(r => r.json()).then(d => d.status === 'healthy').catch(() => false);
 
         map = L.map('mapDiv', {
-            center: [-1.9441, 30.0619], zoom: 13,
-            minZoom: 10, maxZoom: 20, zoomControl: false, attributionControl: true
+            center: [-1.9441, 30.0619],
+            zoom: 13,
+            minZoom: 10,
+            maxZoom: 20,
+            zoomControl: false,
+            attributionControl: true
         });
 
         L.control.zoom({ position: 'bottomright' }).addTo(map);
 
-        // Google Hybrid (satellite + labels) - FASTEST
         L.tileLayer('https://mt1.google.com/vt/lyrs=y&x={x}&y={y}&z={z}', {
-            attribution: 'Imagery © Google',
-            maxZoom: 20,
-            subdomains: ['mt0', 'mt1', 'mt2', 'mt3']
+            attribution: '© Google',
+            maxZoom: 20
         }).addTo(map);
 
         setTimeout(() => map.invalidateSize(), 100);
-        backendConnected = await healthCheck;
+        backendConnected = await health;
         return map;
     }
 
@@ -1748,116 +1516,120 @@ Tapez votre question ci-dessous.`,
         document.getElementById('splash').classList.add('hidden');
         document.getElementById('app').classList.add('active');
         
-        await UsageTracker.init();
-        DraggablePanel.init();
-        
-        if (!map) await mapInitPromise;
+        if (!map) await mapReady;
         setTimeout(() => map.invalidateSize(true), 200);
         
         map.on('click', handleMapClick);
-        setupEventListeners();
+        setupEvents();
     }
 
-    function setupEventListeners() {
+    function setupEvents() {
         // Language
-        document.querySelectorAll('.lang-btn').forEach(btn => {
+        document.querySelectorAll('.lang-opt').forEach(btn => {
             btn.addEventListener('click', () => {
-                document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
+                document.querySelectorAll('.lang-opt').forEach(b => b.classList.remove('active'));
                 btn.classList.add('active');
                 currentLanguage = btn.dataset.lang;
                 updateUI();
             });
         });
 
+        // Search - always visible, just handle input
+        const searchInput = document.getElementById('searchInput');
+        const searchResults = document.getElementById('searchResults');
+
+        let searchTimer;
+        searchInput.addEventListener('input', (e) => {
+            clearTimeout(searchTimer);
+            const q = e.target.value.trim();
+            if (q.length < 3) {
+                searchResults.classList.remove('active');
+                return;
+            }
+            searchTimer = setTimeout(() => doSearch(q), 500);
+        });
+
+        searchInput.addEventListener('focus', () => {
+            const q = searchInput.value.trim();
+            if (q.length >= 3) {
+                // Re-show results if there were any
+            }
+        });
+
+        document.addEventListener('click', (e) => {
+            if (!e.target.closest('.search-container')) {
+                searchResults.classList.remove('active');
+            }
+        });
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                searchResults.classList.remove('active');
+                searchInput.blur();
+            }
+        });
+
+        // Location
         document.getElementById('locationBtn').addEventListener('click', useMyLocation);
-        document.getElementById('chatToggleBtn').addEventListener('click', openChat);
+
+        // Chat
+        document.getElementById('fab').addEventListener('click', openChat);
         document.getElementById('closeChat').addEventListener('click', closeChat);
 
         const chatInput = document.getElementById('chatInput');
         chatInput.addEventListener('input', () => {
             chatInput.style.height = 'auto';
-            chatInput.style.height = Math.min(chatInput.scrollHeight, 100) + 'px';
+            chatInput.style.height = Math.min(chatInput.scrollHeight, 120) + 'px';
         });
         chatInput.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); }
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                sendMessage();
+            }
         });
 
         document.getElementById('sendBtn').addEventListener('click', sendMessage);
         document.getElementById('downloadBtn').addEventListener('click', downloadPDF);
         document.getElementById('shareBtn').addEventListener('click', shareReport);
-
-        // Search
-        const searchBtn = document.getElementById('searchBtn');
-        const searchBox = document.getElementById('searchBox');
-        const searchInput = document.getElementById('searchInput');
-        const searchResults = document.getElementById('searchResults');
-
-        searchBtn.addEventListener('click', () => {
-            searchBox.classList.toggle('active');
-            if (searchBox.classList.contains('active')) searchInput.focus();
-            else { searchInput.value = ''; searchResults.classList.remove('active'); }
-        });
-
-        let searchTimeout;
-        searchInput.addEventListener('input', (e) => {
-            clearTimeout(searchTimeout);
-            const query = e.target.value.trim();
-            if (query.length < 3) { searchResults.classList.remove('active'); return; }
-            searchTimeout = setTimeout(() => performSearch(query), 500);
-        });
-
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape') {
-                searchBox.classList.remove('active');
-                searchResults.classList.remove('active');
-            }
-        });
-        document.addEventListener('click', (e) => {
-            if (!e.target.closest('.search-control')) {
-                searchBox.classList.remove('active');
-                searchResults.classList.remove('active');
-            }
-        });
     }
 
     // =============================================================================
     // SEARCH
     // =============================================================================
-    async function performSearch(query) {
-        const searchResults = document.getElementById('searchResults');
-        searchResults.innerHTML = '<div class="search-loading">Searching...</div>';
-        searchResults.classList.add('active');
+    async function doSearch(query) {
+        const results = document.getElementById('searchResults');
+        results.innerHTML = '<div class="search-status">Searching...</div>';
+        results.classList.add('active');
 
         try {
             const url = `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(query)},Kigali,Rwanda&format=json&limit=5&countrycodes=rw&viewbox=29.8,-2.2,30.3,-1.7&bounded=1`;
-            const response = await fetch(url, { headers: { 'User-Agent': 'ZoneAgent/1.0' } });
-            const results = await response.json();
+            const res = await fetch(url, { headers: { 'User-Agent': 'ZoneAgent/1.0' } });
+            const data = await res.json();
 
-            if (results.length === 0) {
-                searchResults.innerHTML = '<div class="search-no-results">No locations found</div>';
+            if (data.length === 0) {
+                results.innerHTML = '<div class="search-status">No results found</div>';
                 return;
             }
 
-            searchResults.innerHTML = results.map(r => `
+            results.innerHTML = data.map(r => `
                 <div class="search-result-item" data-lat="${r.lat}" data-lng="${r.lon}">
                     <div class="search-result-name">${r.display_name.split(',')[0]}</div>
                     <div class="search-result-address">${r.display_name}</div>
                 </div>
             `).join('');
 
-            searchResults.querySelectorAll('.search-result-item').forEach(item => {
+            results.querySelectorAll('.search-result-item').forEach(item => {
                 item.addEventListener('click', () => {
                     const lat = parseFloat(item.dataset.lat);
                     const lng = parseFloat(item.dataset.lng);
                     map.flyTo([lat, lng], 16);
                     setTimeout(() => handleMapClick({ latlng: L.latLng(lat, lng) }), 1000);
-                    document.getElementById('searchBox').classList.remove('active');
-                    searchResults.classList.remove('active');
+                    results.classList.remove('active');
                     document.getElementById('searchInput').value = '';
                 });
             });
         } catch (e) {
-            searchResults.innerHTML = '<div class="search-no-results">Search failed</div>';
+            results.innerHTML = '<div class="search-status">Search failed</div>';
         }
     }
 
@@ -1882,7 +1654,6 @@ Tapez votre question ci-dessous.`,
                 currentZoning = { zoneName: data.data.zoneData.zone_name, properties: data.data.zoneData };
                 displayZoneInfo();
                 chatHasContent = true;
-                UsageTracker.trackLocationQuery(currentLocation.latitude, currentLocation.longitude, currentZoning.zoneName);
             } else {
                 clearMessages();
                 addMessage('assistant', t('noZoning'));
@@ -1897,36 +1668,43 @@ Tapez votre question ci-dessous.`,
 
     function addPin(latlng) {
         if (currentMarker) map.removeLayer(currentMarker);
-        const customIcon = L.divIcon({
+        const icon = L.divIcon({
             className: 'custom-marker',
-            html: `<div style="width:28px;height:28px;background:#3B82F6;border:3px solid white;border-radius:50%;box-shadow:0 4px 12px rgba(59,130,246,0.6);display:flex;align-items:center;justify-content:center;">
+            html: `<div style="width:32px;height:32px;background:#14B8A6;border:3px solid white;border-radius:50%;box-shadow:0 4px 12px rgba(20,184,166,0.5);display:flex;align-items:center;justify-content:center;">
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="white"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
             </div>`,
-            iconSize: [28, 28], iconAnchor: [14, 14]
+            iconSize: [32, 32],
+            iconAnchor: [16, 16]
         });
-        currentMarker = L.marker(latlng, { icon: customIcon }).addTo(map);
+        currentMarker = L.marker(latlng, { icon }).addTo(map);
     }
 
     function useMyLocation() {
         if (!navigator.geolocation) { alert('Geolocation not supported'); return; }
         const btn = document.getElementById('locationBtn');
         btn.disabled = true;
+        btn.classList.add('active');
 
         navigator.geolocation.getCurrentPosition(
             (pos) => {
                 const { latitude, longitude } = pos.coords;
+                btn.disabled = false;
+                btn.classList.remove('active');
                 if (latitude < -2.2 || latitude > -1.7 || longitude < 29.8 || longitude > 30.3) {
-                    btn.disabled = false;
-                    openChat(); clearMessages();
+                    openChat();
+                    clearMessages();
                     addMessage('assistant', t('outsideKigali'));
                     chatHasContent = true;
                     return;
                 }
                 map.setView([latitude, longitude], 16);
                 handleMapClick({ latlng: L.latLng(latitude, longitude) });
-                btn.disabled = false;
             },
-            () => { btn.disabled = false; alert('Unable to get location'); },
+            () => {
+                btn.disabled = false;
+                btn.classList.remove('active');
+                alert('Unable to get location');
+            },
             { enableHighAccuracy: true, timeout: 10000 }
         );
     }
@@ -1935,14 +1713,14 @@ Tapez votre question ci-dessous.`,
     // CHAT
     // =============================================================================
     function openChat() {
-        document.getElementById('chatOverlay').classList.add('active');
-        document.getElementById('chatToggleBtn').classList.remove('visible');
+        document.getElementById('chatPanel').classList.add('active');
+        document.getElementById('fab').classList.remove('visible');
     }
 
     function closeChat() {
-        document.getElementById('chatOverlay').classList.remove('active');
+        document.getElementById('chatPanel').classList.remove('active');
         Typewriter.stop();
-        if (chatHasContent) document.getElementById('chatToggleBtn').classList.add('visible');
+        if (chatHasContent) document.getElementById('fab').classList.add('visible');
         if (!currentLocation) document.getElementById('mapHint').classList.remove('hidden');
     }
 
@@ -1961,37 +1739,37 @@ Tapez votre question ci-dessous.`,
             container.scrollTop = container.scrollHeight;
             return Typewriter.type(msg, content);
         } else {
-            msg.innerHTML = `<div class="message-content">${Typewriter.formatText(content)}</div>`;
+            msg.innerHTML = `<div class="message-content">${Typewriter.format(content)}</div>`;
             container.appendChild(msg);
             container.scrollTop = container.scrollHeight;
             return Promise.resolve();
         }
     }
 
-    function showTypingIndicator() {
+    function showTyping() {
         const container = document.getElementById('chatMessages');
-        const indicator = document.createElement('div');
-        indicator.className = 'typing-indicator';
-        indicator.id = 'typingIndicator';
-        indicator.innerHTML = '<div class="typing-dots"><span></span><span></span><span></span></div>';
-        container.appendChild(indicator);
+        const el = document.createElement('div');
+        el.className = 'typing-indicator';
+        el.id = 'typing';
+        el.innerHTML = '<span></span><span></span><span></span>';
+        container.appendChild(el);
         container.scrollTop = container.scrollHeight;
     }
 
-    function hideTypingIndicator() {
-        const el = document.getElementById('typingIndicator');
+    function hideTyping() {
+        const el = document.getElementById('typing');
         if (el) el.remove();
     }
 
     function displayZoneInfo() {
         document.getElementById('zoneName').textContent = currentZoning.zoneName;
         document.getElementById('zoneCoords').textContent = `${currentLocation.latitude.toFixed(6)}, ${currentLocation.longitude.toFixed(6)}`;
-        document.getElementById('zoneColor').style.background = ZONE_COLORS[currentZoning.zoneName] || '#64748B';
+        document.getElementById('zoneDot').style.background = ZONE_COLORS[currentZoning.zoneName] || '#64748B';
 
         clearMessages();
-        const welcomeMsg = t('welcome', currentZoning.zoneName);
-        currentResponse = { response: welcomeMsg, question: null };
-        addMessage('assistant', welcomeMsg, true);
+        const msg = t('welcome', currentZoning.zoneName);
+        currentResponse = { response: msg, question: null };
+        addMessage('assistant', msg, true);
     }
 
     async function sendMessage() {
@@ -2002,7 +1780,7 @@ Tapez votre question ci-dessous.`,
         addMessage('user', question);
         input.value = '';
         input.style.height = 'auto';
-        showTypingIndicator();
+        showTyping();
         document.getElementById('sendBtn').disabled = true;
 
         try {
@@ -2010,23 +1788,25 @@ Tapez votre question ci-dessous.`,
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
-                    question, lat: currentLocation.latitude, lng: currentLocation.longitude,
-                    sessionId, language: currentLanguage
+                    question,
+                    lat: currentLocation.latitude,
+                    lng: currentLocation.longitude,
+                    sessionId,
+                    language: currentLanguage
                 })
             });
             const data = await res.json();
-            hideTypingIndicator();
+            hideTyping();
 
             if (data.success && data.data) {
                 currentResponse = { response: data.data.response, question };
                 await addMessage('assistant', data.data.response, true);
                 document.getElementById('chatActions').style.display = 'flex';
-                UsageTracker.trackQuestion(question, currentZoning.zoneName);
             } else {
                 addMessage('assistant', t('error'));
             }
         } catch (e) {
-            hideTypingIndicator();
+            hideTyping();
             addMessage('assistant', t('error'));
         }
         document.getElementById('sendBtn').disabled = false;
@@ -2043,102 +1823,102 @@ Tapez votre question ci-dessous.`,
         try {
             const { jsPDF } = window.jspdf;
             const doc = new jsPDF();
-            const pageWidth = doc.internal.pageSize.getWidth();
-            const margin = 20;
-            const contentWidth = pageWidth - margin * 2;
+            const pw = doc.internal.pageSize.getWidth();
+            const m = 20;
+            const cw = pw - m * 2;
 
             doc.setFillColor(15, 23, 42);
-            doc.rect(0, 0, pageWidth, 40, 'F');
+            doc.rect(0, 0, pw, 40, 'F');
             doc.setTextColor(255, 255, 255);
             doc.setFontSize(22);
             doc.setFont('helvetica', 'bold');
-            doc.text('ZoneAgent', margin, 18);
+            doc.text('ZoneAgent', m, 18);
             doc.setFontSize(11);
             doc.setFont('helvetica', 'normal');
-            doc.text(t('reportTitle'), margin, 28);
-            doc.setFillColor(59, 130, 246);
-            doc.rect(0, 40, pageWidth, 3, 'F');
+            doc.text(t('reportTitle'), m, 28);
+            doc.setFillColor(20, 184, 166); // Teal
+            doc.rect(0, 40, pw, 3, 'F');
 
             let y = 55;
             doc.setTextColor(15, 23, 42);
             doc.setFontSize(12);
             doc.setFont('helvetica', 'bold');
-            doc.text(t('locationLabel').toUpperCase(), margin, y);
+            doc.text(t('locationLabel').toUpperCase(), m, y);
             y += 8;
             doc.setTextColor(51, 65, 85);
             doc.setFontSize(10);
             doc.setFont('helvetica', 'normal');
-            doc.text(`${t('zoneLabel')}: ${currentZoning.zoneName}`, margin, y);
+            doc.text(`Zone: ${currentZoning.zoneName}`, m, y);
             y += 6;
-            doc.text(`Coordinates: ${currentLocation.latitude.toFixed(6)}, ${currentLocation.longitude.toFixed(6)}`, margin, y);
+            doc.text(`Coordinates: ${currentLocation.latitude.toFixed(6)}, ${currentLocation.longitude.toFixed(6)}`, m, y);
             y += 6;
-            doc.text(`${t('dateLabel')}: ${new Date().toLocaleDateString()}`, margin, y);
+            doc.text(`${t('dateLabel')}: ${new Date().toLocaleDateString()}`, m, y);
             y += 12;
             doc.setDrawColor(226, 232, 240);
-            doc.line(margin, y, pageWidth - margin, y);
+            doc.line(m, y, pw - m, y);
             y += 12;
 
             if (currentResponse.question) {
                 doc.setTextColor(15, 23, 42);
                 doc.setFontSize(12);
                 doc.setFont('helvetica', 'bold');
-                doc.text(t('questionLabel').toUpperCase(), margin, y);
+                doc.text(t('questionLabel').toUpperCase(), m, y);
                 y += 8;
                 doc.setTextColor(51, 65, 85);
                 doc.setFontSize(10);
                 doc.setFont('helvetica', 'italic');
-                const qLines = doc.splitTextToSize(`"${currentResponse.question}"`, contentWidth);
-                doc.text(qLines, margin, y);
+                const qLines = doc.splitTextToSize(`"${currentResponse.question}"`, cw);
+                doc.text(qLines, m, y);
                 y += qLines.length * 5 + 10;
-                doc.line(margin, y, pageWidth - margin, y);
+                doc.line(m, y, pw - m, y);
                 y += 12;
             }
 
             doc.setTextColor(15, 23, 42);
             doc.setFontSize(12);
             doc.setFont('helvetica', 'bold');
-            doc.text(t('analysisLabel').toUpperCase(), margin, y);
+            doc.text(t('analysisLabel').toUpperCase(), m, y);
             y += 10;
             doc.setTextColor(51, 65, 85);
             doc.setFontSize(10);
             doc.setFont('helvetica', 'normal');
 
-            const cleanResponse = currentResponse.response.replace(/[^\x00-\x7F]/g, '').trim();
-            const rLines = doc.splitTextToSize(cleanResponse, contentWidth);
-            rLines.forEach(line => {
+            const clean = currentResponse.response.replace(/[^\x00-\x7F]/g, '').trim();
+            const lines = doc.splitTextToSize(clean, cw);
+            lines.forEach(line => {
                 if (y > 260) { doc.addPage(); y = 20; }
-                doc.text(line, margin, y);
+                doc.text(line, m, y);
                 y += 5;
             });
 
             y += 15;
             if (y > 230) { doc.addPage(); y = 20; }
             doc.setFillColor(241, 245, 249);
-            doc.roundedRect(margin, y, contentWidth, 30, 3, 3, 'F');
+            doc.roundedRect(m, y, cw, 30, 3, 3, 'F');
             y += 10;
             doc.setTextColor(15, 23, 42);
             doc.setFontSize(10);
             doc.setFont('helvetica', 'bold');
-            doc.text(t('contactLabel'), margin + 5, y);
+            doc.text(t('contactLabel'), m + 5, y);
             y += 6;
             doc.setFont('helvetica', 'normal');
             doc.setTextColor(51, 65, 85);
-            doc.text('City of Kigali: 3260 | https://www.kigalicity.gov.rw/', margin + 5, y);
+            doc.text('City of Kigali: 3260 | kigalicity.gov.rw', m + 5, y);
             y += 25;
+
             doc.setTextColor(148, 163, 184);
             doc.setFontSize(8);
-            doc.text(doc.splitTextToSize(t('disclaimer'), contentWidth), margin, y);
+            doc.text(doc.splitTextToSize(t('disclaimer'), cw), m, y);
 
-            const pageCount = doc.internal.getNumberOfPages();
-            for (let i = 1; i <= pageCount; i++) {
+            const pages = doc.internal.getNumberOfPages();
+            for (let i = 1; i <= pages; i++) {
                 doc.setPage(i);
                 doc.setFontSize(8);
                 doc.setTextColor(148, 163, 184);
-                doc.text(`${t('generatedBy')} | Page ${i}/${pageCount}`, pageWidth / 2, doc.internal.pageSize.getHeight() - 10, { align: 'center' });
+                doc.text(`${t('generatedBy')} | Page ${i}/${pages}`, pw / 2, doc.internal.pageSize.getHeight() - 10, { align: 'center' });
             }
 
             doc.save(`ZoneAgent_${currentZoning.zoneName.replace(/[^a-zA-Z0-9]/g, '_').substring(0, 20)}_${new Date().toISOString().split('T')[0]}.pdf`);
-            UsageTracker.trackDownload(currentZoning.zoneName);
         } catch (e) {
             console.error('PDF Error:', e);
             alert('Error generating PDF');
@@ -2148,7 +1928,6 @@ Tapez votre question ci-dessous.`,
 
     async function shareReport() {
         if (!currentZoning || !currentResponse) return;
-        UsageTracker.trackShare(currentZoning.zoneName);
 
         const text = `ZoneAgent Report\n\nZone: ${currentZoning.zoneName}\nLocation: ${currentLocation.latitude.toFixed(4)}, ${currentLocation.longitude.toFixed(4)}\n\n${currentResponse.response.substring(0, 400)}...\n\nCity of Kigali: 3260`;
 
@@ -2162,7 +1941,7 @@ Tapez votre question ci-dessous.`,
 
     function copyText(text) {
         navigator.clipboard.writeText(text)
-            .then(() => alert('Copied to clipboard!'))
+            .then(() => alert('Copied!'))
             .catch(() => alert('Could not copy'));
     }
 
